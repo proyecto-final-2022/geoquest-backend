@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"geoquest-backend/cmd/server/handler"
+	"geoquest-backend/cmd/api/handler"
 	"geoquest-backend/internal/game"
 	"geoquest-backend/internal/user"
 

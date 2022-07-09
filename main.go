@@ -1,7 +1,7 @@
 package main
 
 import (
-	"geoquest-backend/cmd/server/routes"
+	"geoquest-backend/cmd/api/routes"
 
 	"github.com/gin-gonic/gin"
 )
