@@ -19,7 +19,7 @@ func NewService(rep Repository) Service {
 }
 
 func (s *service) Post(c *gin.Context, id int) (domain.User, error) {
-	user, err := s.repo.Get(c, id)
+	user, err := s.repo.Post(c, id)
 
 	return user, err
 }
