@@ -1,0 +1,73 @@
+definitions:
+  domain.Quest:
+    properties:
+      id:
+        type: integer
+    type: object
+  domain.User:
+    properties:
+      id:
+        type: integer
+    type: object
+  handler.userRequest:
+    properties:
+      user_id:
+        type: integer
+    required:
+    - user_id
+    type: object
+info:
+  contact: {}
+  description: App designed to communicate with GeoQuest's mobile app and provide
+    CRUD functions
+  title: GeoQuest Backend
+  version: "1.0"
+paths:
+  /quests/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Quest info
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Quest'
+        "500":
+          description: ""
+      summary: Quest
+      tags:
+      - Quests
+  /users/:
+    post:
+      consumes:
+      - application/json
+      description: Save new user
+      parameters:
+      - description: User to save
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.userRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+        "500":
+          description: ""
+      summary: New user
+      tags:
+      - Users
+swagger: "2.0"

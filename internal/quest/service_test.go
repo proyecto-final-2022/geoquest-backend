@@ -1,4 +1,4 @@
-package game
+package quest
 
 import (
 	"errors"
@@ -11,11 +11,11 @@ import (
 
 type dummyRepo struct{}
 
-func (d *dummyRepo) Get(c *gin.Context, id int) (domain.Game, error) {
+func (d *dummyRepo) Get(c *gin.Context, id int) (domain.Quest, error) {
 	if id == 9 {
-		return domain.Game{}, errors.New("GET ERROR")
+		return domain.Quest{}, errors.New("GET ERROR")
 	}
-	return domain.Game{ID: id}, nil
+	return domain.Quest{ID: id}, nil
 }
 
 func TestServiceGetWithGetErrorShouldFail(t *testing.T) {

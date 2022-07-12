@@ -1,5 +1,5 @@
 package domain
 
-type Game struct {
+type Quest struct {
 	ID int
 }

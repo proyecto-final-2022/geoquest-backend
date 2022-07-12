@@ -2,7 +2,7 @@ package routes
 
 import (
 	"geoquest-backend/cmd/api/handler"
-	"geoquest-backend/internal/game"
+	"geoquest-backend/internal/quest"
 	"geoquest-backend/internal/user"
 
 	"github.com/gin-gonic/gin"
@@ -27,11 +27,11 @@ func (r *router) MapRoutes() {
 }
 
 func (r *router) buildGamesRoutes() {
-	repo := game.NewRepository()
-	service := game.NewService(repo)
+	repo := quest.NewRepository()
+	service := quest.NewService(repo)
 	handler := handler.NewGame(service)
 
-	gGroup := r.r.Group("/games")
+	gGroup := r.r.Group("/quests")
 	{
 		gGroup.GET("/:id", handler.Get())
 	}

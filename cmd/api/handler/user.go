@@ -20,6 +20,16 @@ func NewUser(s user.Service) *User {
 	return &User{service: s}
 }
 
+// @Summary New user
+// @Schemes
+// @Description Save new user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body userRequest true "User to save"
+// @Success 200 {object} domain.User
+// @Failure 500
+// @Router /users/ [post]
 func (u *User) Post() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req userRequest

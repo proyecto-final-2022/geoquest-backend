@@ -3,7 +3,7 @@ package apitests
 import (
 	"encoding/json"
 	"geoquest-backend/cmd/api/handler"
-	"geoquest-backend/internal/game"
+	"geoquest-backend/internal/quest"
 	"net/http"
 	"testing"
 
@@ -12,8 +12,8 @@ import (
 )
 
 func createServerGame() *gin.Engine {
-	repo := game.NewRepository()
-	service := game.NewService(repo)
+	repo := quest.NewRepository()
+	service := quest.NewService(repo)
 	handler := handler.NewGame(service)
 	r := gin.Default()
 	gGroup := r.Group("/games")

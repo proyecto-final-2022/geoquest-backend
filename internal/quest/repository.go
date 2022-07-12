@@ -1,4 +1,4 @@
-package game
+package quest
 
 import (
 	"geoquest-backend/internal/domain"
@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	Get(c *gin.Context, id int) (domain.Game, error)
+	Get(c *gin.Context, id int) (domain.Quest, error)
 }
 
 type repository struct {
@@ -17,6 +17,6 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) Get(c *gin.Context, id int) (domain.Game, error) {
-	return domain.Game{ID: id}, nil
+func (r *repository) Get(c *gin.Context, id int) (domain.Quest, error) {
+	return domain.Quest{ID: id}, nil
 }
