@@ -1,9 +1,9 @@
 package main
 
 import (
-	"geoquest-backend/cmd/api/routes"
+	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/routes"
 
-	_ "geoquest-backend/docs"
+	_ "github.com/proyecto-final-2022/geoquest-backend/docs"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

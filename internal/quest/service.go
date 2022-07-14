@@ -1,7 +1,7 @@
 package quest
 
 import (
-	"geoquest-backend/internal/domain"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 
 	"github.com/gin-gonic/gin"
 )

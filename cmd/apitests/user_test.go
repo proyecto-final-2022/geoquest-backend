@@ -2,10 +2,12 @@ package apitests
 
 import (
 	"encoding/json"
-	"geoquest-backend/cmd/api/handler"
-	"geoquest-backend/internal/user"
 	"net/http"
 	"testing"
+
+	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
+
+	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

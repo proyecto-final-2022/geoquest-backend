@@ -2,8 +2,9 @@ package user
 
 import (
 	"errors"
-	"geoquest-backend/internal/domain"
 	"testing"
+
+	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

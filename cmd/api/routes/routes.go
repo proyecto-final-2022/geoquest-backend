@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"geoquest-backend/cmd/api/handler"
-	"geoquest-backend/internal/quest"
-	"geoquest-backend/internal/user"
+	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
 	"github.com/gin-gonic/gin"
 )

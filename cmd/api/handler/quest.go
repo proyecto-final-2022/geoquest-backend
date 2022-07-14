@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"geoquest-backend/internal/domain"
-	"geoquest-backend/internal/quest"
 	"net/http"
 	"strconv"
+
+	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
 
 	"github.com/gin-gonic/gin"
 )
