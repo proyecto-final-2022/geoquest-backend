@@ -17,9 +17,9 @@ func createServerGame() *gin.Engine {
 	service := quest.NewService(repo)
 	handler := handler.NewGame(service)
 	r := gin.Default()
-	gGroup := r.Group("/games")
+	gGroup := r.Group("/quests")
 	{
-		gGroup.GET("/:id", handler.Get())
+		gGroup.GET("/:id", handler.GetQuest())
 	}
 
 	return r
@@ -32,7 +32,7 @@ func TestGetGameShouldReturnOK(t *testing.T) {
 
 	r := createServerGame()
 
-	req, rr := createRequestTest(http.MethodGet, "/games/1", "")
+	req, rr := createRequestTest(http.MethodGet, "/quests/1", "")
 	r.ServeHTTP(rr, req)
 	assert.Equal(t, 200, rr.Code)
 

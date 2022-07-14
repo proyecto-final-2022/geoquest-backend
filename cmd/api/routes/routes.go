@@ -33,7 +33,7 @@ func (r *router) buildGamesRoutes() {
 
 	gGroup := r.r.Group("/quests")
 	{
-		gGroup.GET("/:id", handler.Get())
+		gGroup.GET("/:id", handler.GetQuest())
 	}
 }
 
@@ -45,5 +45,6 @@ func (r *router) buildUsersRoutes() {
 	gGroup := r.r.Group("/users")
 	{
 		gGroup.POST("/", handler.Post())
+		gGroup.GET("/:id", handler.GetUser())
 	}
 }

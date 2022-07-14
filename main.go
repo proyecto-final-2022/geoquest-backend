@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/routes"
+	"github.com/proyecto-final-2022/geoquest-backend/config"
 
 	_ "github.com/proyecto-final-2022/geoquest-backend/docs"
 
@@ -16,6 +17,7 @@ import (
 func main() {
 
 	r := gin.Default()
+	config.Connect()
 
 	router := routes.NewRouter(r)
 	router.MapRoutes()

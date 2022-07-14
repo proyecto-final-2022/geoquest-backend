@@ -28,7 +28,7 @@ func NewGame(s quest.Service) *Quest {
 // @Success 200 {object} domain.Quest
 // @Failure 500
 // @Router /quests/{id} [get]
-func (g *Quest) Get() gin.HandlerFunc {
+func (g *Quest) GetQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var game domain.Quest
 		var err error

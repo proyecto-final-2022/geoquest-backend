@@ -7,9 +7,15 @@ Comandos instalacion de Swagger:
 - go get -u github.com/swaggo/files
 
 Comandos makefile:
- - make run: levantar la aplicacion (go run main.go)
- - make swag: guardar lo nuevo que hayas sumado en swagger (swag init docs/docs.go)
+ - make run: levantar la aplicacion 
+ - make swag: guardar lo nuevo que hayas sumado en swagger 
+ - make compose: levantar el docker compose
 
-Link a la docu de swagger (despues de levantar la app):
+Link al swagger de la app luego de levantarla:
 - http://localhost:8080/swagger/index.html 
+
+Link a la documentacion de Gin Swagger
 - https://github.com/swaggo/gin-swagger (docu swagger)
+
+Link a la documentacion de GORM
+- https://gorm.io/docs/

@@ -4,16 +4,31 @@ definitions:
       id:
         type: integer
     type: object
-  domain.User:
+  domain.UserDTO:
     properties:
+      email:
+        type: string
       id:
         type: integer
+      name:
+        type: string
+      password:
+        type: string
     type: object
   handler.userRequest:
     properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
       user_id:
         type: integer
     required:
+    - email
+    - name
+    - password
     - user_id
     type: object
 info:
@@ -64,10 +79,35 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.User'
+            $ref: '#/definitions/domain.UserDTO'
+        "422":
+          description: ""
         "500":
           description: ""
       summary: New user
+      tags:
+      - Users
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: User info
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserDTO'
+        "500":
+          description: ""
+      summary: User
       tags:
       - Users
 swagger: "2.0"
