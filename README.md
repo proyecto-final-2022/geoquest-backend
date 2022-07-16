@@ -6,6 +6,9 @@ Comandos instalacion de Swagger:
 - go get -u github.com/swaggo/gin-swagger
 - go get -u github.com/swaggo/files
 
+Comandos instalacion de Mongo:
+- go get go.mongodb.org/mongo-driver
+
 Comandos makefile:
  - make run: levantar la aplicacion 
  - make swag: guardar lo nuevo que hayas sumado en swagger 

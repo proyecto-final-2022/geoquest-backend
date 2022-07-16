@@ -16,6 +16,46 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/quests/": {
+            "post": {
+                "description": "Save new quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "New quest",
+                "parameters": [
+                    {
+                        "description": "Quest to save",
+                        "name": "quest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.questRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Quest"
+                        }
+                    },
+                    "422": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/quests/{id}": {
             "get": {
                 "description": "Quest info",
@@ -133,6 +173,9 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -150,6 +193,21 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.questRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "quest_id"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "quest_id": {
+                    "type": "integer"
                 }
             }
         },

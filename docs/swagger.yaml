@@ -3,6 +3,8 @@ definitions:
     properties:
       id:
         type: integer
+      name:
+        type: string
     type: object
   domain.UserDTO:
     properties:
@@ -14,6 +16,16 @@ definitions:
         type: string
       password:
         type: string
+    type: object
+  handler.questRequest:
+    properties:
+      name:
+        type: string
+      quest_id:
+        type: integer
+    required:
+    - name
+    - quest_id
     type: object
   handler.userRequest:
     properties:
@@ -38,6 +50,32 @@ info:
   title: GeoQuest Backend
   version: "1.0"
 paths:
+  /quests/:
+    post:
+      consumes:
+      - application/json
+      description: Save new quest
+      parameters:
+      - description: Quest to save
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.questRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Quest'
+        "422":
+          description: ""
+        "500":
+          description: ""
+      summary: New quest
+      tags:
+      - Quests
   /quests/{id}:
     get:
       consumes:

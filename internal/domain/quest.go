@@ -1,5 +1,6 @@
 package domain
 
 type Quest struct {
-	ID int
+	ID   int
+	Name string
 }

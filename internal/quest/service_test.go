@@ -19,6 +19,10 @@ func (d *dummyRepo) Get(c *gin.Context, id int) (domain.Quest, error) {
 	return domain.Quest{ID: id}, nil
 }
 
+func (d *dummyRepo) Post(c *gin.Context, id int, name string) (domain.Quest, error) {
+	return domain.Quest{ID: id}, nil
+}
+
 func TestServiceGetWithGetErrorShouldFail(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)

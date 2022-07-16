@@ -9,3 +9,13 @@ services:
       - MYSQL_USER=gorm
       - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: geoquest-backend
+    hostname: localhost
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: geoquest
+      MONGO_INITDB_ROOT_PASSWORD: geoquest
+    ports:
+      - "27017:27017"
