@@ -23,7 +23,7 @@ func NewRepository() Repository {
 
 func (r *repository) Post(c *gin.Context, id int, email string, name string, password string) (domain.UserDTO, error) {
 	user := domain.User{ID: id, Email: email, Name: name, Password: password}
-	if tx := config.DB.Create(&user); tx.Error != nil {
+	if tx := config.MySql.Create(&user); tx.Error != nil {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
 	return domain.UserDTO{ID: id, Email: email, Name: name, Password: password}, nil
@@ -31,7 +31,7 @@ func (r *repository) Post(c *gin.Context, id int, email string, name string, pas
 
 func (r *repository) Get(c *gin.Context, id int) (domain.UserDTO, error) {
 	var user domain.User
-	if tx := config.DB.First(&user, id); tx.Error != nil {
+	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
 	return domain.UserDTO{ID: user.ID, Email: user.Email, Name: user.Name, Password: user.Password}, nil

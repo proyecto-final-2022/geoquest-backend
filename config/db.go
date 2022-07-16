@@ -10,25 +10,25 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var MySql *gorm.DB
 var Mongo *mongo.Client
 
 func Connect() {
-	dsn := "gorm:gorm@tcp(localhost:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	mySqlConn := "geoquest:geoquest@tcp(localhost:3306)/geoquest?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(mySqlConn), &gorm.Config{})
 
 	if err != nil {
 		panic(err)
 	}
 
 	db.AutoMigrate(&domain.User{})
-	DB = db
+	MySql = db
 
 }
 
 func GetCollection(collection string) *mongo.Collection {
-	mongoUri := "mongodb://geoquest:geoquest@localhost:27017/?authSource=admin&readPreference=primary&ssl=false"
-	mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoUri))
+	mongoConn := "mongodb://geoquest:geoquest@localhost:27017/?authSource=admin&readPreference=primary&ssl=false"
+	mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoConn))
 
 	//mongoClient, err := mongo.NewClient(options.Client().ApplyURI(mongoUri))
 
