@@ -16,11 +16,11 @@ func (d *dummyRepo) Get(c *gin.Context, id int) (domain.Quest, error) {
 	if id == 9 {
 		return domain.Quest{}, errors.New("GET ERROR")
 	}
-	return domain.Quest{ID: id}, nil
+	return domain.Quest{}, nil
 }
 
-func (d *dummyRepo) Post(c *gin.Context, id int, name string) (domain.Quest, error) {
-	return domain.Quest{ID: id}, nil
+func (d *dummyRepo) Post(c *gin.Context, name string) (domain.Quest, error) {
+	return domain.Quest{}, nil
 }
 
 func TestServiceGetWithGetErrorShouldFail(t *testing.T) {

@@ -20,6 +20,7 @@ func createServerGame() *gin.Engine {
 	gGroup := r.Group("/quests")
 	{
 		gGroup.GET("/:id", handler.GetQuest())
+		gGroup.POST("/", handler.CreateQuest())
 	}
 
 	return r
@@ -33,6 +34,28 @@ func TestGetGameShouldReturnOK(t *testing.T) {
 	r := createServerGame()
 
 	req, rr := createRequestTest(http.MethodGet, "/quests/1", "")
+	r.ServeHTTP(rr, req)
+	assert.Equal(t, 200, rr.Code)
+
+	err := json.Unmarshal(rr.Body.Bytes(), &objReq)
+	assert.Nil(t, err)
+	assert.Equal(t, objReq.ID, 1)
+
+}
+
+func TestPostGameShouldReturnOK(t *testing.T) {
+	objReq := struct {
+		ID int `json:"ID"`
+	}{}
+
+	body := `
+	{
+		"name": "string"
+	}`
+
+	r := createServerGame()
+
+	req, rr := createRequestTest(http.MethodPost, "/quests/", body)
 	r.ServeHTTP(rr, req)
 	assert.Equal(t, 200, rr.Code)
 

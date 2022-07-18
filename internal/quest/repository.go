@@ -9,7 +9,7 @@ import (
 
 type Repository interface {
 	Get(c *gin.Context, id int) (domain.Quest, error)
-	Post(c *gin.Context, id int, name string) (domain.Quest, error)
+	Post(c *gin.Context, name string) (domain.Quest, error)
 }
 
 type repository struct {
@@ -22,20 +22,18 @@ func NewRepository() Repository {
 }
 
 func (r *repository) Get(c *gin.Context, id int) (domain.Quest, error) {
-	return domain.Quest{ID: id}, nil
+	return domain.Quest{}, nil
 }
 
-func (r *repository) Post(c *gin.Context, id int, name string) (domain.Quest, error) {
+func (r *repository) Post(c *gin.Context, name string) (domain.Quest, error) {
 
 	var err error
 
-	_, err = collection.InsertOne(c, domain.Quest{
-		ID:   id,
-		Name: name})
+	_, err = collection.InsertOne(c, domain.Quest{Name: name})
 
 	if err != nil {
 		return domain.Quest{}, err
 	}
 
-	return domain.Quest{ID: id, Name: name}, nil
+	return domain.Quest{Name: name}, nil
 }

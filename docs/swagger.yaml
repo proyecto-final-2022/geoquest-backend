@@ -1,9 +1,9 @@
 definitions:
   domain.Quest:
     properties:
-      id:
-        type: integer
       name:
+        type: string
+      user_id:
         type: string
     type: object
   domain.UserDTO:
@@ -21,11 +21,8 @@ definitions:
     properties:
       name:
         type: string
-      quest_id:
-        type: integer
     required:
     - name
-    - quest_id
     type: object
   handler.userRequest:
     properties:

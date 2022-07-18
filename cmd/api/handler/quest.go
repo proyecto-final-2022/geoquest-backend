@@ -11,7 +11,6 @@ import (
 )
 
 type questRequest struct {
-	ID   int    `json:"quest_id" binding:"required"`
 	Name string `json:"name" binding:"required"`
 }
 
@@ -37,18 +36,18 @@ func NewGame(s quest.Service) *Quest {
 func (u *Quest) CreateQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req questRequest
-		var user domain.Quest
+		var quest domain.Quest
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
 		}
 
-		if user, err = u.service.Post(c, req.ID, req.Name); err != nil {
+		if quest, err = u.service.Post(c, req.Name); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, quest)
 	}
 }
 

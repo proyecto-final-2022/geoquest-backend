@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	Get(c *gin.Context, id int) (domain.Quest, error)
-	Post(c *gin.Context, id int, name string) (domain.Quest, error)
+	Post(c *gin.Context, name string) (domain.Quest, error)
 }
 
 type service struct {
@@ -25,8 +25,8 @@ func (s *service) Get(c *gin.Context, id int) (domain.Quest, error) {
 	return quest, err
 }
 
-func (s *service) Post(c *gin.Context, id int, name string) (domain.Quest, error) {
-	quest, err := s.repo.Post(c, id, name)
+func (s *service) Post(c *gin.Context, name string) (domain.Quest, error) {
+	quest, err := s.repo.Post(c, name)
 
 	return quest, err
 }

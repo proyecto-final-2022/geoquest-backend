@@ -171,10 +171,10 @@ const docTemplate = `{
         "domain.Quest": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -199,15 +199,11 @@ const docTemplate = `{
         "handler.questRequest": {
             "type": "object",
             "required": [
-                "name",
-                "quest_id"
+                "name"
             ],
             "properties": {
                 "name": {
                     "type": "string"
-                },
-                "quest_id": {
-                    "type": "integer"
                 }
             }
         },
