@@ -35,7 +35,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Quest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
                     "422": {
@@ -73,7 +73,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Quest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
                     "500": {
@@ -108,10 +108,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.UserDTO"
-                        }
+                        "description": ""
                     },
                     "422": {
                         "description": ""
@@ -159,13 +156,10 @@
         }
     },
     "definitions": {
-        "domain.Quest": {
+        "domain.QuestDTO": {
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }
@@ -175,9 +169,6 @@
             "properties": {
                 "email": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -203,8 +194,7 @@
             "required": [
                 "email",
                 "name",
-                "password",
-                "user_id"
+                "password"
             ],
             "properties": {
                 "email": {
@@ -215,9 +205,6 @@
                 },
                 "password": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         }

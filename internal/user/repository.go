@@ -10,8 +10,8 @@ import (
 )
 
 type Repository interface {
-	Post(c *gin.Context, id int, email string, name string, password string) (domain.UserDTO, error)
-	Get(c *gin.Context, id int) (domain.UserDTO, error)
+	CreateUser(c *gin.Context, email string, name string, password string) error
+	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
 }
 
 type repository struct {
@@ -21,18 +21,18 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) Post(c *gin.Context, id int, email string, name string, password string) (domain.UserDTO, error) {
-	user := domain.User{ID: id, Email: email, Name: name, Password: password}
+func (r *repository) CreateUser(c *gin.Context, email string, name string, password string) error {
+	user := domain.User{Email: email, Name: name, Password: password}
 	if tx := config.MySql.Create(&user); tx.Error != nil {
-		return domain.UserDTO{}, errors.New("DB Error")
+		return errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: id, Email: email, Name: name, Password: password}, nil
+	return nil
 }
 
-func (r *repository) Get(c *gin.Context, id int) (domain.UserDTO, error) {
+func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	var user domain.User
 	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: user.ID, Email: user.Email, Name: user.Name, Password: user.Password}, nil
+	return domain.UserDTO{Email: user.Email, Name: user.Name, Password: user.Password}, nil
 }

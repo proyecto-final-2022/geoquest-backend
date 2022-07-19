@@ -7,8 +7,8 @@ import (
 )
 
 type Service interface {
-	Post(c *gin.Context, id int, email string, name string, password string) (domain.UserDTO, error)
-	Get(c *gin.Context, id int) (domain.UserDTO, error)
+	CreateUser(c *gin.Context, email string, name string, password string) error
+	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
 }
 
 type service struct {
@@ -19,14 +19,14 @@ func NewService(rep Repository) Service {
 	return &service{repo: rep}
 }
 
-func (s *service) Post(c *gin.Context, id int, email string, name string, password string) (domain.UserDTO, error) {
-	user, err := s.repo.Post(c, id, email, name, password)
+func (s *service) CreateUser(c *gin.Context, email string, name string, password string) error {
+	err := s.repo.CreateUser(c, email, name, password)
 
-	return user, err
+	return err
 }
 
-func (s *service) Get(c *gin.Context, id int) (domain.UserDTO, error) {
-	user, err := s.repo.Get(c, id)
+func (s *service) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
+	user, err := s.repo.GetUser(c, id)
 
 	return user, err
 }

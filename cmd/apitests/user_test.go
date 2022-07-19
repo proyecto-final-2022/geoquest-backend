@@ -3,6 +3,7 @@ package apitests
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -17,18 +18,18 @@ import (
 
 type dummyRepo struct{}
 
-func (d *dummyRepo) Post(c *gin.Context, id int, email string, name string, password string) (domain.UserDTO, error) {
-	if id == 9 {
-		return domain.UserDTO{}, errors.New("POST ERROR")
+func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, password string) error {
+	if email == "testError" {
+		return errors.New("POST ERROR")
 	}
-	return domain.UserDTO{ID: id, Email: email, Name: name, Password: password}, nil
+	return nil
 }
 
-func (d *dummyRepo) Get(c *gin.Context, id int) (domain.UserDTO, error) {
+func (d *dummyRepo) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	if id == 9 {
 		return domain.UserDTO{}, errors.New("GET ERROR")
 	}
-	return domain.UserDTO{ID: id, Email: "test", Name: "test", Password: "test"}, nil
+	return domain.UserDTO{Email: "test", Name: "test", Password: "test"}, nil
 }
 
 func createServerUser() *gin.Engine {
@@ -41,7 +42,7 @@ func createServerUser() *gin.Engine {
 
 	gGroup := r.Group("/users")
 	{
-		gGroup.POST("/", handler.Post())
+		gGroup.POST("/", handler.CreateUser())
 		gGroup.GET("/:id", handler.GetUser())
 	}
 
@@ -49,12 +50,6 @@ func createServerUser() *gin.Engine {
 }
 
 func TestPostUserShouldReturnOK(t *testing.T) {
-	objReq := struct {
-		ID       int    `json:"id"`
-		Name     string `json:"name"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}{}
 
 	r := createServerUser()
 
@@ -70,10 +65,6 @@ func TestPostUserShouldReturnOK(t *testing.T) {
 	r.ServeHTTP(rr, req)
 	assert.Equal(t, 200, rr.Code)
 
-	err := json.Unmarshal(rr.Body.Bytes(), &objReq)
-	assert.Nil(t, err)
-	assert.Equal(t, objReq.ID, 10)
-
 }
 
 func TestPostUserWithDBErrorShouldReturnInternalServerError(t *testing.T) {
@@ -81,7 +72,7 @@ func TestPostUserWithDBErrorShouldReturnInternalServerError(t *testing.T) {
 	body := `
 	{
 		"user_id": 9,
-		"email": "test",
+		"email": "testError",
 		"password": "test",
 		"name": "test"
 	}`
@@ -102,7 +93,9 @@ func TestPostUserWithInvalidJSONShouldReturnStatusUnprocessableEntity(t *testing
 
 func TestGetUserShouldReturnOK(t *testing.T) {
 	objReq := struct {
-		ID int `json:"id"`
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}{}
 
 	r := createServerUser()
@@ -113,14 +106,18 @@ func TestGetUserShouldReturnOK(t *testing.T) {
 
 	err := json.Unmarshal(rr.Body.Bytes(), &objReq)
 	assert.Nil(t, err)
-	assert.Equal(t, objReq.ID, 10)
+	assert.Equal(t, objReq.Name, "test")
+	assert.Equal(t, objReq.Email, "test")
+	assert.Equal(t, objReq.Password, "test")
 
 }
 
 func TestGetUserWithDBErrorShouldReturnInternalServerError(t *testing.T) {
 	r := createServerUser()
 
-	req, rr := createRequestTest(http.MethodGet, "/users/9", "")
+	id := "9"
+
+	req, rr := createRequestTest(http.MethodGet, fmt.Sprintf("/users/%s", id), "")
 	r.ServeHTTP(rr, req)
 	assert.Equal(t, 500, rr.Code)
 

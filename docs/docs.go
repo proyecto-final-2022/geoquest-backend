@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Quest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
                     "422": {
@@ -82,7 +82,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Quest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
                     "500": {
@@ -117,10 +117,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.UserDTO"
-                        }
+                        "description": ""
                     },
                     "422": {
                         "description": ""
@@ -168,13 +165,10 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Quest": {
+        "domain.QuestDTO": {
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }
@@ -184,9 +178,6 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -212,8 +203,7 @@ const docTemplate = `{
             "required": [
                 "email",
                 "name",
-                "password",
-                "user_id"
+                "password"
             ],
             "properties": {
                 "email": {
@@ -224,9 +214,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         }

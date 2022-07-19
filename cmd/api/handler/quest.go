@@ -29,21 +29,21 @@ func NewGame(s quest.Service) *Quest {
 // @Accept json
 // @Produce json
 // @Param quest body questRequest true "Quest to save"
-// @Success 200 {object} domain.Quest
+// @Success 200 {object} domain.QuestDTO
 // @Failure 422
 // @Failure 500
 // @Router /quests/ [post]
 func (u *Quest) CreateQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req questRequest
-		var quest domain.Quest
+		var quest domain.QuestDTO
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
 		}
 
-		if quest, err = u.service.Post(c, req.Name); err != nil {
+		if quest, err = u.service.CreateQuest(c, req.Name); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 
@@ -58,17 +58,17 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 // @Accept json
 // @Produce json
 // @Param id path int true "Quest ID"
-// @Success 200 {object} domain.Quest
+// @Success 200 {object} domain.QuestDTO
 // @Failure 500
 // @Router /quests/{id} [get]
 func (g *Quest) GetQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var game domain.Quest
+		var game domain.QuestDTO
 		var err error
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if game, err = g.service.Get(c, paramId); err != nil {
+		if game, err = g.service.GetQuest(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 

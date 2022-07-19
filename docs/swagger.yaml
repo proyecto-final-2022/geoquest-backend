@@ -1,17 +1,13 @@
 definitions:
-  domain.Quest:
+  domain.QuestDTO:
     properties:
       name:
-        type: string
-      user_id:
         type: string
     type: object
   domain.UserDTO:
     properties:
       email:
         type: string
-      id:
-        type: integer
       name:
         type: string
       password:
@@ -32,13 +28,10 @@ definitions:
         type: string
       password:
         type: string
-      user_id:
-        type: integer
     required:
     - email
     - name
     - password
-    - user_id
     type: object
 info:
   contact: {}
@@ -65,7 +58,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Quest'
+            $ref: '#/definitions/domain.QuestDTO'
         "422":
           description: ""
         "500":
@@ -90,7 +83,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Quest'
+            $ref: '#/definitions/domain.QuestDTO'
         "500":
           description: ""
       summary: Quest
@@ -112,9 +105,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.UserDTO'
+          description: ""
         "422":
           description: ""
         "500":

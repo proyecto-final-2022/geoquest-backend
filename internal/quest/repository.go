@@ -8,8 +8,8 @@ import (
 )
 
 type Repository interface {
-	Get(c *gin.Context, id int) (domain.Quest, error)
-	Post(c *gin.Context, name string) (domain.Quest, error)
+	GetQuest(c *gin.Context, id int) (domain.QuestDTO, error)
+	CreateQuest(c *gin.Context, name string) (domain.QuestDTO, error)
 }
 
 type repository struct {
@@ -21,19 +21,19 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) Get(c *gin.Context, id int) (domain.Quest, error) {
-	return domain.Quest{}, nil
+func (r *repository) GetQuest(c *gin.Context, id int) (domain.QuestDTO, error) {
+	return domain.QuestDTO{}, nil
 }
 
-func (r *repository) Post(c *gin.Context, name string) (domain.Quest, error) {
+func (r *repository) CreateQuest(c *gin.Context, name string) (domain.QuestDTO, error) {
 
 	var err error
 
 	_, err = collection.InsertOne(c, domain.Quest{Name: name})
 
 	if err != nil {
-		return domain.Quest{}, err
+		return domain.QuestDTO{}, err
 	}
 
-	return domain.Quest{Name: name}, nil
+	return domain.QuestDTO{Name: name}, nil
 }

@@ -6,3 +6,7 @@ type Quest struct {
 	ID   primitive.ObjectID `bson:"_id,omitempty" json:"user_id,omitempty"`
 	Name string             `json:"name"`
 }
+
+type QuestDTO struct {
+	Name string `json:"name"`
+}

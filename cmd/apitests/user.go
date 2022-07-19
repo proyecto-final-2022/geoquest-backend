@@ -1,4 +1,4 @@
-package domain
+package apitests
 
 import "gorm.io/gorm"
 

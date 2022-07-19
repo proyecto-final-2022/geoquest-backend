@@ -45,7 +45,7 @@ func (r *router) buildUsersRoutes() {
 
 	gGroup := r.r.Group("/users")
 	{
-		gGroup.POST("/", handler.Post())
+		gGroup.POST("/", handler.CreateUser())
 		gGroup.GET("/:id", handler.GetUser())
 	}
 }
