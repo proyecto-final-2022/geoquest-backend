@@ -24,8 +24,11 @@ func (s *serviceMock) GetQuest(c *gin.Context, id int) (domain.QuestDTO, error) 
 	return domain.QuestDTO{Name: "test"}, nil
 }
 
-func (s *serviceMock) CreateQuest(c *gin.Context, name string) (domain.QuestDTO, error) {
-	return domain.QuestDTO{}, nil
+func (s *serviceMock) CreateQuest(c *gin.Context, name string) error {
+	if name == "testError" {
+		return errors.New("GET ERROR")
+	}
+	return nil
 }
 
 func NewServiceMock() quest.Service {
@@ -85,5 +88,19 @@ func TestCreateQuestShouldReturnOK(t *testing.T) {
 	req, rr := createRequestTest(http.MethodPost, "/quests/", body)
 	r.ServeHTTP(rr, req)
 	assert.Equal(t, 200, rr.Code)
+
+}
+
+func TestCreateQuestShouldReturnInternalServerError(t *testing.T) {
+	body := `
+	{
+		"name": "testError"
+	}`
+
+	r := createServerGame()
+
+	req, rr := createRequestTest(http.MethodPost, "/quests/", body)
+	r.ServeHTTP(rr, req)
+	assert.Equal(t, 500, rr.Code)
 
 }

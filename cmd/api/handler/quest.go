@@ -36,18 +36,17 @@ func NewGame(s quest.Service) *Quest {
 func (u *Quest) CreateQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req questRequest
-		var quest domain.QuestDTO
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
 		}
 
-		if quest, err = u.service.CreateQuest(c, req.Name); err != nil {
+		if err = u.service.CreateQuest(c, req.Name); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 
-		c.JSON(http.StatusOK, quest)
+		c.JSON(http.StatusOK, nil)
 	}
 }
 

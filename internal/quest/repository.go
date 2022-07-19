@@ -9,7 +9,7 @@ import (
 
 type Repository interface {
 	GetQuest(c *gin.Context, id int) (domain.QuestDTO, error)
-	CreateQuest(c *gin.Context, name string) (domain.QuestDTO, error)
+	CreateQuest(c *gin.Context, name string) error
 }
 
 type repository struct {
@@ -25,15 +25,15 @@ func (r *repository) GetQuest(c *gin.Context, id int) (domain.QuestDTO, error) {
 	return domain.QuestDTO{}, nil
 }
 
-func (r *repository) CreateQuest(c *gin.Context, name string) (domain.QuestDTO, error) {
+func (r *repository) CreateQuest(c *gin.Context, name string) error {
 
 	var err error
 
 	_, err = collection.InsertOne(c, domain.Quest{Name: name})
 
 	if err != nil {
-		return domain.QuestDTO{}, err
+		return err
 	}
 
-	return domain.QuestDTO{Name: name}, nil
+	return nil
 }
