@@ -42,10 +42,12 @@ func (u *User) CreateUser() gin.HandlerFunc {
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
+			return
 		}
 
 		if err = u.service.CreateUser(c, req.Email, req.Name, req.Password); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
+			return
 		}
 
 		c.JSON(http.StatusOK, nil)
@@ -71,6 +73,7 @@ func (u *User) GetUser() gin.HandlerFunc {
 
 		if user, err = u.service.GetUser(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
+			return
 		}
 
 		c.JSON(http.StatusOK, user)

@@ -14,6 +14,7 @@ var MySql *gorm.DB
 var Mongo *mongo.Client
 
 func Connect() {
+	//TODO: poner esto en archivo de configuracion
 	mySqlConn := "geoquest:geoquest@tcp(localhost:3306)/geoquest?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(mySqlConn), &gorm.Config{})
 
@@ -27,6 +28,7 @@ func Connect() {
 }
 
 func GetCollection(collection string) *mongo.Collection {
+	//TODO: poner esto en archivo de configuracion
 	mongoConn := "mongodb://geoquest:geoquest@localhost:27017/?authSource=admin&readPreference=primary&ssl=false"
 	mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoConn))
 

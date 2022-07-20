@@ -60,8 +60,43 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.questRequest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "422": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/quests/{id}": {
+            "get": {
+                "description": "Quest info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Quests",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -71,7 +106,73 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
-                    "422": {
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "description": "Quest info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Quests",
+                "parameters": [
+                    {
+                        "description": "Quest to update",
+                        "name": "quest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.QuestDTO"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Quests",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
                         "description": ""
                     },
                     "500": {
@@ -172,17 +273,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.questRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
                     "type": "string"
                 }
             }

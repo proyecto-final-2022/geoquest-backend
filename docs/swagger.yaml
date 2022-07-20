@@ -13,13 +13,6 @@ definitions:
       password:
         type: string
     type: object
-  handler.questRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
-    type: object
   handler.userRequest:
     properties:
       email:
@@ -67,7 +60,50 @@ paths:
         name: quest
         required: true
         schema:
-          $ref: '#/definitions/handler.questRequest'
+          $ref: '#/definitions/domain.QuestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "422":
+          description: ""
+        "500":
+          description: ""
+      summary: New quest
+      tags:
+      - Quests
+  /quests/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a quest
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: ""
+      summary: Quests
+      tags:
+      - Quests
+    get:
+      consumes:
+      - application/json
+      description: Quest info
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -75,11 +111,35 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/domain.QuestDTO'
-        "422":
+        "500":
+          description: ""
+      summary: Quests
+      tags:
+      - Quests
+    put:
+      consumes:
+      - application/json
+      description: Quest info
+      parameters:
+      - description: Quest to update
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.QuestDTO'
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
           description: ""
         "500":
           description: ""
-      summary: New quest
+      summary: Quests
       tags:
       - Quests
   /users/:

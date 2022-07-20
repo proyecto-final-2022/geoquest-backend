@@ -35,6 +35,9 @@ func (r *router) buildGamesRoutes() {
 	{
 		gGroup.POST("/", handler.CreateQuest())
 		gGroup.GET("/", handler.GetQuests())
+		gGroup.GET("/:id", handler.GetQuest())
+		gGroup.PUT("/:id", handler.UpdateQuest())
+		gGroup.DELETE("/:id", handler.DeleteQuest())
 	}
 }
 

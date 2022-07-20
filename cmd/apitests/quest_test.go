@@ -16,10 +16,7 @@ import (
 
 type serviceMock struct{}
 
-func (s *serviceMock) GetQuests(c *gin.Context, id int) ([]*domain.QuestDTO, error) {
-	if id == 9 {
-		return nil, errors.New("GET ERROR")
-	}
+func (s *serviceMock) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 
 	var quests []*domain.QuestDTO
 
@@ -28,9 +25,31 @@ func (s *serviceMock) GetQuests(c *gin.Context, id int) ([]*domain.QuestDTO, err
 	return quests, nil
 }
 
+func (s *serviceMock) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
+	if id == "9" {
+		return domain.QuestDTO{}, errors.New("Get Error")
+	}
+
+	return domain.QuestDTO{Name: "test"}, nil
+}
+
 func (s *serviceMock) CreateQuest(c *gin.Context, name string) error {
 	if name == "testError" {
 		return errors.New("GET ERROR")
+	}
+	return nil
+}
+
+func (s *serviceMock) UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error {
+	if id == "error" {
+		return errors.New("UPDATE ERROR")
+	}
+	return nil
+}
+
+func (s *serviceMock) DeleteQuest(c *gin.Context, id string) error {
+	if id == "error" {
+		return errors.New("DELETE ERROR")
 	}
 	return nil
 }
@@ -45,29 +64,36 @@ func createServerGame() *gin.Engine {
 	r := gin.Default()
 	gGroup := r.Group("/quests")
 	{
-		gGroup.GET("/:id", handler.GetQuests())
+		gGroup.GET("/", handler.GetQuests())
+		gGroup.GET("/:id", handler.GetQuest())
 		gGroup.POST("/", handler.CreateQuest())
+		gGroup.PUT("/:id", handler.UpdateQuest())
+
 	}
 
 	return r
 }
 
-func TestGetQuestShouldReturnOK(t *testing.T) {
-	/*
-		var objReq []*domain.QuestDTO
-
-			objReq := struct {
-				Name string `json:"name"`
-			}{}
-	*/
+func TestGetQuestsShouldReturnOK(t *testing.T) {
 	r := createServerGame()
 
 	req, rr := createRequestTest(http.MethodGet, fmt.Sprintf("/quests/"), "")
 	r.ServeHTTP(rr, req)
 	assert.Equal(t, 200, rr.Code)
 
-	//err := json.Unmarshal(rr.Body.Bytes(), &objReq)
-	//assert.Nil(t, err)
+}
+
+func TestMongolo(t *testing.T) {
+	r := createServerGame()
+
+	body := `
+	{
+		"name": "struung"
+	}`
+
+	req, rr := createRequestTest(http.MethodPut, fmt.Sprintf("/quests/23"), body)
+	r.ServeHTTP(rr, req)
+	assert.Equal(t, 200, rr.Code)
 
 }
 
