@@ -43,7 +43,7 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, nil)
+		c.JSON(http.StatusOK, "")
 	}
 }
 
