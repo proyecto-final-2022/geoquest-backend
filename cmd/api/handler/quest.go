@@ -50,27 +50,26 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 	}
 }
 
-// @Summary Quest
+// @Summary Quests
 // @Schemes
 // @Description Quest info
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param id path int true "Quest ID"
 // @Success 200 {object} domain.QuestDTO
 // @Failure 500
-// @Router /quests/{id} [get]
-func (g *Quest) GetQuest() gin.HandlerFunc {
+// @Router /quests/ [get]
+func (g *Quest) GetQuests() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var game domain.QuestDTO
+		var quests []*domain.QuestDTO
 		var err error
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if game, err = g.service.GetQuest(c, paramId); err != nil {
+		if quests, err = g.service.GetQuests(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 
-		c.JSON(http.StatusOK, game)
+		c.JSON(http.StatusOK, quests)
 	}
 }

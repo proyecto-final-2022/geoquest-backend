@@ -41,6 +41,22 @@ info:
   version: "1.0"
 paths:
   /quests/:
+    get:
+      consumes:
+      - application/json
+      description: Quest info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.QuestDTO'
+        "500":
+          description: ""
+      summary: Quests
+      tags:
+      - Quests
     post:
       consumes:
       - application/json
@@ -64,29 +80,6 @@ paths:
         "500":
           description: ""
       summary: New quest
-      tags:
-      - Quests
-  /quests/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Quest info
-      parameters:
-      - description: Quest ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.QuestDTO'
-        "500":
-          description: ""
-      summary: Quest
       tags:
       - Quests
   /users/:

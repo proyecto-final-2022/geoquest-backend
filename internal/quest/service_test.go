@@ -12,11 +12,17 @@ import (
 
 type dummyRepo struct{}
 
-func (d *dummyRepo) GetQuest(c *gin.Context, id int) (domain.QuestDTO, error) {
+func (d *dummyRepo) GetQuests(c *gin.Context, id int) ([]*domain.QuestDTO, error) {
+
 	if id == 9 {
-		return domain.QuestDTO{}, errors.New("GET ERROR")
+		return nil, errors.New("GET ERROR")
 	}
-	return domain.QuestDTO{Name: "test"}, nil
+
+	var quests []*domain.QuestDTO
+
+	quests = append(quests, &domain.QuestDTO{Name: "test"})
+
+	return quests, nil
 }
 
 func (d *dummyRepo) CreateQuest(c *gin.Context, name string) error {
@@ -34,7 +40,7 @@ func TestServiceGetWithGetErrorShouldFail(t *testing.T) {
 	repo := NewDummyRepository()
 	service := NewService(repo)
 
-	_, err := service.GetQuest(&gin.Context{}, 9)
+	_, err := service.GetQuests(&gin.Context{}, 9)
 	assert.NotNil(t, err)
 }
 
@@ -42,9 +48,9 @@ func TestServiceGetShouldReturnOK(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)
 
-	result, err := service.GetQuest(&gin.Context{}, 1)
+	result, err := service.GetQuests(&gin.Context{}, 1)
 	assert.Nil(t, err)
-	assert.Equal(t, result.Name, "test")
+	assert.Equal(t, result[0].Name, "test")
 }
 
 func TestServiceCreateWithPostErrorShouldFail(t *testing.T) {

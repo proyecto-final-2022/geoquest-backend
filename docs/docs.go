@@ -17,6 +17,30 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/quests/": {
+            "get": {
+                "description": "Quest info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Quests",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.QuestDTO"
+                        }
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
             "post": {
                 "description": "Save new quest",
                 "consumes": [
@@ -49,41 +73,6 @@ const docTemplate = `{
                     },
                     "422": {
                         "description": ""
-                    },
-                    "500": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/quests/{id}": {
-            "get": {
-                "description": "Quest info",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Quests"
-                ],
-                "summary": "Quest",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Quest ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.QuestDTO"
-                        }
                     },
                     "500": {
                         "description": ""

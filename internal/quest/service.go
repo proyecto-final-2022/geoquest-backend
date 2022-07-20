@@ -7,7 +7,7 @@ import (
 )
 
 type Service interface {
-	GetQuest(c *gin.Context, id int) (domain.QuestDTO, error)
+	GetQuests(c *gin.Context, id int) ([]*domain.QuestDTO, error)
 	CreateQuest(c *gin.Context, name string) error
 }
 
@@ -19,10 +19,10 @@ func NewService(rep Repository) Service {
 	return &service{repo: rep}
 }
 
-func (s *service) GetQuest(c *gin.Context, id int) (domain.QuestDTO, error) {
-	quest, err := s.repo.GetQuest(c, id)
+func (s *service) GetQuests(c *gin.Context, id int) ([]*domain.QuestDTO, error) {
+	quests, err := s.repo.GetQuests(c, id)
 
-	return quest, err
+	return quests, err
 }
 
 func (s *service) CreateQuest(c *gin.Context, name string) error {
