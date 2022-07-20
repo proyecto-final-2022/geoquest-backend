@@ -50,5 +50,7 @@ func (r *router) buildUsersRoutes() {
 	{
 		gGroup.POST("/", handler.CreateUser())
 		gGroup.GET("/:id", handler.GetUser())
+		gGroup.PUT("/:id", handler.UpdateUser())
+		gGroup.DELETE("/:id", handler.DeleteUser())
 	}
 }

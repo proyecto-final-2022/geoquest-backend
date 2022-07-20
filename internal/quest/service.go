@@ -47,8 +47,8 @@ func (s *service) UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) 
 	return err
 }
 
-func (s *service) DeleteQuest(c *gin.Context, name string) error {
-	err := s.repo.DeleteQuest(c, name)
+func (s *service) DeleteQuest(c *gin.Context, id string) error {
+	err := s.repo.DeleteQuest(c, id)
 
 	return err
 }

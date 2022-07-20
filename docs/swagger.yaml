@@ -13,19 +13,6 @@ definitions:
       password:
         type: string
     type: object
-  handler.userRequest:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    - name
-    - password
-    type: object
 info:
   contact: {}
   description: App designed to communicate with GeoQuest's mobile app and provide
@@ -137,6 +124,8 @@ paths:
       responses:
         "200":
           description: ""
+        "422":
+          description: ""
         "500":
           description: ""
       summary: Quests
@@ -153,7 +142,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/handler.userRequest'
+          $ref: '#/definitions/domain.UserDTO'
       produces:
       - application/json
       responses:
@@ -167,6 +156,26 @@ paths:
       tags:
       - Users
   /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: ""
+      summary: Users
+      tags:
+      - Users
     get:
       consumes:
       - application/json
@@ -184,6 +193,33 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/domain.UserDTO'
+        "500":
+          description: ""
+      summary: User
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User to update
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserDTO'
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "422":
+          description: ""
         "500":
           description: ""
       summary: User

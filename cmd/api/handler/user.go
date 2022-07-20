@@ -10,12 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type userRequest struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 type User struct {
 	service user.Service
 }
@@ -30,14 +24,14 @@ func NewUser(s user.Service) *User {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body userRequest true "User to save"
+// @Param user body domain.UserDTO true "User to save"
 // @Success 200
 // @Failure 422
 // @Failure 500
 // @Router /users/ [post]
 func (u *User) CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req userRequest
+		var req domain.UserDTO
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -77,5 +71,63 @@ func (u *User) GetUser() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, user)
+	}
+}
+
+// @Summary User
+// @Schemes
+// @Description
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param quest body domain.UserDTO true "User to update"
+// @Param id path string true "User ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id} [put]
+func (g *User) UpdateUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req domain.UserDTO
+		var err error
+
+		if err = c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err = g.service.UpdateUser(c, paramId, req); err != nil {
+			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Users
+// @Schemes
+// @Description Delete a user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200
+// @Failure 500
+// @Router /users/{id} [delete]
+func (g *User) DeleteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err = g.service.DeleteUser(c, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
 	}
 }

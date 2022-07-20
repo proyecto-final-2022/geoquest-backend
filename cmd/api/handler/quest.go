@@ -105,6 +105,7 @@ func (g *Quest) GetQuest() gin.HandlerFunc {
 // @Param quest body domain.QuestDTO true "Quest to update"
 // @Param id path string true "Quest ID"
 // @Success 200
+// @Failure 422
 // @Failure 500
 // @Router /quests/{id} [put]
 func (g *Quest) UpdateQuest() gin.HandlerFunc {

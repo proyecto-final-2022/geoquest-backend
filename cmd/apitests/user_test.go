@@ -10,7 +10,6 @@ import (
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
-	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -18,24 +17,37 @@ import (
 
 type dummyRepo struct{}
 
-func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, password string) error {
+func (s *serviceMock) CreateUser(c *gin.Context, email string, name string, password string) error {
 	if email == "testError" {
 		return errors.New("POST ERROR")
 	}
 	return nil
 }
 
-func (d *dummyRepo) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
+func (s *serviceMock) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	if id == 9 {
 		return domain.UserDTO{}, errors.New("GET ERROR")
 	}
 	return domain.UserDTO{Email: "test", Name: "test", Password: "test"}, nil
 }
 
+func (s *serviceMock) UpdateUser(c *gin.Context, id int, user domain.UserDTO) error {
+	if id == 9 {
+		return errors.New("GET ERROR")
+	}
+	return nil
+}
+
+func (s *serviceMock) DeleteUser(c *gin.Context, id int) error {
+	if id == 9 {
+		return errors.New("GET ERROR")
+	}
+	return nil
+}
+
 func createServerUser() *gin.Engine {
 
-	repo := &dummyRepo{}
-	service := user.NewService(repo)
+	service := &serviceMock{}
 	handler := handler.NewUser(service)
 
 	r := gin.Default()

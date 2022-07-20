@@ -26,6 +26,20 @@ func (d *dummyRepo) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	return domain.UserDTO{Name: "test", Password: "test", Email: "test"}, nil
 }
 
+func (d *dummyRepo) UpdateUser(c *gin.Context, id int, user domain.UserDTO) error {
+	if id == 9 {
+		return errors.New("GET ERROR")
+	}
+	return nil
+}
+
+func (d *dummyRepo) DeleteUser(c *gin.Context, id int) error {
+	if id == 9 {
+		return errors.New("GET ERROR")
+	}
+	return nil
+}
+
 func TestServicePostWithGetErrorShouldFail(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)
