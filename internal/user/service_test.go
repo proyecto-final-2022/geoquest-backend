@@ -12,7 +12,7 @@ import (
 
 type dummyRepo struct{}
 
-func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, password string) error {
+func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, username string, password string) error {
 	if email == "testError" {
 		return errors.New("POST ERROR")
 	}
@@ -40,11 +40,15 @@ func (d *dummyRepo) DeleteUser(c *gin.Context, id int) error {
 	return nil
 }
 
+func (d *dummyRepo) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
+	return domain.UserDTO{}, nil
+}
+
 func TestServicePostWithGetErrorShouldFail(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)
 
-	err := service.CreateUser(&gin.Context{}, "testError", "test", "test")
+	err := service.CreateUser(&gin.Context{}, "testError", "test", "test", "test")
 	assert.NotNil(t, err)
 }
 
@@ -52,7 +56,7 @@ func TestServicePostShouldSuccess(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)
 
-	err := service.CreateUser(&gin.Context{}, "test", "test", "test")
+	err := service.CreateUser(&gin.Context{}, "test", "test", "test", "test")
 	assert.Nil(t, err)
 }
 

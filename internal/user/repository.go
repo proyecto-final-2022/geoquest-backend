@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -10,8 +11,9 @@ import (
 )
 
 type Repository interface {
-	CreateUser(c *gin.Context, email string, name string, password string) error
+	CreateUser(c *gin.Context, email string, name string, username string, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
+	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, id int, user domain.UserDTO) error
 	DeleteUser(c *gin.Context, id int) error
 }
@@ -23,8 +25,8 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) CreateUser(c *gin.Context, email string, name string, password string) error {
-	user := domain.User{Email: email, Name: name, Password: password}
+func (r *repository) CreateUser(c *gin.Context, email string, name string, username string, password string) error {
+	user := domain.User{Email: email, Name: name, Username: username, Password: password}
 	if tx := config.MySql.Create(&user); tx.Error != nil {
 		return errors.New("DB Error")
 	}
@@ -37,6 +39,15 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
 	return domain.UserDTO{Email: user.Email, Name: user.Name, Password: user.Password}, nil
+}
+
+func (r *repository) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
+	var user domain.User
+	if tx := config.MySql.Where("email = ?", email).First(&user); tx.Error != nil {
+		return domain.UserDTO{}, errors.New("DB Error")
+	}
+	fmt.Println(user.Username)
+	return domain.UserDTO{Email: user.Email, Name: user.Name, Username: user.Username, Password: user.Password}, nil
 }
 
 func (r *repository) UpdateUser(c *gin.Context, id int, user domain.UserDTO) error {

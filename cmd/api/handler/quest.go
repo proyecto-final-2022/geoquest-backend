@@ -24,6 +24,7 @@ func NewGame(s quest.Service) *Quest {
 // @Accept json
 // @Produce json
 // @Param quest body domain.QuestDTO true "Quest to save"
+// @Param Authorization header string true "Auth token"
 // @Success 200
 // @Failure 422
 // @Failure 500

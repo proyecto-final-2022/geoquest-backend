@@ -12,6 +12,15 @@ definitions:
         type: string
       password:
         type: string
+      username:
+        type: string
+    type: object
+  handler.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
     type: object
 info:
   contact: {}
@@ -48,6 +57,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.QuestDTO'
+      - description: Auth token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -223,6 +237,30 @@ paths:
         "500":
           description: ""
       summary: User
+      tags:
+      - Users
+  /users/sessions:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: User to log in
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "422":
+          description: ""
+        "500":
+          description: ""
+      summary: Login user
       tags:
       - Users
 swagger: "2.0"

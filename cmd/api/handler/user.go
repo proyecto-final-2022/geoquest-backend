@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/auth"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
@@ -16,6 +17,11 @@ type User struct {
 
 func NewUser(s user.Service) *User {
 	return &User{service: s}
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 // @Summary New user
@@ -32,6 +38,7 @@ func NewUser(s user.Service) *User {
 func (u *User) CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req domain.UserDTO
+		var pass string
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -39,12 +46,60 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.CreateUser(c, req.Email, req.Name, req.Password); err != nil {
+		if pass, err = u.service.HashPassword(req.Password); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, pass); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 
 		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Login user
+// @Schemes
+// @Description Login user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body LoginRequest true "User to log in"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/sessions [post]
+func (u *User) LoginUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req LoginRequest
+		var user domain.UserDTO
+		var err error
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if user, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err = u.service.CheckPassword(req.Password, user.Password); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		tokenString, err := auth.GenerateJWT(user.Email, user.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, tokenString)
+
 	}
 }
 
