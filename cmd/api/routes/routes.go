@@ -52,6 +52,7 @@ func (r *router) buildUsersRoutes() {
 	{
 		gGroup.POST("/", handler.CreateUser())
 		gGroup.POST("/sessions/", handler.LoginUser())
+		gGroup.POST("/sessions/google", handler.LoginUserGoogle())
 		gGroup.GET("/:id", handler.GetUser())
 		gGroup.PUT("/:id", handler.UpdateUser())
 		gGroup.DELETE("/:id", handler.DeleteUser())

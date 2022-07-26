@@ -7,6 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+//Manual login users
 var jwtKey = []byte("supersecretkey")
 
 type JWTClaim struct {

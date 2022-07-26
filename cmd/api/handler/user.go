@@ -56,7 +56,13 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, "")
+		tokenString, err := auth.GenerateJWT(req.Email, req.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, tokenString)
 	}
 }
 
@@ -100,6 +106,44 @@ func (u *User) LoginUser() gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, tokenString)
 
+	}
+}
+
+func (u *User) LoginUserGoogle() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req LoginRequest
+		var user domain.UserDTO
+		var err error
+
+		tokenGoogle := c.GetHeader("Authorization")
+		if tokenGoogle == "" {
+			c.JSON(401, gin.H{"error": "request does not contain a Google access token"})
+			return
+		}
+		// Validate the JWT is valid
+		claims, err := auth.ValidateGoogleJWT(tokenGoogle)
+		if err != nil {
+			c.JSON(403, gin.H{"error": "Invalid google auth"})
+			return
+		}
+		if claims.Email != user.Email {
+			c.JSON(403, gin.H{"error": "Emails don't match"})
+			return
+		}
+
+		if user, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		// create a JWT for OUR app and give it back to the client for future requests
+		tokenString, err := auth.GenerateJWT(user.Email, user.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, tokenString)
 	}
 }
 
