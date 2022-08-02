@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
 
@@ -55,6 +56,14 @@ func (s *serviceMock) GetUserByEmail(c *gin.Context, email string) (domain.UserD
 
 func (s *serviceMock) CheckPassword(providedPassword string, userPassword string) error {
 	return nil
+}
+
+func (s *serviceMock) CreateCoupon(c *gin.Context, userID int, description string, expirationYear int, expirationMonth time.Month, expirationDay int, expirationHour int) error {
+	return nil
+}
+
+func (s *serviceMock) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error) {
+	return nil, nil
 }
 
 func createServerUser() *gin.Engine {

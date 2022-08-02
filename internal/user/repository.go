@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -16,6 +17,8 @@ type Repository interface {
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, id int, user domain.UserDTO) error
 	DeleteUser(c *gin.Context, id int) error
+	CreateCoupon(c *gin.Context, userID int, description string, date time.Time) error
+	GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error)
 }
 
 type repository struct {
@@ -72,4 +75,32 @@ func (r *repository) DeleteUser(c *gin.Context, id int) error {
 		return tx.Error
 	}
 	return nil
+}
+
+func (r *repository) CreateCoupon(c *gin.Context, userID int, description string, date time.Time) error {
+
+	coupon := domain.Coupon{UserID: userID, Description: description, ExpirationDate: date}
+
+	if tx := config.MySql.Create(&coupon); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+	return nil
+
+}
+
+func (r *repository) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error) {
+
+	var coupons []domain.Coupon
+	if tx := config.MySql.Where("user_id = ?", userID).Find(&coupons); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+	couponsDTO := make([]domain.CouponDTO, len(coupons))
+	for i := range coupons {
+		couponsDTO[i].ID = coupons[i].ID
+		couponsDTO[i].Description = coupons[i].Description
+		couponsDTO[i].ExpirationDate = coupons[i].ExpirationDate
+		couponsDTO[i].Used = coupons[i].Used
+	}
+
+	return couponsDTO, nil
 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/auth"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -27,6 +28,14 @@ type LoginRequest struct {
 type LoginGoogleRequest struct {
 	Email    string `json:"email"`
 	Username string `json:"username"`
+}
+
+type CouponRequest struct {
+	Description     string `json:"description"`
+	ExpirationYear  int    `json:"expiration_year"`
+	ExpirationMonth int    `json:"expiration_month"`
+	ExpirationDay   int    `json:"expiration_day"`
+	ExpirationHour  int    `json:"expiration_hour"`
 }
 
 // @Summary New user
@@ -68,6 +77,67 @@ func (u *User) CreateUser() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, tokenString)
+	}
+}
+
+// @Summary New coupon
+// @Schemes
+// @Description Save new coupon
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param user body CouponRequest true "Coupon to save"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/coupons  [post]
+func (u *User) CreateUserCoupon() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req CouponRequest
+		var err error
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err = u.service.CreateCoupon(c, paramId, req.Description, req.ExpirationYear, time.Month(req.ExpirationMonth), req.ExpirationDay, req.ExpirationHour); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Coupon
+// @Schemes
+// @Description Coupon
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/coupons  [get]
+func (u *User) GetUserCoupons() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		coupons, err := u.service.GetCoupons(c, paramId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, coupons)
 	}
 }
 
@@ -222,6 +292,7 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 // @Success 200
 // @Failure 500
 // @Router /users/{id} [delete]
+
 func (g *User) DeleteUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error

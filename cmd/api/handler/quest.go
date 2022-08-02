@@ -78,6 +78,7 @@ func (g *Quest) GetQuests() gin.HandlerFunc {
 // @Accept json
 // @Produce json
 // @Param id path string true "Quest ID"
+// @Param Authorization header string true "Auth token"
 // @Success 200 {object} domain.QuestDTO
 // @Failure 500
 // @Router /quests/{id} [get]

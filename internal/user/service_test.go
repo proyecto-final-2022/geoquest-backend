@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 
@@ -42,6 +43,14 @@ func (d *dummyRepo) DeleteUser(c *gin.Context, id int) error {
 
 func (d *dummyRepo) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
 	return domain.UserDTO{}, nil
+}
+
+func (d *dummyRepo) CreateCoupon(c *gin.Context, userID int, description string, date time.Time) error {
+	return nil
+}
+
+func (d *dummyRepo) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error) {
+	return nil, nil
 }
 
 func TestServicePostWithGetErrorShouldFail(t *testing.T) {

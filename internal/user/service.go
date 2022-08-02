@@ -1,6 +1,8 @@
 package user
 
 import (
+	"time"
+
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"golang.org/x/crypto/bcrypt"
 
@@ -15,6 +17,8 @@ type Service interface {
 	DeleteUser(c *gin.Context, id int) error
 	HashPassword(password string) (string, error)
 	CheckPassword(providedPassword string, userPassword string) error
+	CreateCoupon(c *gin.Context, userID int, description string, expirationYear int, expirationMonth time.Month, expirationDay int, expirationHour int) error
+	GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error)
 }
 
 type service struct {
@@ -70,4 +74,25 @@ func (s *service) CheckPassword(providedPassword string, userPassword string) er
 		return err
 	}
 	return nil
+}
+
+func (s *service) CreateCoupon(c *gin.Context, userID int, description string, expirationYear int, expirationMonth time.Month, expirationDay int, expirationHour int) error {
+
+	tm := time.Date(expirationYear, expirationMonth, expirationDay, expirationHour, 00, 00, 00, time.UTC)
+
+	if err := s.repo.CreateCoupon(c, userID, description, tm); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error) {
+
+	coupons, err := s.repo.GetCoupons(c, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return coupons, nil
 }

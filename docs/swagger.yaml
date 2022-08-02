@@ -15,6 +15,19 @@ definitions:
       username:
         type: string
     type: object
+  handler.CouponRequest:
+    properties:
+      description:
+        type: string
+      expiration_day:
+        type: integer
+      expiration_hour:
+        type: integer
+      expiration_month:
+        type: integer
+      expiration_year:
+        type: integer
+    type: object
   handler.LoginRequest:
     properties:
       email:
@@ -42,7 +55,7 @@ paths:
           schema:
             $ref: '#/definitions/domain.QuestDTO'
         "500":
-          description: ""
+          description: Internal Server Error
       summary: Quests
       tags:
       - Quests
@@ -66,11 +79,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "422":
-          description: ""
+          description: Unprocessable Entity
         "500":
-          description: ""
+          description: Internal Server Error
       summary: New quest
       tags:
       - Quests
@@ -89,9 +102,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "500":
-          description: ""
+          description: Internal Server Error
       summary: Quests
       tags:
       - Quests
@@ -105,6 +118,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Auth token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -113,7 +131,7 @@ paths:
           schema:
             $ref: '#/definitions/domain.QuestDTO'
         "500":
-          description: ""
+          description: Internal Server Error
       summary: Quests
       tags:
       - Quests
@@ -137,11 +155,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "422":
-          description: ""
+          description: Unprocessable Entity
         "500":
-          description: ""
+          description: Internal Server Error
       summary: Quests
       tags:
       - Quests
@@ -161,35 +179,15 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "422":
-          description: ""
+          description: Unprocessable Entity
         "500":
-          description: ""
+          description: Internal Server Error
       summary: New user
       tags:
       - Users
   /users/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ""
-        "500":
-          description: ""
-      summary: Users
-      tags:
-      - Users
     get:
       consumes:
       - application/json
@@ -208,7 +206,7 @@ paths:
           schema:
             $ref: '#/definitions/domain.UserDTO'
         "500":
-          description: ""
+          description: Internal Server Error
       summary: User
       tags:
       - Users
@@ -231,12 +229,63 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "422":
-          description: ""
+          description: Unprocessable Entity
         "500":
-          description: ""
+          description: Internal Server Error
       summary: User
+      tags:
+      - Users
+  /users/{id}/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Coupon
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Coupon
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Save new coupon
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Coupon to save
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CouponRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New coupon
       tags:
       - Users
   /users/sessions:
@@ -255,11 +304,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "422":
-          description: ""
+          description: Unprocessable Entity
         "500":
-          description: ""
+          description: Internal Server Error
       summary: Login user
       tags:
       - Users

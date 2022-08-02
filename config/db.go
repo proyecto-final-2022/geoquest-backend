@@ -23,6 +23,7 @@ func Connect() {
 	}
 
 	db.AutoMigrate(&domain.User{})
+	db.AutoMigrate(&domain.Coupon{})
 	MySql = db
 
 }
