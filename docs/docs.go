@@ -17,6 +17,30 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/clients/": {
+            "get": {
+                "description": "All clients",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Clients",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "description": "Save new client",
                 "consumes": [
@@ -36,7 +60,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.ClientDTO"
+                            "$ref": "#/definitions/handler.clientRequest"
                         }
                     }
                 ],
@@ -615,17 +639,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.ClientDTO": {
-            "type": "object",
-            "properties": {
-                "image": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "domain.QuestDTO": {
             "type": "object",
             "properties": {
@@ -678,6 +691,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.clientRequest": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

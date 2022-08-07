@@ -1,11 +1,4 @@
 definitions:
-  domain.ClientDTO:
-    properties:
-      image:
-        type: string
-      name:
-        type: string
-    type: object
   domain.QuestDTO:
     properties:
       name:
@@ -42,6 +35,13 @@ definitions:
       password:
         type: string
     type: object
+  handler.clientRequest:
+    properties:
+      image:
+        type: string
+      name:
+        type: string
+    type: object
   handler.questRequest:
     properties:
       description:
@@ -68,6 +68,22 @@ info:
   version: "1.0"
 paths:
   /clients/:
+    get:
+      consumes:
+      - application/json
+      description: All clients
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Clients
+      tags:
+      - Clients
     post:
       consumes:
       - application/json
@@ -78,7 +94,7 @@ paths:
         name: quest
         required: true
         schema:
-          $ref: '#/definitions/domain.ClientDTO'
+          $ref: '#/definitions/handler.clientRequest'
       produces:
       - application/json
       responses:

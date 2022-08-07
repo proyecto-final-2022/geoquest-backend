@@ -14,6 +14,7 @@ type Repository interface {
 	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error
 	AddTag(c *gin.Context, questID int, description string) error
 	GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfoDTO, error)
+	GetClients(c *gin.Context) ([]domain.ClientDTO, error)
 }
 
 type repository struct {
@@ -52,6 +53,22 @@ func (r *repository) AddTag(c *gin.Context, questID int, description string) err
 	}
 	return nil
 
+}
+
+func (r *repository) GetClients(c *gin.Context) ([]domain.ClientDTO, error) {
+	var clients []domain.Client
+	if tx := config.MySql.Find(&clients); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	clientsDTO := make([]domain.ClientDTO, len(clients))
+	for i := range clients {
+		clientsDTO[i].ID = clients[i].ID
+		clientsDTO[i].Name = clients[i].Name
+		clientsDTO[i].Image = clients[i].Image
+	}
+
+	return clientsDTO, nil
 }
 
 func (r *repository) GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfoDTO, error) {

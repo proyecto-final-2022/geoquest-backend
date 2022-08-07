@@ -25,6 +25,11 @@ type tagRequest struct {
 	Description string `json:"description"`
 }
 
+type clientRequest struct {
+	Name  string `json:"name"`
+	Image string `json:"image"`
+}
+
 func NewClient(s client.Service) *Client {
 	return &Client{service: s}
 }
@@ -35,7 +40,7 @@ func NewClient(s client.Service) *Client {
 // @Tags Clients
 // @Accept json
 // @Produce json
-// @Param quest body domain.ClientDTO true "Client to save"
+// @Param quest body clientRequest true "Client to save"
 // @Success 200
 // @Failure 422
 // @Failure 500
@@ -56,6 +61,31 @@ func (u *Client) CreateClient() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Clients
+// @Schemes
+// @Description All clients
+// @Tags Clients
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /clients/ [get]
+func (u *Client) GetClients() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		clients, err := u.service.GetClients(c)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, clients)
 	}
 }
 

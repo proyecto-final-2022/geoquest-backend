@@ -71,6 +71,7 @@ func (r *router) buildClientsRoutes() {
 	gGroup := r.r.Group("/clients")
 	{
 		gGroup.POST("/", handler.CreateClient())
+		gGroup.GET("/", handler.GetClients())
 		gGroup.POST("/:id/quests", handler.CreateClientQuest())
 		gGroup.POST("/quests/:id", handler.AddTag())
 		gGroup.GET("/:id/quests", handler.GetClientQuests())

@@ -7,6 +7,7 @@ import (
 
 type Service interface {
 	CreateClient(c *gin.Context, name string, image string) error
+	GetClients(c *gin.Context) ([]domain.ClientDTO, error)
 	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error
 	AddTag(c *gin.Context, questID int, description string) error
 	GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfoDTO, error)
@@ -24,6 +25,12 @@ func (s *service) CreateClient(c *gin.Context, name string, image string) error 
 	err := s.repo.CreateClient(c, name, image)
 
 	return err
+}
+
+func (s *service) GetClients(c *gin.Context) ([]domain.ClientDTO, error) {
+	clients, err := s.repo.GetClients(c)
+
+	return clients, err
 }
 
 func (s *service) GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfoDTO, error) {

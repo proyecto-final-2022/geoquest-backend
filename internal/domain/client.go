@@ -8,6 +8,7 @@ type Client struct {
 }
 
 type ClientDTO struct {
+	ID    int
 	Name  string `json:"name"`
 	Image string `json:"image"`
 }
