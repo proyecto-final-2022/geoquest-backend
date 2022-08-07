@@ -1,4 +1,11 @@
 definitions:
+  domain.ClientDTO:
+    properties:
+      image:
+        type: string
+      name:
+        type: string
+    type: object
   domain.QuestDTO:
     properties:
       name:
@@ -35,6 +42,24 @@ definitions:
       password:
         type: string
     type: object
+  handler.questRequest:
+    properties:
+      description:
+        type: string
+      difficulty:
+        type: string
+      duration:
+        type: string
+      name:
+        type: string
+      qualification:
+        type: number
+    type: object
+  handler.tagRequest:
+    properties:
+      description:
+        type: string
+    type: object
 info:
   contact: {}
   description: App designed to communicate with GeoQuest's mobile app and provide
@@ -42,6 +67,110 @@ info:
   title: GeoQuest Backend
   version: "1.0"
 paths:
+  /clients/:
+    post:
+      consumes:
+      - application/json
+      description: Save new client
+      parameters:
+      - description: Client to save
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ClientDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New client
+      tags:
+      - Clients
+  /clients/{id}/quests:
+    get:
+      consumes:
+      - application/json
+      description: All quests from a client
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Quests
+      tags:
+      - Clients
+    post:
+      consumes:
+      - application/json
+      description: Create new quest for a client
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Quest to create for client
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.questRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New Quest for client
+      tags:
+      - Clients
+  /clients/quests/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Create new tag for a quest
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Tag to add to quest
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.tagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New Tag for quest
+      tags:
+      - Clients
   /quests/:
     get:
       consumes:
@@ -188,6 +317,26 @@ paths:
       tags:
       - Users
   /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Users
+      tags:
+      - Users
     get:
       consumes:
       - application/json

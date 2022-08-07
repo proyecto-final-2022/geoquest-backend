@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/middlewares"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/client"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
@@ -24,6 +25,7 @@ func NewRouter(r *gin.Engine) Router {
 func (r *router) MapRoutes() {
 	r.buildGamesRoutes()
 	r.buildUsersRoutes()
+	r.buildClientsRoutes()
 }
 
 func (r *router) buildGamesRoutes() {
@@ -58,5 +60,19 @@ func (r *router) buildUsersRoutes() {
 		gGroup.GET("/:id", handler.GetUser())
 		gGroup.PUT("/:id", handler.UpdateUser())
 		gGroup.DELETE("/:id", handler.DeleteUser())
+	}
+}
+
+func (r *router) buildClientsRoutes() {
+	repo := client.NewRepository()
+	service := client.NewService(repo)
+	handler := handler.NewClient(service)
+
+	gGroup := r.r.Group("/clients")
+	{
+		gGroup.POST("/", handler.CreateClient())
+		gGroup.POST("/:id/quests", handler.CreateClientQuest())
+		gGroup.POST("/quests/:id", handler.AddTag())
+		gGroup.GET("/:id/quests", handler.GetClientQuests())
 	}
 }

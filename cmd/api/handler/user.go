@@ -292,7 +292,6 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 // @Success 200
 // @Failure 500
 // @Router /users/{id} [delete]
-
 func (g *User) DeleteUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
