@@ -15,8 +15,16 @@ type User struct {
 }
 
 type UserDTO struct {
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type UserFriends struct {
+	gorm.Model
+	ID       int `json:"id,identity" gorm:"primary_key"`
+	UserID   int `json:"user_id"`
+	FriendID int `json:"friend_id"`
 }

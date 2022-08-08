@@ -36,6 +36,7 @@ func (r *router) buildGamesRoutes() {
 	gGroup := r.r.Group("/quests").Use(middlewares.Auth())
 	{
 		gGroup.POST("/", handler.CreateQuest())
+		gGroup.POST("/:id/completions/:user_id", handler.AddCompletion())
 		gGroup.GET("/", handler.GetQuests())
 		gGroup.GET("/:id", handler.GetQuest())
 		gGroup.PUT("/:id", handler.UpdateQuest())
@@ -56,10 +57,13 @@ func (r *router) buildUsersRoutes() {
 		gGroup.POST("/sessions/", handler.LoginUser())
 		gGroup.POST("/sessions/google", handler.LoginUserGoogle())
 		gGroup.POST("/:id/coupons", handler.CreateUserCoupon())
+		gGroup.POST("/:id/friends/:friend_id", handler.AddUserFriend())
+		gGroup.GET("/:id/friends", handler.GetUserFriends())
 		gGroup.GET("/:id/coupons", handler.GetUserCoupons())
 		gGroup.GET("/:id", handler.GetUser())
 		gGroup.PUT("/:id", handler.UpdateUser())
 		gGroup.DELETE("/:id", handler.DeleteUser())
+		gGroup.DELETE("/:id/friends/:friend_id", handler.DeleteUserFriend())
 	}
 }
 

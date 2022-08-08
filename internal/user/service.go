@@ -19,6 +19,9 @@ type Service interface {
 	CheckPassword(providedPassword string, userPassword string) error
 	CreateCoupon(c *gin.Context, userID int, description string, expirationYear int, expirationMonth time.Month, expirationDay int, expirationHour int) error
 	GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error)
+	AddFriend(c *gin.Context, id int, friendID int) error
+	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
+	DeleteFriend(c *gin.Context, id int, friendID int) error
 }
 
 type service struct {
@@ -95,4 +98,34 @@ func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, er
 	}
 
 	return coupons, nil
+}
+
+func (s *service) AddFriend(c *gin.Context, id int, friendID int) error {
+
+	err := s.repo.AddFriend(c, id, friendID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *service) GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error) {
+
+	users, err := s.repo.GetUserFriends(c, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (s *service) DeleteFriend(c *gin.Context, id int, friendID int) error {
+
+	err := s.repo.DeleteFriend(c, id, friendID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -66,6 +66,18 @@ func (s *serviceMock) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO
 	return nil, nil
 }
 
+func (s *serviceMock) AddFriend(c *gin.Context, userID int, friendID int) error {
+	return nil
+}
+
+func (s *serviceMock) DeleteFriend(c *gin.Context, userID int, friendID int) error {
+	return nil
+}
+
+func (s *serviceMock) GetUserFriends(c *gin.Context, userID int) ([]domain.UserDTO, error) {
+	return nil, nil
+}
+
 func createServerUser() *gin.Engine {
 
 	service := &serviceMock{}

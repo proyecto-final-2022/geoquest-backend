@@ -155,3 +155,28 @@ func (g *Quest) DeleteQuest() gin.HandlerFunc {
 		c.JSON(http.StatusOK, "")
 	}
 }
+
+// @Summary Completion
+// @Schemes
+// @Description Completion of a quest
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id} [delete]
+func (g *Quest) AddCompletion() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId := c.Param("id")
+
+		if err = g.service.DeleteQuest(c, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}

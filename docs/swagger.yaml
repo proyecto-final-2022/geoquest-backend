@@ -236,7 +236,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a quest
+      description: Completion of a quest
       parameters:
       - description: Quest ID
         in: path
@@ -250,7 +250,7 @@ paths:
           description: OK
         "500":
           description: Internal Server Error
-      summary: Quests
+      summary: Completion
       tags:
       - Quests
     get:
@@ -451,6 +451,84 @@ paths:
         "500":
           description: Internal Server Error
       summary: New coupon
+      tags:
+      - Users
+  /users/{id}/friends:
+    get:
+      consumes:
+      - application/json
+      description: Get friends from user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: User's friends
+      tags:
+      - Users
+  /users/{id}/friends/{friend_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete friend from user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID of user's friend to delete
+        in: path
+        name: friend_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Delete friend
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Add new friend
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID of user's friend
+        in: path
+        name: friend_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New friend
       tags:
       - Users
   /users/sessions:

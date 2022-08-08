@@ -53,6 +53,19 @@ func (d *dummyRepo) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, 
 	return nil, nil
 }
 
+func (d *dummyRepo) AddFriend(c *gin.Context, userID int, friendID int) error {
+	return nil
+
+}
+
+func (d *dummyRepo) DeleteFriend(c *gin.Context, userID int, friendID int) error {
+	return nil
+}
+
+func (d *dummyRepo) GetUserFriends(c *gin.Context, userID int) ([]domain.UserDTO, error) {
+	return nil, nil
+}
+
 func TestServicePostWithGetErrorShouldFail(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)

@@ -113,6 +113,90 @@ func (u *User) CreateUserCoupon() gin.HandlerFunc {
 	}
 }
 
+// @Summary New friend
+// @Schemes
+// @Description Add new friend
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param friend_id path int true "User ID of user's friend"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/friends/{friend_id}  [post]
+func (u *User) AddUserFriend() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramFriendId, _ := strconv.Atoi(c.Param("friend_id"))
+
+		if err = u.service.AddFriend(c, paramId, paramFriendId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Delete friend
+// @Schemes
+// @Description Delete friend from user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param friend_id path int true "User ID of user's friend to delete"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/friends/{friend_id}  [delete]
+func (u *User) DeleteUserFriend() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramFriendId, _ := strconv.Atoi(c.Param("friend_id"))
+
+		if err = u.service.DeleteFriend(c, paramId, paramFriendId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary User's friends
+// @Schemes
+// @Description Get friends from user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/friends  [get]
+func (u *User) GetUserFriends() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		users, err := u.service.GetUserFriends(c, paramId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, users)
+	}
+}
+
 // @Summary Coupon
 // @Schemes
 // @Description Coupon

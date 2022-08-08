@@ -19,6 +19,9 @@ type Repository interface {
 	DeleteUser(c *gin.Context, id int) error
 	CreateCoupon(c *gin.Context, userID int, description string, date time.Time) error
 	GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error)
+	AddFriend(c *gin.Context, id int, friendID int) error
+	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
+	DeleteFriend(c *gin.Context, id int, friendID int) error
 }
 
 type repository struct {
@@ -41,7 +44,7 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{Email: user.Email, Name: user.Name, Password: user.Password}, nil
+	return domain.UserDTO{ID: id, Email: user.Email, Name: user.Name, Password: user.Password}, nil
 }
 
 func (r *repository) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
@@ -103,4 +106,49 @@ func (r *repository) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO,
 	}
 
 	return couponsDTO, nil
+}
+
+func (r *repository) AddFriend(c *gin.Context, userID int, friendID int) error {
+
+	userFriend := domain.UserFriends{UserID: userID, FriendID: friendID}
+
+	if tx := config.MySql.Create(&userFriend); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+
+	return nil
+
+}
+
+func (r *repository) GetUserFriends(c *gin.Context, userID int) ([]domain.UserDTO, error) {
+
+	var users []domain.UserFriends
+	if tx := config.MySql.Where("user_id = ?", userID).Find(&users); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	usersDTO := make([]domain.UserDTO, len(users))
+
+	for i := range users {
+
+		var user domain.User
+		if tx := config.MySql.Where("id = ?", users[i].FriendID).First(&user); tx.Error != nil {
+			return nil, errors.New("DB Error")
+		}
+
+		usersDTO[i].ID = user.ID
+		usersDTO[i].Name = user.Name
+		usersDTO[i].Username = user.Username
+		usersDTO[i].Email = user.Email
+		usersDTO[i].Password = user.Password
+	}
+
+	return usersDTO, nil
+}
+
+func (r *repository) DeleteFriend(c *gin.Context, userID int, friendID int) error {
+	if tx := config.MySql.Where("user_id = ? AND friend_id = ?", userID, friendID).Delete(&domain.UserFriends{}); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
