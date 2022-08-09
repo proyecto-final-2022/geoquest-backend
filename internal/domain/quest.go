@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
 )
@@ -8,6 +10,17 @@ import (
 type Quest struct {
 	ID   primitive.ObjectID `bson:"_id,omitempty" json:"user_id,omitempty"`
 	Name string             `json:"name"`
+}
+
+type QuestCompletion struct {
+	gorm.Model
+	ID             int       `json:"id,identity" gorm:"primary_key"`
+	QuestID        int       `json:"quest_id"`
+	UserID         int       `json:"user_id"`
+	Hours          float64   `json:"hours"`
+	Mins           float64   `json:"mins"`
+	Segs           float64   `json:"segs"`
+	CompletionTime time.Time `json:"completion_time"`
 }
 
 type QuestInfo struct {

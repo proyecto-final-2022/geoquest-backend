@@ -350,6 +350,38 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "description": "Delete a quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Quests",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/quests/{id}/completions/{user_id}": {
+            "post": {
                 "description": "Completion of a quest",
                 "consumes": [
                     "application/json"
@@ -363,9 +395,32 @@ const docTemplate = `{
                 "summary": "Completion",
                 "parameters": [
                     {
+                        "description": "Quest completed by a User",
+                        "name": "completion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CompletionRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Auth token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "string",
                         "description": "Quest ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
                     }
@@ -770,6 +825,9 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -778,6 +836,29 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.CompletionRequest": {
+            "type": "object",
+            "properties": {
+                "start_day": {
+                    "type": "integer"
+                },
+                "start_hour": {
+                    "type": "integer"
+                },
+                "start_minutes": {
+                    "type": "integer"
+                },
+                "start_month": {
+                    "type": "integer"
+                },
+                "start_seconds": {
+                    "type": "integer"
+                },
+                "start_year": {
+                    "type": "integer"
                 }
             }
         },

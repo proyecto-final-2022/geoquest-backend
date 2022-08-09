@@ -2,6 +2,8 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
@@ -12,6 +14,26 @@ import (
 type Quest struct {
 	service quest.Service
 }
+
+type CompletionRequest struct {
+	StartYear    int `json:"start_year"`
+	StartMonth   int `json:"start_month"`
+	StartDay     int `json:"start_day"`
+	StartHour    int `json:"start_hour"`
+	StartMinutes int `json:"start_minutes"`
+	StartSeconds int `json:"start_seconds"`
+}
+
+/*
+t1 := time.Now()
+t2 := t1.Add(time.Second * 341)
+
+fmt.Println(t1)
+fmt.Println(t2)
+
+diff := t2.Sub(t1)
+fmt.Println(diff)
+*/
 
 func NewGame(s quest.Service) *Quest {
 	return &Quest{service: s}
@@ -162,18 +184,28 @@ func (g *Quest) DeleteQuest() gin.HandlerFunc {
 // @Tags Quests
 // @Accept json
 // @Produce json
+// @Param completion body CompletionRequest true "Quest completed by a User"
+// @Param Authorization header string true "Auth token"
 // @Param id path string true "Quest ID"
+// @Param user_id path string true "User ID"
 // @Success 200
 // @Failure 500
-// @Router /quests/{id} [delete]
+// @Router /quests/{id}/completions/{user_id} [post]
 func (g *Quest) AddCompletion() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
+		var req CompletionRequest
 
-		paramId := c.Param("id")
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
 
-		if err = g.service.DeleteQuest(c, paramId); err != nil {
-			c.JSON(http.StatusInternalServerError, paramId)
+		if err = c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err = g.service.CreateCompletion(c, paramId, paramUserId, req.StartYear, time.Month(req.StartMonth), req.StartDay, req.StartHour, req.StartMinutes, req.StartSeconds); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 

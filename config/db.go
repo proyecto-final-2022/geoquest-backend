@@ -28,6 +28,7 @@ func Connect() {
 	db.AutoMigrate(&domain.QuestInfo{})
 	db.AutoMigrate(&domain.Tag{})
 	db.AutoMigrate(&domain.UserFriends{})
+	db.AutoMigrate(&domain.QuestCompletion{})
 	MySql = db
 
 }

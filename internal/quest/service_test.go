@@ -3,6 +3,7 @@ package quest
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 
@@ -47,6 +48,10 @@ func (d *dummyRepo) DeleteQuest(c *gin.Context, id string) error {
 	if id == "error" {
 		return errors.New("DELETE ERROR")
 	}
+	return nil
+}
+
+func (d *dummyRepo) CreateCompletion(c *gin.Context, questID int, userID int, completedTime time.Time, hours float64, mins float64, segs float64) error {
 	return nil
 }
 

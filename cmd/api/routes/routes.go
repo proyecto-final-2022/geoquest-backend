@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
-	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/middlewares"
+	//	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/middlewares"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/client"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
@@ -33,7 +33,7 @@ func (r *router) buildGamesRoutes() {
 	service := quest.NewService(repo)
 	handler := handler.NewGame(service)
 
-	gGroup := r.r.Group("/quests").Use(middlewares.Auth())
+	gGroup := r.r.Group("/quests")
 	{
 		gGroup.POST("/", handler.CreateQuest())
 		gGroup.POST("/:id/completions/:user_id", handler.AddCompletion())

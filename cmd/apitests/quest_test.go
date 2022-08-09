@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -51,6 +52,11 @@ func (s *serviceMock) DeleteQuest(c *gin.Context, id string) error {
 	if id == "error" {
 		return errors.New("DELETE ERROR")
 	}
+	return nil
+}
+
+func (s *serviceMock) CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
+	startDay int, startHour int, startMinutes int, startSeconds int) error {
 	return nil
 }
 

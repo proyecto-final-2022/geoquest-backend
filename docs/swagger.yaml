@@ -8,12 +8,29 @@ definitions:
     properties:
       email:
         type: string
+      id:
+        type: integer
       name:
         type: string
       password:
         type: string
       username:
         type: string
+    type: object
+  handler.CompletionRequest:
+    properties:
+      start_day:
+        type: integer
+      start_hour:
+        type: integer
+      start_minutes:
+        type: integer
+      start_month:
+        type: integer
+      start_seconds:
+        type: integer
+      start_year:
+        type: integer
     type: object
   handler.CouponRequest:
     properties:
@@ -236,7 +253,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Completion of a quest
+      description: Delete a quest
       parameters:
       - description: Quest ID
         in: path
@@ -250,7 +267,7 @@ paths:
           description: OK
         "500":
           description: Internal Server Error
-      summary: Completion
+      summary: Quests
       tags:
       - Quests
     get:
@@ -306,6 +323,43 @@ paths:
         "500":
           description: Internal Server Error
       summary: Quests
+      tags:
+      - Quests
+  /quests/{id}/completions/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: Completion of a quest
+      parameters:
+      - description: Quest completed by a User
+        in: body
+        name: completion
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CompletionRequest'
+      - description: Auth token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Completion
       tags:
       - Quests
   /users/:
