@@ -1,9 +1,6 @@
 package quest
 
 import (
-	"fmt"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -19,6 +16,7 @@ type Service interface {
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 		startDay int, startHour int, startMinutes int, startSeconds int) error
+	GetRanking(c *gin.Context, id int) error
 }
 
 type service struct {
@@ -63,29 +61,18 @@ func (s *service) DeleteQuest(c *gin.Context, id string) error {
 func (s *service) CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 	startDay int, startHour int, startMinutes int, startSeconds int) error {
 
-	fmt.Println(startYear)
-	startTime := time.Date(startYear, startMonth, startDay, startHour, startMinutes, startSeconds, 00, time.UTC)
+	startTime := time.Date(startYear, startMonth, startDay, startHour, startMinutes, startSeconds, 00, time.UTC).Add(time.Hour * 3)
 
-	fmt.Println(startTime)
 	actualTime := time.Now()
-	fmt.Println(actualTime)
-	diff := actualTime.Sub(startTime)
 
-	res1 := strings.Split(diff.String(), "h")
+	err := s.repo.CreateCompletion(c, questID, userID, startTime, actualTime)
 
-	hours, _ := strconv.ParseFloat(res1[0], 32)
+	return err
+}
 
-	res2 := strings.Split(res1[1], "m")
+func (s *service) GetRanking(c *gin.Context, id int) error {
 
-	mins, _ := strconv.ParseFloat(res2[0], 32)
-
-	res3 := strings.Split(res2[1], "m")
-
-	segsString := strings.Replace(res3[0], "s", "", -1)
-
-	segs, _ := strconv.ParseFloat(segsString, 32)
-
-	err := s.repo.CreateCompletion(c, questID, userID, actualTime, hours, mins, segs)
+	err := s.repo.GetRanking(c, id)
 
 	return err
 }

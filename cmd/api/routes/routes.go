@@ -37,6 +37,7 @@ func (r *router) buildGamesRoutes() {
 	{
 		gGroup.POST("/", handler.CreateQuest())
 		gGroup.POST("/:id/completions/:user_id", handler.AddCompletion())
+		gGroup.POST("/:id/rankings", handler.GetRanking())
 		gGroup.GET("/", handler.GetQuests())
 		gGroup.GET("/:id", handler.GetQuest())
 		gGroup.PUT("/:id", handler.UpdateQuest())

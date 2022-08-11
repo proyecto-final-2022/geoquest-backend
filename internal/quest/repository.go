@@ -20,7 +20,8 @@ type Repository interface {
 	CreateQuest(c *gin.Context, name string) error
 	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
 	DeleteQuest(c *gin.Context, id string) error
-	CreateCompletion(c *gin.Context, questID int, userID int, completedTime time.Time, hours float64, mins float64, segs float64) error
+	CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error
+	GetRanking(c *gin.Context, id int) error
 }
 
 type repository struct {
@@ -105,53 +106,48 @@ func (r *repository) UpdateQuest(c *gin.Context, id string, quest domain.QuestDT
 	return nil
 }
 
-func (r *repository) CreateCompletion(c *gin.Context, questID int, userID int, completedTime time.Time, hours float64, mins float64, segs float64) error {
+func (r *repository) CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error {
+
+	fmt.Println(startTime)
+	fmt.Println(endTime)
 
 	var completion domain.QuestCompletion
 	if tx := config.MySql.Where("user_id = ? AND quest_id = ?", userID, questID).First(&completion); tx.Error != nil {
-		completionSave := domain.QuestCompletion{QuestID: questID, UserID: userID, CompletionTime: completedTime, Hours: hours, Mins: mins, Segs: segs}
+		completionSave := domain.QuestCompletion{QuestID: questID, UserID: userID, StartTime: startTime, EndTime: endTime}
 		if tx := config.MySql.Create(&completionSave); tx.Error != nil {
 			return errors.New("DB Error")
 		}
 	}
 
-	fmt.Println("estoy aca")
+	//	fmt.Println(completion.StartTime)
+	//	fmt.Println(completion.EndTime)
 
-	if !isBestTime(completion.Hours, completion.Mins, completion.Segs, hours, mins, segs) {
-		fmt.Println("juju")
+	if !isBestTime(startTime, endTime, completion.StartTime, completion.EndTime) {
 		return nil
 	}
 
-	completion.Hours = hours
-	completion.Mins = mins
-	completion.Segs = segs
-	completion.CompletionTime = completedTime
+	//	fmt.Println(startTime)
+	//	fmt.Println(endTime)
+	completion.StartTime = startTime
+	completion.EndTime = endTime
 
 	if tx := config.MySql.Save(&completion); tx.Error != nil {
 		return tx.Error
 	}
 
-	fmt.Println("update")
-
 	return nil
 }
 
-func isBestTime(hoursBestCompletion float64, minsBestCompletion float64, segsBestCompletion float64, hoursNewCompletion float64, minsNewCompletion float64, segsNewCompletion float64) bool {
-	fmt.Println(hoursBestCompletion)
-	if hoursNewCompletion < hoursBestCompletion {
-		if hoursBestCompletion == hoursNewCompletion {
-			if minsNewCompletion < minsBestCompletion {
-				if minsBestCompletion == minsNewCompletion {
-					if segsNewCompletion < segsBestCompletion {
-						return true
-					}
-				}
-				return true
-			}
-		}
+func isBestTime(startTime1 time.Time, endTime1 time.Time, startTime2 time.Time, endTime2 time.Time) bool {
+
+	diff1 := endTime1.Sub(startTime1)
+	diff2 := endTime2.Sub(startTime2)
+
+	if diff1 < diff2 {
+		fmt.Println("se guarda")
 		return true
 	}
-
+	fmt.Println("no se guarda")
 	return false
 }
 
@@ -169,5 +165,15 @@ func (r *repository) DeleteQuest(c *gin.Context, id string) error {
 		return err
 	}
 
+	return nil
+}
+
+func (r *repository) GetRanking(c *gin.Context, id int) error {
+
+	/*
+		if err != nil {
+			return err
+		}
+	*/
 	return nil
 }

@@ -51,7 +51,11 @@ func (d *dummyRepo) DeleteQuest(c *gin.Context, id string) error {
 	return nil
 }
 
-func (d *dummyRepo) CreateCompletion(c *gin.Context, questID int, userID int, completedTime time.Time, hours float64, mins float64, segs float64) error {
+func (d *dummyRepo) CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error {
+	return nil
+}
+
+func (d *dummyRepo) GetRanking(c *gin.Context, id int) error {
 	return nil
 }
 
