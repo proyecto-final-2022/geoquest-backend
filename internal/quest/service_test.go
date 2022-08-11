@@ -55,8 +55,8 @@ func (d *dummyRepo) CreateCompletion(c *gin.Context, questID int, userID int, st
 	return nil
 }
 
-func (d *dummyRepo) GetRanking(c *gin.Context, id int) error {
-	return nil
+func (d *dummyRepo) GetQuestsCompletions(c *gin.Context, id int) ([]domain.QuestCompletion, error) {
+	return nil, nil
 }
 
 func NewDummyRepository() Repository {

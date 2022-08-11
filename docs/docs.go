@@ -435,6 +435,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/quests/{id}/rankings": {
+            "get": {
+                "description": "Quest ranking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Ranking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Auth token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users/": {
             "post": {
                 "description": "Save new user",

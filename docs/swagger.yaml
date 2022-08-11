@@ -362,6 +362,32 @@ paths:
       summary: Completion
       tags:
       - Quests
+  /quests/{id}/rankings:
+    get:
+      consumes:
+      - application/json
+      description: Quest ranking
+      parameters:
+      - description: Auth token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Ranking
+      tags:
+      - Quests
   /users/:
     post:
       consumes:

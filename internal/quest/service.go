@@ -1,6 +1,7 @@
 package quest
 
 import (
+	"sort"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -16,7 +17,7 @@ type Service interface {
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 		startDay int, startHour int, startMinutes int, startSeconds int) error
-	GetRanking(c *gin.Context, id int) error
+	GetRanking(c *gin.Context, id int) ([]domain.QuestCompletion, error)
 }
 
 type service struct {
@@ -70,9 +71,30 @@ func (s *service) CreateCompletion(c *gin.Context, questID int, userID int, star
 	return err
 }
 
-func (s *service) GetRanking(c *gin.Context, id int) error {
+type QuestsCompletions []domain.QuestCompletion
 
-	err := s.repo.GetRanking(c, id)
+func (q QuestsCompletions) Len() int { return len(q) }
+func (q QuestsCompletions) Less(i, j int) bool {
+	return q[i].EndTime.Sub(q[i].StartTime) < q[j].EndTime.Sub(q[j].StartTime)
+}
+func (q QuestsCompletions) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
 
-	return err
+func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletion, error) {
+
+	quests, err := s.repo.GetQuestsCompletions(c, id)
+
+	sort.Sort(QuestsCompletions(quests))
+
+	return quests, err
+}
+
+func isBestTime(startTime1 time.Time, endTime1 time.Time, startTime2 time.Time, endTime2 time.Time) bool {
+
+	diff1 := endTime1.Sub(startTime1)
+	diff2 := endTime2.Sub(startTime2)
+
+	if diff1 < diff2 {
+		return true
+	}
+	return false
 }

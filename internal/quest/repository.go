@@ -21,7 +21,7 @@ type Repository interface {
 	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error
-	GetRanking(c *gin.Context, id int) error
+	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
 }
 
 type repository struct {
@@ -138,19 +138,6 @@ func (r *repository) CreateCompletion(c *gin.Context, questID int, userID int, s
 	return nil
 }
 
-func isBestTime(startTime1 time.Time, endTime1 time.Time, startTime2 time.Time, endTime2 time.Time) bool {
-
-	diff1 := endTime1.Sub(startTime1)
-	diff2 := endTime2.Sub(startTime2)
-
-	if diff1 < diff2 {
-		fmt.Println("se guarda")
-		return true
-	}
-	fmt.Println("no se guarda")
-	return false
-}
-
 func (r *repository) DeleteQuest(c *gin.Context, id string) error {
 
 	var err error
@@ -168,12 +155,11 @@ func (r *repository) DeleteQuest(c *gin.Context, id string) error {
 	return nil
 }
 
-func (r *repository) GetRanking(c *gin.Context, id int) error {
+func (r *repository) GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error) {
+	var questsCompletions []domain.QuestCompletion
+	if tx := config.MySql.Where("quest_id = ?", questID).Find(&questsCompletions); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
 
-	/*
-		if err != nil {
-			return err
-		}
-	*/
-	return nil
+	return questsCompletions, nil
 }

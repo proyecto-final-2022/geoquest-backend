@@ -223,24 +223,19 @@ func (g *Quest) AddCompletion() gin.HandlerFunc {
 // @Param id path string true "Quest ID"
 // @Success 200
 // @Failure 500
-// @Router /quests/{id}/rankings/ [get]
+// @Router /quests/{id}/rankings [get]
 func (g *Quest) GetRanking() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
-		var req CompletionRequest
+		var quests []domain.QuestCompletion
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if err = c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusUnprocessableEntity, err)
-			return
-		}
-
-		if err = g.service.GetRanking(c, paramId); err != nil {
+		if quests, err = g.service.GetRanking(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusOK, quests)
 	}
 }
