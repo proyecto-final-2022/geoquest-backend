@@ -13,7 +13,7 @@ type Service interface {
 	CreateUser(c *gin.Context, email string, name string, username string, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
-	UpdateUser(c *gin.Context, id int, user domain.UserDTO) error
+	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error
 	DeleteUser(c *gin.Context, id int) error
 	HashPassword(password string) (string, error)
 	CheckPassword(providedPassword string, userPassword string) error
@@ -39,7 +39,7 @@ func (s *service) CreateUser(c *gin.Context, email string, name string, username
 }
 
 func (s *service) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
-	user, err := s.repo.GetUser(c, id)
+	user, _, err := s.repo.GetUser(c, id)
 
 	return user, err
 }
@@ -50,9 +50,30 @@ func (s *service) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, 
 	return user, err
 }
 
-func (s *service) UpdateUser(c *gin.Context, id int, user domain.UserDTO) error {
+func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error {
 
-	err := s.repo.UpdateUser(c, id, user)
+	_, user, err := s.repo.GetUser(c, id)
+	if err != nil {
+		return err
+	}
+
+	if name != "" {
+		user.Name = name
+	}
+
+	if email != "" {
+		user.Email = email
+	}
+
+	if password != "" {
+		user.Password = password
+	}
+
+	if username != "" {
+		user.Username = username
+	}
+
+	err = s.repo.UpdateUser(c, user)
 
 	return err
 }
@@ -97,7 +118,16 @@ func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, er
 		return nil, err
 	}
 
-	return coupons, nil
+	//servicio
+	couponsDTO := make([]domain.CouponDTO, len(coupons))
+	for i := range coupons {
+		couponsDTO[i].ID = coupons[i].ID
+		couponsDTO[i].Description = coupons[i].Description
+		couponsDTO[i].ExpirationDate = coupons[i].ExpirationDate
+		couponsDTO[i].Used = coupons[i].Used
+	}
+
+	return couponsDTO, nil
 }
 
 func (s *service) AddFriend(c *gin.Context, id int, friendID int) error {
@@ -117,7 +147,24 @@ func (s *service) GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, erro
 		return nil, err
 	}
 
-	return users, nil
+	usersDTO := make([]domain.UserDTO, len(users))
+
+	for i := range users {
+
+		_, user, err := s.repo.GetUser(c, users[i].FriendID)
+
+		if err != nil {
+			return nil, err
+		}
+
+		usersDTO[i].ID = user.ID
+		usersDTO[i].Name = user.Name
+		usersDTO[i].Username = user.Username
+		usersDTO[i].Email = user.Email
+		usersDTO[i].Password = user.Password
+	}
+
+	return usersDTO, nil
 }
 
 func (s *service) DeleteFriend(c *gin.Context, id int, friendID int) error {

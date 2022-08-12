@@ -32,7 +32,7 @@ func (s *serviceMock) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	return domain.UserDTO{Email: "test", Name: "test", Password: "test"}, nil
 }
 
-func (s *serviceMock) UpdateUser(c *gin.Context, id int, user domain.UserDTO) error {
+func (s *serviceMock) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error {
 	if id == 9 {
 		return errors.New("GET ERROR")
 	}

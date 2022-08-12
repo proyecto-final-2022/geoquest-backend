@@ -596,11 +596,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "User to update",
-                        "name": "quest",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UserDTO"
+                            "$ref": "#/definitions/handler.UserRequest"
                         }
                     },
                     {
@@ -928,6 +928,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

@@ -20,17 +20,14 @@ func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, userna
 	return nil
 }
 
-func (d *dummyRepo) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
+func (d *dummyRepo) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.User, error) {
 	if id == 9 {
-		return domain.UserDTO{}, errors.New("POST ERROR")
+		return domain.UserDTO{}, domain.User{}, errors.New("POST ERROR")
 	}
-	return domain.UserDTO{Name: "test", Password: "test", Email: "test"}, nil
+	return domain.UserDTO{Name: "test", Password: "test", Email: "test"}, domain.User{}, nil
 }
 
-func (d *dummyRepo) UpdateUser(c *gin.Context, id int, user domain.UserDTO) error {
-	if id == 9 {
-		return errors.New("GET ERROR")
-	}
+func (d *dummyRepo) UpdateUser(c *gin.Context, user domain.User) error {
 	return nil
 }
 
@@ -49,7 +46,7 @@ func (d *dummyRepo) CreateCoupon(c *gin.Context, userID int, description string,
 	return nil
 }
 
-func (d *dummyRepo) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error) {
+func (d *dummyRepo) GetCoupons(c *gin.Context, userID int) ([]domain.Coupon, error) {
 	return nil, nil
 }
 
@@ -62,7 +59,7 @@ func (d *dummyRepo) DeleteFriend(c *gin.Context, userID int, friendID int) error
 	return nil
 }
 
-func (d *dummyRepo) GetUserFriends(c *gin.Context, userID int) ([]domain.UserDTO, error) {
+func (d *dummyRepo) GetUserFriends(c *gin.Context, userID int) ([]domain.UserFriends, error) {
 	return nil, nil
 }
 

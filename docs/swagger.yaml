@@ -52,6 +52,17 @@ definitions:
       password:
         type: string
     type: object
+  handler.UserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   handler.clientRequest:
     properties:
       image:
@@ -461,10 +472,10 @@ paths:
       parameters:
       - description: User to update
         in: body
-        name: quest
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/domain.UserDTO'
+          $ref: '#/definitions/handler.UserRequest'
       - description: User ID
         in: path
         name: id

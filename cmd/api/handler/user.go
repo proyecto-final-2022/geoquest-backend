@@ -30,6 +30,13 @@ type LoginGoogleRequest struct {
 	Username string `json:"username"`
 }
 
+type UserRequest struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type CouponRequest struct {
 	Description     string `json:"description"`
 	ExpirationYear  int    `json:"expiration_year"`
@@ -339,7 +346,7 @@ func (u *User) GetUser() gin.HandlerFunc {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param quest body domain.UserDTO true "User to update"
+// @Param user body UserRequest true "User to update"
 // @Param id path string true "User ID"
 // @Success 200
 // @Failure 422
@@ -347,7 +354,7 @@ func (u *User) GetUser() gin.HandlerFunc {
 // @Router /users/{id} [put]
 func (g *User) UpdateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req domain.UserDTO
+		var req UserRequest
 		var err error
 
 		if err = c.ShouldBindJSON(&req); err != nil {
@@ -357,7 +364,7 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if err = g.service.UpdateUser(c, paramId, req); err != nil {
+		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
 		}
