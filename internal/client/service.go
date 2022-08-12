@@ -1,6 +1,8 @@
 package client
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 )
@@ -10,7 +12,7 @@ type Service interface {
 	GetClients(c *gin.Context) ([]domain.ClientDTO, error)
 	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error
 	AddTag(c *gin.Context, questID int, description string) error
-	GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfoDTO, error)
+	GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestInfoDTO, error)
 }
 
 type service struct {
@@ -30,13 +32,45 @@ func (s *service) CreateClient(c *gin.Context, name string, image string) error 
 func (s *service) GetClients(c *gin.Context) ([]domain.ClientDTO, error) {
 	clients, err := s.repo.GetClients(c)
 
-	return clients, err
+	clientsDTO := make([]domain.ClientDTO, len(clients))
+
+	for i := range clients {
+		clientsDTO[i].ID = clients[i].ID
+		clientsDTO[i].Name = clients[i].Name
+		clientsDTO[i].Image = clients[i].Image
+	}
+
+	return clientsDTO, err
 }
 
-func (s *service) GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfoDTO, error) {
-	quests, err := s.repo.GetClientQuests(c, questID)
+func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestInfoDTO, error) {
 
-	return quests, err
+	quests, err := s.repo.GetClientQuests(c, clientID)
+
+	questsDTO := make([]domain.QuestInfoDTO, len(quests))
+	for i := range quests {
+		id := quests[i].ID
+
+		questsDTO[i].ID = id
+		questsDTO[i].Name = quests[i].Name
+		questsDTO[i].Qualification = quests[i].Qualification
+		questsDTO[i].Description = quests[i].Description
+		questsDTO[i].Difficulty = quests[i].Difficulty
+		questsDTO[i].Duration = quests[i].Duration
+
+		tags, err := s.repo.GetTags(c, id)
+		fmt.Println(tags)
+		if err != nil {
+			return nil, err
+		}
+
+		for j := range tags {
+			questsDTO[i].Tags = append(questsDTO[i].Tags, tags[j].Description)
+		}
+
+	}
+
+	return questsDTO, err
 }
 
 func (s *service) CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error {
