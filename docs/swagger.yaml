@@ -410,7 +410,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/domain.UserDTO'
+          $ref: '#/definitions/handler.UserRequest'
       produces:
       - application/json
       responses:

@@ -2,7 +2,6 @@ package quest
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/config"
@@ -20,8 +19,10 @@ type Repository interface {
 	CreateQuest(c *gin.Context, name string) error
 	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
 	DeleteQuest(c *gin.Context, id string) error
-	CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
+	GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error)
+	AddCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error
+	SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error
 }
 
 type repository struct {
@@ -106,35 +107,26 @@ func (r *repository) UpdateQuest(c *gin.Context, id string, quest domain.QuestDT
 	return nil
 }
 
-func (r *repository) CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error {
-
-	fmt.Println(startTime)
-	fmt.Println(endTime)
-
+func (r *repository) GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error) {
 	var completion domain.QuestCompletion
 	if tx := config.MySql.Where("user_id = ? AND quest_id = ?", userID, questID).First(&completion); tx.Error != nil {
-		completionSave := domain.QuestCompletion{QuestID: questID, UserID: userID, StartTime: startTime, EndTime: endTime}
-		if tx := config.MySql.Create(&completionSave); tx.Error != nil {
-			return errors.New("DB Error")
-		}
+		return domain.QuestCompletion{}, errors.New("DB Error")
 	}
+	return completion, nil
+}
 
-	//	fmt.Println(completion.StartTime)
-	//	fmt.Println(completion.EndTime)
-
-	if !isBestTime(startTime, endTime, completion.StartTime, completion.EndTime) {
-		return nil
+func (r *repository) AddCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error {
+	completionSave := domain.QuestCompletion{QuestID: questID, UserID: userID, StartTime: startTime, EndTime: endTime}
+	if tx := config.MySql.Create(&completionSave); tx.Error != nil {
+		return errors.New("DB Error")
 	}
+	return nil
+}
 
-	//	fmt.Println(startTime)
-	//	fmt.Println(endTime)
-	completion.StartTime = startTime
-	completion.EndTime = endTime
-
+func (r *repository) SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error {
 	if tx := config.MySql.Save(&completion); tx.Error != nil {
 		return tx.Error
 	}
-
 	return nil
 }
 

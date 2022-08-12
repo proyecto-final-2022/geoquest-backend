@@ -51,7 +51,7 @@ type CouponRequest struct {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body domain.UserDTO true "User to save"
+// @Param user body UserRequest true "User to save"
 // @Success 200
 // @Failure 422
 // @Failure 500

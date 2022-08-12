@@ -51,12 +51,20 @@ func (d *dummyRepo) DeleteQuest(c *gin.Context, id string) error {
 	return nil
 }
 
-func (d *dummyRepo) CreateCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error {
+func (d *dummyRepo) GetQuestsCompletions(c *gin.Context, id int) ([]domain.QuestCompletion, error) {
+	return nil, nil
+}
+
+func (d *dummyRepo) GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error) {
+	return domain.QuestCompletion{}, nil
+}
+
+func (d *dummyRepo) AddCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error {
 	return nil
 }
 
-func (d *dummyRepo) GetQuestsCompletions(c *gin.Context, id int) ([]domain.QuestCompletion, error) {
-	return nil, nil
+func (d *dummyRepo) SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error {
+	return nil
 }
 
 func NewDummyRepository() Repository {

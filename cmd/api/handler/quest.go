@@ -227,7 +227,7 @@ func (g *Quest) AddCompletion() gin.HandlerFunc {
 func (g *Quest) GetRanking() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
-		var quests []domain.QuestCompletion
+		var quests []domain.QuestCompletionDTO
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 

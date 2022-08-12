@@ -494,7 +494,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UserDTO"
+                            "$ref": "#/definitions/handler.UserRequest"
                         }
                     }
                 ],

@@ -60,7 +60,7 @@ func (s *serviceMock) CreateCompletion(c *gin.Context, questID int, userID int, 
 	return nil
 }
 
-func (s *serviceMock) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletion, error) {
+func (s *serviceMock) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error) {
 	return nil, nil
 }
 

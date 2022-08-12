@@ -17,7 +17,7 @@ type Service interface {
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 		startDay int, startHour int, startMinutes int, startSeconds int) error
-	GetRanking(c *gin.Context, id int) ([]domain.QuestCompletion, error)
+	GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error)
 }
 
 type service struct {
@@ -66,26 +66,45 @@ func (s *service) CreateCompletion(c *gin.Context, questID int, userID int, star
 
 	actualTime := time.Now()
 
-	err := s.repo.CreateCompletion(c, questID, userID, startTime, actualTime)
+	completion, err := s.repo.GetCompletion(c, questID, userID)
 
-	return err
+	if err != nil {
+		err = s.repo.AddCompletion(c, questID, userID, startTime, actualTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if !isBestTime(startTime, actualTime, completion.StartTime, completion.EndTime) {
+		return nil
+	}
+
+	completion.StartTime = startTime
+	completion.EndTime = actualTime
+
+	err = s.repo.SaveCompletion(c, completion)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-type QuestsCompletions []domain.QuestCompletion
-
-func (q QuestsCompletions) Len() int { return len(q) }
-func (q QuestsCompletions) Less(i, j int) bool {
-	return q[i].EndTime.Sub(q[i].StartTime) < q[j].EndTime.Sub(q[j].StartTime)
-}
-func (q QuestsCompletions) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
-
-func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletion, error) {
+func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error) {
 
 	quests, err := s.repo.GetQuestsCompletions(c, id)
 
 	sort.Sort(QuestsCompletions(quests))
 
-	return quests, err
+	questCompletionsDTO := make([]domain.QuestCompletionDTO, len(quests))
+
+	for i := range quests {
+		questCompletionsDTO[i].UserID = quests[i].UserID
+		questCompletionsDTO[i].StartTime = quests[i].StartTime
+		questCompletionsDTO[i].EndTime = quests[i].EndTime
+	}
+
+	return questCompletionsDTO, err
 }
 
 func isBestTime(startTime1 time.Time, endTime1 time.Time, startTime2 time.Time, endTime2 time.Time) bool {
