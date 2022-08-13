@@ -28,3 +28,15 @@ type UserFriends struct {
 	UserID   int `json:"user_id"`
 	FriendID int `json:"friend_id"`
 }
+
+type Team struct {
+	gorm.Model
+	ID int `json:"id,identity" gorm:"primary_key"`
+}
+
+type UserXTeam struct {
+	gorm.Model
+	ID     int `json:"id,identity" gorm:"primary_key"`
+	TeamID int `json:"team_id"`
+	UserID int `json:"user_id"`
+}

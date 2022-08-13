@@ -474,6 +474,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/teams/": {
+            "post": {
+                "description": "Save new team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "New Team",
+                "parameters": [
+                    {
+                        "description": "Team to save",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.TeamRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users/": {
             "post": {
                 "description": "Save new user",
@@ -929,6 +966,17 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.TeamRequest": {
+            "type": "object",
+            "properties": {
+                "user_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

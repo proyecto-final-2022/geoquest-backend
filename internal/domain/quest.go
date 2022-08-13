@@ -27,6 +27,20 @@ type QuestCompletionDTO struct {
 	EndTime   time.Time `json:"end_time"`
 }
 
+type QuestTeamCompletion struct {
+	gorm.Model
+	ID        int       `json:"id,identity" gorm:"primary_key"`
+	TeamID    int       `json:"team_id"`
+	StartTime time.Time `json:"completion_time"`
+	EndTime   time.Time `json:"end_time"`
+}
+
+type QuestTeamCompletionDTO struct {
+	TeamID    []UserDTO `json:"team_id"`
+	StartTime time.Time `json:"completion_time"`
+	EndTime   time.Time `json:"end_time"`
+}
+
 type QuestInfo struct {
 	gorm.Model
 	ID            int     `json:"id,identity" gorm:"primary_key"`

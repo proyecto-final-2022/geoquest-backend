@@ -52,6 +52,13 @@ definitions:
       password:
         type: string
     type: object
+  handler.TeamRequest:
+    properties:
+      user_ids:
+        items:
+          type: integer
+        type: array
+    type: object
   handler.UserRequest:
     properties:
       email:
@@ -399,6 +406,30 @@ paths:
       summary: Ranking
       tags:
       - Quests
+  /teams/:
+    post:
+      consumes:
+      - application/json
+      description: Save new team
+      parameters:
+      - description: Team to save
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.TeamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New Team
+      tags:
+      - Teams
   /users/:
     post:
       consumes:

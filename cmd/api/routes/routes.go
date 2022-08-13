@@ -5,6 +5,7 @@ import (
 	//	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/middlewares"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/client"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/team"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,7 @@ func NewRouter(r *gin.Engine) Router {
 func (r *router) MapRoutes() {
 	r.buildGamesRoutes()
 	r.buildUsersRoutes()
+	r.buildTeamRoutes()
 	r.buildClientsRoutes()
 }
 
@@ -80,5 +82,18 @@ func (r *router) buildClientsRoutes() {
 		gGroup.POST("/:id/quests", handler.CreateClientQuest())
 		gGroup.POST("/quests/:id", handler.AddTag())
 		gGroup.GET("/:id/quests", handler.GetClientQuests())
+	}
+}
+
+func (r *router) buildTeamRoutes() {
+	repo := team.NewRepository()
+	service := team.NewService(repo)
+	handler := handler.NewTeam(service)
+
+	gGroup := r.r.Group("/teams")
+	{
+		gGroup.POST("/", handler.CreateTeam())
+		//		gGroup.POST("/:id/completions", handler.AddCompletion())
+		//		gGroup.GET("/:id/rankings", handler.GetRanking())
 	}
 }
