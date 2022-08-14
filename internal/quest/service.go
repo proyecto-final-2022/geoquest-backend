@@ -2,6 +2,8 @@ package quest
 
 import (
 	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -102,6 +104,37 @@ func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDT
 		questCompletionsDTO[i].UserID = quests[i].UserID
 		questCompletionsDTO[i].StartTime = quests[i].StartTime
 		questCompletionsDTO[i].EndTime = quests[i].EndTime
+
+		questCompletionsDTO[i].StartTime = quests[i].StartTime
+		questCompletionsDTO[i].EndTime = quests[i].EndTime
+
+		diff := questCompletionsDTO[i].EndTime.Sub(questCompletionsDTO[i].StartTime)
+		stringDiff := diff.String()
+
+		splitHours := strings.Split(stringDiff, "h")
+
+		var minsSeconds string
+
+		if diff.Hours() < (time.Hour.Hours() * 1) {
+			questCompletionsDTO[i].Hours = 0
+			minsSeconds = splitHours[0]
+		} else {
+			hoursFloat, _ := strconv.ParseFloat(splitHours[0], 64)
+			questCompletionsDTO[i].Hours = hoursFloat
+			minsSeconds = splitHours[1]
+		}
+
+		splitMinsSeconds := strings.Split(minsSeconds, "m")
+
+		minutesFloat, _ := strconv.ParseFloat(splitMinsSeconds[0], 64)
+
+		questCompletionsDTO[i].Minutes = minutesFloat
+
+		secondsString := strings.Replace(splitMinsSeconds[1], "s", "", -1)
+
+		secondsFloat, _ := strconv.ParseFloat(secondsString, 64)
+
+		questCompletionsDTO[i].Seconds = secondsFloat
 	}
 
 	return questCompletionsDTO, err

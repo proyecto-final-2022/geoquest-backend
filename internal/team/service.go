@@ -2,6 +2,8 @@ package team
 
 import (
 	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -82,8 +84,38 @@ func (s *service) GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCom
 			}
 			questTeamCompletionsDTO[i].Users = append(questTeamCompletionsDTO[i].Users, userDTO)
 		}
+
 		questTeamCompletionsDTO[i].StartTime = completions[i].StartTime
 		questTeamCompletionsDTO[i].EndTime = completions[i].EndTime
+
+		diff := questTeamCompletionsDTO[i].EndTime.Sub(questTeamCompletionsDTO[i].StartTime)
+		stringDiff := diff.String()
+
+		splitHours := strings.Split(stringDiff, "h")
+
+		var minsSeconds string
+
+		if diff.Hours() < (time.Hour.Hours() * 1) {
+			questTeamCompletionsDTO[i].Hours = 0
+			minsSeconds = splitHours[0]
+		} else {
+			hoursFloat, _ := strconv.ParseFloat(splitHours[0], 64)
+			questTeamCompletionsDTO[i].Hours = hoursFloat
+			minsSeconds = splitHours[1]
+		}
+
+		splitMinsSeconds := strings.Split(minsSeconds, "m")
+
+		minutesFloat, _ := strconv.ParseFloat(splitMinsSeconds[0], 64)
+
+		questTeamCompletionsDTO[i].Minutes = minutesFloat
+
+		secondsString := strings.Replace(splitMinsSeconds[1], "s", "", -1)
+
+		secondsFloat, _ := strconv.ParseFloat(secondsString, 64)
+
+		questTeamCompletionsDTO[i].Seconds = secondsFloat
+
 	}
 
 	return questTeamCompletionsDTO, nil
