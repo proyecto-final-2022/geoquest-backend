@@ -502,6 +502,92 @@
                 }
             }
         },
+        "/teams/rankings/{quest_id}": {
+            "get": {
+                "description": "Get Ranking of teams by a specific quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Ranking of quest",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Quest ID",
+                        "name": "quest_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/teams/{id}/completions/{quest_id}": {
+            "post": {
+                "description": "Save new team completion",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Add team completion",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Team ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Quest ID",
+                        "name": "quest_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Add completion to team",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.TeamCompletionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users/": {
             "post": {
                 "description": "Save new user",
@@ -957,6 +1043,29 @@
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.TeamCompletionRequest": {
+            "type": "object",
+            "properties": {
+                "start_day": {
+                    "type": "integer"
+                },
+                "start_hour": {
+                    "type": "integer"
+                },
+                "start_minutes": {
+                    "type": "integer"
+                },
+                "start_month": {
+                    "type": "integer"
+                },
+                "start_seconds": {
+                    "type": "integer"
+                },
+                "start_year": {
+                    "type": "integer"
                 }
             }
         },

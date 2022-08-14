@@ -86,14 +86,15 @@ func (r *router) buildClientsRoutes() {
 }
 
 func (r *router) buildTeamRoutes() {
+	userRepo := user.NewRepository()
 	repo := team.NewRepository()
-	service := team.NewService(repo)
+	service := team.NewService(repo, userRepo)
 	handler := handler.NewTeam(service)
 
 	gGroup := r.r.Group("/teams")
 	{
 		gGroup.POST("/", handler.CreateTeam())
-		//		gGroup.POST("/:id/completions", handler.AddCompletion())
-		//		gGroup.GET("/:id/rankings", handler.GetRanking())
+		gGroup.POST("/:id/completions/:quest_id", handler.AddCompletion())
+		gGroup.GET("/rankings/:quest_id", handler.GetRanking())
 	}
 }

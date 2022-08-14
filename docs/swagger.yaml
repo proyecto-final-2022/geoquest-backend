@@ -52,6 +52,21 @@ definitions:
       password:
         type: string
     type: object
+  handler.TeamCompletionRequest:
+    properties:
+      start_day:
+        type: integer
+      start_hour:
+        type: integer
+      start_minutes:
+        type: integer
+      start_month:
+        type: integer
+      start_seconds:
+        type: integer
+      start_year:
+        type: integer
+    type: object
   handler.TeamRequest:
     properties:
       user_ids:
@@ -428,6 +443,63 @@ paths:
         "500":
           description: Internal Server Error
       summary: New Team
+      tags:
+      - Teams
+  /teams/{id}/completions/{quest_id}:
+    post:
+      consumes:
+      - application/json
+      description: Save new team completion
+      parameters:
+      - description: Team ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Quest ID
+        in: path
+        name: quest_id
+        required: true
+        type: integer
+      - description: Add completion to team
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.TeamCompletionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Add team completion
+      tags:
+      - Teams
+  /teams/rankings/{quest_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Ranking of teams by a specific quest
+      parameters:
+      - description: Quest ID
+        in: path
+        name: quest_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Ranking of quest
       tags:
       - Teams
   /users/:
