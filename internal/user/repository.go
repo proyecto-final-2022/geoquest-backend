@@ -43,7 +43,7 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, domain.User{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: id, Email: user.Email, Name: user.Name, Password: user.Password}, user, nil
+	return domain.UserDTO{ID: id, Username: user.Username, Email: user.Email, Name: user.Name, Password: user.Password}, user, nil
 }
 
 func (r *repository) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
