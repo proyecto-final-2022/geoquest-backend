@@ -57,6 +57,8 @@ type QuestInfo struct {
 	Description   string  `json:"description"`
 	Difficulty    string  `json:"difficulty"`
 	Duration      string  `json:"duration"`
+	Image         string  `json:"image_url"`
+	Completions   int     `json:"completions"`
 	Tags          []Tag   `json:"tags" gorm:"foreignKey:QuestID;references:ID"`
 }
 
@@ -78,5 +80,7 @@ type QuestInfoDTO struct {
 	Description   string   `json:"description"`
 	Difficulty    string   `json:"difficulty"`
 	Duration      string   `json:"duration"`
+	Completions   int      `json:"completions"`
+	Image         string   `json:"image_url"`
 	Tags          []string `json:"tags"`
 }

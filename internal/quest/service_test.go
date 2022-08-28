@@ -67,6 +67,14 @@ func (d *dummyRepo) SaveCompletion(c *gin.Context, completion domain.QuestComple
 	return nil
 }
 
+func (d *dummyRepo) GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error) {
+	return domain.QuestInfo{}, nil
+}
+
+func (d *dummyRepo) UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error {
+	return nil
+}
+
 func NewDummyRepository() Repository {
 	return &dummyRepo{}
 }

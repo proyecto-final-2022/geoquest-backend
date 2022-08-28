@@ -81,6 +81,7 @@ func (r *router) buildClientsRoutes() {
 		gGroup.GET("/", handler.GetClients())
 		gGroup.POST("/:id/quests", handler.CreateClientQuest())
 		gGroup.POST("/quests/:id", handler.AddTag())
+		gGroup.GET("/quests/", handler.GetAllQuests())
 		gGroup.GET("/:id/quests", handler.GetClientQuests())
 	}
 }

@@ -76,6 +76,18 @@ func (s *service) CreateCompletion(c *gin.Context, questID int, userID int, star
 			return err
 		}
 	}
+	//Update quest completion quantity
+	quest, err := s.repo.GetQuestInfo(c, questID)
+
+	if err != nil {
+		return err
+	}
+
+	quest.Completions++
+
+	if err := s.repo.UpdateQuestInfo(c, quest); err != nil {
+		return err
+	}
 
 	if !isBestTime(startTime, actualTime, completion.StartTime, completion.EndTime) {
 		return nil

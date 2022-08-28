@@ -19,10 +19,11 @@ type questRequest struct {
 	Description   string  `json:"description"`
 	Difficulty    string  `json:"difficulty"`
 	Duration      string  `json:"duration"`
+	Image         string  `json:"image_url"`
 }
 
 type tagRequest struct {
-	Description string `json:"description"`
+	Description []string `json:"description"`
 }
 
 type clientRequest struct {
@@ -117,6 +118,31 @@ func (u *Client) GetClientQuests() gin.HandlerFunc {
 	}
 }
 
+// @Summary Quests
+// @Schemes
+// @Description All quests from all clients
+// @Tags Clients
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /clients/quests  [get]
+func (u *Client) GetAllQuests() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		quests, err := u.service.GetAllQuests(c)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, quests)
+	}
+}
+
 // @Summary New Quest for client
 // @Schemes
 // @Description Create new quest for a client
@@ -143,7 +169,7 @@ func (u *Client) CreateClientQuest() gin.HandlerFunc {
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if err = u.service.CreateQuest(c, paramId, req.Name, req.Qualification, req.Description, req.Difficulty, req.Duration); err != nil {
+		if err = u.service.CreateQuest(c, paramId, req.Name, req.Qualification, req.Description, req.Difficulty, req.Duration, req.Image); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

@@ -11,9 +11,10 @@ import (
 
 type Repository interface {
 	CreateClient(c *gin.Context, name string, image string) error
-	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error
-	AddTag(c *gin.Context, questID int, description string) error
+	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string, image string) error
+	AddTag(c *gin.Context, questID int, description []string) error
 	GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfo, error)
+	GetAllQuests(c *gin.Context) ([]domain.QuestInfo, error)
 	GetClients(c *gin.Context) ([]domain.Client, error)
 	GetTags(c *gin.Context, questID int) ([]domain.Tag, error)
 }
@@ -34,9 +35,9 @@ func (r *repository) CreateClient(c *gin.Context, name string, image string) err
 	return nil
 }
 
-func (r *repository) CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error {
+func (r *repository) CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string, image string) error {
 
-	quest := domain.QuestInfo{ClientID: clientID, Name: name, Qualification: qualification, Description: description, Difficulty: difficulty, Duration: duration}
+	quest := domain.QuestInfo{ClientID: clientID, Name: name, Qualification: qualification, Description: description, Difficulty: difficulty, Duration: duration, Image: image}
 
 	if tx := config.MySql.Create(&quest); tx.Error != nil {
 		return errors.New("DB Error")
@@ -45,15 +46,13 @@ func (r *repository) CreateQuest(c *gin.Context, clientID int, name string, qual
 
 }
 
-func (r *repository) AddTag(c *gin.Context, questID int, description string) error {
-
-	tag := domain.Tag{QuestID: questID, Description: description}
-
-	if tx := config.MySql.Create(&tag); tx.Error != nil {
-		return errors.New("DB Error")
+func (r *repository) AddTag(c *gin.Context, questID int, description []string) error {
+	for i := range description {
+		if tx := config.MySql.Create(&domain.Tag{QuestID: questID, Description: description[i]}); tx.Error != nil {
+			return errors.New("DB Error")
+		}
 	}
 	return nil
-
 }
 
 func (r *repository) GetTags(c *gin.Context, questID int) ([]domain.Tag, error) {
@@ -82,6 +81,14 @@ func (r *repository) GetClients(c *gin.Context) ([]domain.Client, error) {
 func (r *repository) GetClientQuests(c *gin.Context, questID int) ([]domain.QuestInfo, error) {
 	var quests []domain.QuestInfo
 	if tx := config.MySql.Where("client_id = ?", questID).Find(&quests); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+	return quests, nil
+}
+
+func (r *repository) GetAllQuests(c *gin.Context) ([]domain.QuestInfo, error) {
+	var quests []domain.QuestInfo
+	if tx := config.MySql.Find(&quests); tx.Error != nil {
 		return nil, errors.New("DB Error")
 	}
 	return quests, nil

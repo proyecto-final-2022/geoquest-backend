@@ -100,6 +100,8 @@ definitions:
         type: string
       duration:
         type: string
+      image_url:
+        type: string
       name:
         type: string
       qualification:
@@ -108,7 +110,9 @@ definitions:
   handler.tagRequest:
     properties:
       description:
-        type: string
+        items:
+          type: string
+        type: array
     type: object
 info:
   contact: {}
@@ -206,6 +210,23 @@ paths:
         "500":
           description: Internal Server Error
       summary: New Quest for client
+      tags:
+      - Clients
+  /clients/quests:
+    get:
+      consumes:
+      - application/json
+      description: All quests from all clients
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Quests
       tags:
       - Clients
   /clients/quests/{id}:

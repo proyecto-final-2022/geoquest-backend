@@ -1,8 +1,6 @@
 package client
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 )
@@ -10,9 +8,10 @@ import (
 type Service interface {
 	CreateClient(c *gin.Context, name string, image string) error
 	GetClients(c *gin.Context) ([]domain.ClientDTO, error)
-	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error
-	AddTag(c *gin.Context, questID int, description string) error
+	CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string, image string) error
+	AddTag(c *gin.Context, questID int, description []string) error
 	GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestInfoDTO, error)
+	GetAllQuests(c *gin.Context) ([]domain.QuestInfoDTO, error)
 }
 
 type service struct {
@@ -43,6 +42,25 @@ func (s *service) GetClients(c *gin.Context) ([]domain.ClientDTO, error) {
 	return clientsDTO, err
 }
 
+func (s *service) GetAllQuests(c *gin.Context) ([]domain.QuestInfoDTO, error) {
+	quests, err := s.repo.GetAllQuests(c)
+
+	questsDTO := make([]domain.QuestInfoDTO, len(quests))
+
+	for i := range quests {
+		questsDTO[i].ID = int(quests[i].ID)
+		questsDTO[i].Name = quests[i].Name
+		questsDTO[i].Qualification = quests[i].Qualification
+		questsDTO[i].Description = quests[i].Description
+		questsDTO[i].Difficulty = quests[i].Difficulty
+		questsDTO[i].Duration = quests[i].Duration
+		questsDTO[i].Completions = int(quests[i].Completions)
+		questsDTO[i].Image = quests[i].Image
+	}
+
+	return questsDTO, err
+}
+
 func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestInfoDTO, error) {
 
 	quests, err := s.repo.GetClientQuests(c, clientID)
@@ -59,7 +77,6 @@ func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestI
 		questsDTO[i].Duration = quests[i].Duration
 
 		tags, err := s.repo.GetTags(c, id)
-		fmt.Println(tags)
 		if err != nil {
 			return nil, err
 		}
@@ -73,13 +90,13 @@ func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestI
 	return questsDTO, err
 }
 
-func (s *service) CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string) error {
-	err := s.repo.CreateQuest(c, clientID, name, qualification, description, difficulty, duration)
+func (s *service) CreateQuest(c *gin.Context, clientID int, name string, qualification float32, description string, difficulty string, duration string, image string) error {
+	err := s.repo.CreateQuest(c, clientID, name, qualification, description, difficulty, duration, image)
 
 	return err
 }
 
-func (s *service) AddTag(c *gin.Context, questID int, description string) error {
+func (s *service) AddTag(c *gin.Context, questID int, description []string) error {
 	err := s.repo.AddTag(c, questID, description)
 
 	return err

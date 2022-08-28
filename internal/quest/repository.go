@@ -16,6 +16,8 @@ import (
 type Repository interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
+	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
+	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
 	CreateQuest(c *gin.Context, name string) error
 	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
 	DeleteQuest(c *gin.Context, id string) error
@@ -104,6 +106,21 @@ func (r *repository) UpdateQuest(c *gin.Context, id string, quest domain.QuestDT
 		return err
 	}
 
+	return nil
+}
+
+func (r *repository) GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error) {
+	var quest domain.QuestInfo
+	if tx := config.MySql.Where("id = ?", questID).First(&quest); tx.Error != nil {
+		return domain.QuestInfo{}, errors.New("DB Error")
+	}
+	return quest, nil
+}
+
+func (r *repository) UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error {
+	if tx := config.MySql.Save(&quest); tx.Error != nil {
+		return tx.Error
+	}
 	return nil
 }
 
