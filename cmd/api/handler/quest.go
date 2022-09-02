@@ -219,7 +219,6 @@ func (g *Quest) AddCompletion() gin.HandlerFunc {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param Authorization header string true "Auth token"
 // @Param id path string true "Quest ID"
 // @Success 200
 // @Failure 500

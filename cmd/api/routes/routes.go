@@ -32,7 +32,8 @@ func (r *router) MapRoutes() {
 
 func (r *router) buildGamesRoutes() {
 	repo := quest.NewRepository()
-	service := quest.NewService(repo)
+	repoUser := user.NewRepository()
+	service := quest.NewService(repo, repoUser)
 	handler := handler.NewGame(service)
 
 	gGroup := r.r.Group("/quests")

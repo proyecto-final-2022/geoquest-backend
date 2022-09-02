@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,11 +24,15 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo     Repository
+	userRepo user.Repository
 }
 
-func NewService(rep Repository) Service {
-	return &service{repo: rep}
+func NewService(rep Repository, userRepo user.Repository) Service {
+	return &service{
+		repo:     rep,
+		userRepo: userRepo,
+	}
 }
 
 func (s *service) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
@@ -113,7 +118,14 @@ func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDT
 	questCompletionsDTO := make([]domain.QuestCompletionDTO, len(quests))
 
 	for i := range quests {
-		questCompletionsDTO[i].UserID = quests[i].UserID
+
+		userDTO, _, err := s.userRepo.GetUser(c, quests[i].UserID)
+
+		if err != nil {
+			return nil, err
+		}
+
+		questCompletionsDTO[i].Username = userDTO.Username
 		questCompletionsDTO[i].StartTime = quests[i].StartTime
 		questCompletionsDTO[i].EndTime = quests[i].EndTime
 

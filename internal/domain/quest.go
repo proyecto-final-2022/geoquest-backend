@@ -22,7 +22,7 @@ type QuestCompletion struct {
 }
 
 type QuestCompletionDTO struct {
-	UserID    int       `json:"user_id"`
+	Username  string    `json:"username"`
 	StartTime time.Time `json:"completion_time"`
 	EndTime   time.Time `json:"end_time"`
 	Hours     float64   `json:"hours"`
@@ -40,7 +40,7 @@ type QuestTeamCompletion struct {
 }
 
 type QuestTeamCompletionDTO struct {
-	Users     []UserDTO `json:"users"`
+	Users     []string  `json:"users"`
 	StartTime time.Time `json:"completion_time"`
 	EndTime   time.Time `json:"end_time"`
 	Hours     float64   `json:"hours"`

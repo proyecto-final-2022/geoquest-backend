@@ -81,7 +81,7 @@ func NewDummyRepository() Repository {
 
 func TestServiceGetShouldReturnOK(t *testing.T) {
 	repo := &dummyRepo{}
-	service := NewService(repo)
+	service := NewService(repo, nil)
 
 	result, err := service.GetQuests(&gin.Context{})
 	assert.Nil(t, err)
@@ -90,7 +90,7 @@ func TestServiceGetShouldReturnOK(t *testing.T) {
 
 func TestServiceCreateWithPostErrorShouldFail(t *testing.T) {
 	repo := NewDummyRepository()
-	service := NewService(repo)
+	service := NewService(repo, nil)
 
 	err := service.CreateQuest(&gin.Context{}, "testError")
 	assert.NotNil(t, err)
@@ -98,7 +98,7 @@ func TestServiceCreateWithPostErrorShouldFail(t *testing.T) {
 
 func TestServiceCreateShouldReturnOK(t *testing.T) {
 	repo := NewDummyRepository()
-	service := NewService(repo)
+	service := NewService(repo, nil)
 
 	err := service.CreateQuest(&gin.Context{}, "test")
 	assert.Nil(t, err)
@@ -106,7 +106,7 @@ func TestServiceCreateShouldReturnOK(t *testing.T) {
 
 func TestServiceUpdateK(t *testing.T) {
 	repo := NewDummyRepository()
-	service := NewService(repo)
+	service := NewService(repo, nil)
 
 	err := service.UpdateQuest(&gin.Context{}, "62d5ea0c6c5608330d5d734b", domain.QuestDTO{Name: "test"})
 	assert.Nil(t, err)

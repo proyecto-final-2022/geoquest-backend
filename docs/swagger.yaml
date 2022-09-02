@@ -422,11 +422,6 @@ paths:
       - application/json
       description: Quest ranking
       parameters:
-      - description: Auth token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Quest ID
         in: path
         name: id
