@@ -67,6 +67,10 @@ func (d *dummyRepo) AddNotification(c *gin.Context, userID int, senderID int, no
 	return nil
 }
 
+func (d *dummyRepo) GetNotifications(c *gin.Context, userID int) ([]domain.Notification, error) {
+	return nil, nil
+}
+
 func TestServicePostWithGetErrorShouldFail(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)

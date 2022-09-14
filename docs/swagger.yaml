@@ -749,6 +749,28 @@ paths:
       tags:
       - Users
   /users/{id}/notifications/:
+    get:
+      consumes:
+      - application/json
+      description: Get notifications
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Get notifications
+      tags:
+      - Users
     post:
       consumes:
       - application/json

@@ -82,6 +82,10 @@ func (s *serviceMock) AddNotification(c *gin.Context, userID int, senderID int, 
 	return nil
 }
 
+func (s *serviceMock) GetNotifications(c *gin.Context, userID int) ([]domain.NotificationDTO, error) {
+	return nil, nil
+}
+
 func createServerUser() *gin.Engine {
 
 	service := &serviceMock{}

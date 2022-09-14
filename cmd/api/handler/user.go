@@ -435,3 +435,31 @@ func (u *User) AddNotification() gin.HandlerFunc {
 		c.JSON(http.StatusOK, "")
 	}
 }
+
+// @Summary Get notifications
+// @Schemes
+// @Description Get notifications
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/notifications/  [get]
+func (u *User) GetNotifications() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		notifications, err := u.service.GetNotifications(c, paramId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, notifications)
+	}
+}

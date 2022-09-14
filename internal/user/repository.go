@@ -22,6 +22,7 @@ type Repository interface {
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserFriends, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
 	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, actualTime time.Time) error
+	GetNotifications(c *gin.Context, userID int) ([]domain.Notification, error)
 }
 
 type repository struct {
@@ -127,4 +128,12 @@ func (r *repository) AddNotification(c *gin.Context, userID int, senderID int, n
 
 	return nil
 
+}
+
+func (r *repository) GetNotifications(c *gin.Context, userID int) ([]domain.Notification, error) {
+	var notifications []domain.Notification
+	if tx := config.MySql.Where("receiver_id = ?", userID).Find(&notifications); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+	return notifications, nil
 }

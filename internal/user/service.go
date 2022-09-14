@@ -1,6 +1,7 @@
 package user
 
 import (
+	"sort"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
@@ -23,6 +24,7 @@ type Service interface {
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
 	AddNotification(c *gin.Context, ID int, senderID int, notificationType string) error
+	GetNotifications(c *gin.Context, ID int) ([]domain.NotificationDTO, error)
 }
 
 type service struct {
@@ -188,4 +190,33 @@ func (s *service) AddNotification(c *gin.Context, id int, senderID int, notifica
 	}
 
 	return nil
+}
+
+func (s *service) GetNotifications(c *gin.Context, id int) ([]domain.NotificationDTO, error) {
+
+	notifications, err := s.repo.GetNotifications(c, id)
+	if err != nil {
+		return nil, err
+	}
+
+	sort.Slice(notifications, func(i, j int) bool {
+		return notifications[i].SentTime.After(notifications[j].SentTime)
+	})
+
+	notificationsDTO := make([]domain.NotificationDTO, len(notifications))
+
+	for i := range notifications {
+		senderDTO, _, err := s.repo.GetUser(c, notifications[i].SenderID)
+
+		if err != nil {
+			return nil, err
+		}
+
+		notificationsDTO[i].ID = notifications[i].ID
+		notificationsDTO[i].SenderID = notifications[i].SenderID
+		notificationsDTO[i].Type = notifications[i].Type
+		notificationsDTO[i].SenderName = senderDTO.Name
+	}
+
+	return notificationsDTO, nil
 }
