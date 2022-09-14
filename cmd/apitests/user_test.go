@@ -78,6 +78,10 @@ func (s *serviceMock) GetUserFriends(c *gin.Context, userID int) ([]domain.UserD
 	return nil, nil
 }
 
+func (s *serviceMock) AddNotification(c *gin.Context, userID int, senderID int, notificationType string) error {
+	return nil
+}
+
 func createServerUser() *gin.Engine {
 
 	service := &serviceMock{}

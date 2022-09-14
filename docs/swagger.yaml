@@ -52,6 +52,13 @@ definitions:
       password:
         type: string
     type: object
+  handler.NotificationRequest:
+    properties:
+      sender_id:
+        type: integer
+      type:
+        type: string
+    type: object
   handler.TeamCompletionRequest:
     properties:
       start_day:
@@ -739,6 +746,36 @@ paths:
         "500":
           description: Internal Server Error
       summary: New friend
+      tags:
+      - Users
+  /users/{id}/notifications/:
+    post:
+      consumes:
+      - application/json
+      description: Add new notification
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Notification: Specify Sender and Type of notification: ''friend_request''
+          or ''quest_invite'''
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.NotificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New notification
       tags:
       - Users
   /users/sessions:

@@ -22,6 +22,7 @@ type Service interface {
 	AddFriend(c *gin.Context, id int, friendID int) error
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
+	AddNotification(c *gin.Context, ID int, senderID int, notificationType string) error
 }
 
 type service struct {
@@ -170,6 +171,16 @@ func (s *service) GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, erro
 func (s *service) DeleteFriend(c *gin.Context, id int, friendID int) error {
 
 	err := s.repo.DeleteFriend(c, id, friendID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *service) AddNotification(c *gin.Context, id int, senderID int, notificationType string) error {
+
+	err := s.repo.AddNotification(c, id, senderID, notificationType)
 	if err != nil {
 		return err
 	}

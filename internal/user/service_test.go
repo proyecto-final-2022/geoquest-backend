@@ -63,6 +63,10 @@ func (d *dummyRepo) GetUserFriends(c *gin.Context, userID int) ([]domain.UserFri
 	return nil, nil
 }
 
+func (d *dummyRepo) AddNotification(c *gin.Context, userID int, senderID int, notificationType string) error {
+	return nil
+}
+
 func TestServicePostWithGetErrorShouldFail(t *testing.T) {
 	repo := &dummyRepo{}
 	service := NewService(repo)

@@ -32,6 +32,7 @@ func Connect() {
 	db.AutoMigrate(&domain.Team{})
 	db.AutoMigrate(&domain.UserXTeam{})
 	db.AutoMigrate(&domain.QuestTeamCompletion{})
+	db.AutoMigrate(&domain.Notification{})
 	MySql = db
 
 }

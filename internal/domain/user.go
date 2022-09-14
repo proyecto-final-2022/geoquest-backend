@@ -40,3 +40,18 @@ type UserXTeam struct {
 	TeamID int `json:"team_id"`
 	UserID int `json:"user_id"`
 }
+
+type Notification struct {
+	gorm.Model
+	ID         int    `json:"id,identity" gorm:"primary_key"`
+	SenderID   int    `json:"sender_id"`
+	ReceiverID int    `json:"receiver_id"`
+	Type       string `json:"type"`
+}
+
+type NotificationDTO struct {
+	ID         int    `json:"id,identity" gorm:"primary_key"`
+	SenderID   int    `json:"sender_id"`
+	SenderName string `json:"sender_name"`
+	Type       string `json:"type"`
+}

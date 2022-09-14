@@ -45,6 +45,11 @@ type CouponRequest struct {
 	ExpirationHour  int    `json:"expiration_hour"`
 }
 
+type NotificationRequest struct {
+	SenderID         int    `json:"sender_id"`
+	NotificationType string `json:"type"`
+}
+
 // @Summary New user
 // @Schemes
 // @Description Save new user
@@ -391,6 +396,39 @@ func (g *User) DeleteUser() gin.HandlerFunc {
 
 		if err = g.service.DeleteUser(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary New notification
+// @Schemes
+// @Description Add new notification
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param user body NotificationRequest true "Notification: Specify Sender and Type of notification: 'friend_request' or 'quest_invite'"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/notifications/  [post]
+func (u *User) AddNotification() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var req NotificationRequest
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 

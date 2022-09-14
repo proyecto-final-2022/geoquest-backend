@@ -989,6 +989,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{id}/notifications/": {
+            "post": {
+                "description": "Add new notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "New notification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Notification: Specify Sender and Type of notification: 'friend_request' or 'quest_invite'",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.NotificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1070,6 +1114,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.NotificationRequest": {
+            "type": "object",
+            "properties": {
+                "sender_id": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }
