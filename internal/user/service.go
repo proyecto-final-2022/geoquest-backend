@@ -180,7 +180,9 @@ func (s *service) DeleteFriend(c *gin.Context, id int, friendID int) error {
 
 func (s *service) AddNotification(c *gin.Context, id int, senderID int, notificationType string) error {
 
-	err := s.repo.AddNotification(c, id, senderID, notificationType)
+	actualTime := time.Now()
+
+	err := s.repo.AddNotification(c, id, senderID, notificationType, actualTime)
 	if err != nil {
 		return err
 	}

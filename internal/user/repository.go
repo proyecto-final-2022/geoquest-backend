@@ -21,7 +21,7 @@ type Repository interface {
 	AddFriend(c *gin.Context, id int, friendID int) error
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserFriends, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
-	AddNotification(c *gin.Context, ID int, senderID int, notificationType string) error
+	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, actualTime time.Time) error
 }
 
 type repository struct {
@@ -117,9 +117,9 @@ func (r *repository) DeleteFriend(c *gin.Context, userID int, friendID int) erro
 	return nil
 }
 
-func (r *repository) AddNotification(c *gin.Context, userID int, senderID int, notificationType string) error {
+func (r *repository) AddNotification(c *gin.Context, userID int, senderID int, notificationType string, actualTime time.Time) error {
 
-	notification := domain.Notification{SenderID: senderID, ReceiverID: userID, Type: notificationType}
+	notification := domain.Notification{SenderID: senderID, ReceiverID: userID, Type: notificationType, SentTime: actualTime}
 
 	if tx := config.MySql.Create(&notification); tx.Error != nil {
 		return errors.New("DB Error")

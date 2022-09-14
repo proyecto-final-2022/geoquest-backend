@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -43,10 +45,11 @@ type UserXTeam struct {
 
 type Notification struct {
 	gorm.Model
-	ID         int    `json:"id,identity" gorm:"primary_key"`
-	SenderID   int    `json:"sender_id"`
-	ReceiverID int    `json:"receiver_id"`
-	Type       string `json:"type"`
+	ID         int       `json:"id,identity" gorm:"primary_key"`
+	SenderID   int       `json:"sender_id"`
+	ReceiverID int       `json:"receiver_id"`
+	Type       string    `json:"type"`
+	SentTime   time.Time `json:"sent_time"`
 }
 
 type NotificationDTO struct {
