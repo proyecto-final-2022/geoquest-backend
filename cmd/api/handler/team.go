@@ -121,3 +121,28 @@ func (t *Team) GetRanking() gin.HandlerFunc {
 		c.JSON(http.StatusOK, ranking)
 	}
 }
+
+// @Summary Delete team
+// @Schemes
+// @Description Delete a team
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param id path string true "Team ID"
+// @Success 200
+// @Failure 500
+// @Router /teams/{id} [delete]
+func (t *Team) DeleteTeam() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err = t.service.DeleteTeam(c, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}

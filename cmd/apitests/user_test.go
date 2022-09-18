@@ -86,6 +86,10 @@ func (s *serviceMock) GetNotifications(c *gin.Context, userID int) ([]domain.Not
 	return nil, nil
 }
 
+func (s *serviceMock) DeleteNotification(c *gin.Context, userID int, notificationID int) error {
+	return nil
+}
+
 func createServerUser() *gin.Engine {
 
 	service := &serviceMock{}

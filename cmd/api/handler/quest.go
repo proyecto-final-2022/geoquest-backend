@@ -24,6 +24,10 @@ type CompletionRequest struct {
 	StartSeconds int `json:"start_seconds"`
 }
 
+type WaitRoomRequest struct {
+	UserIDS []int `json:"user_ids"`
+}
+
 /*
 t1 := time.Now()
 t2 := t1.Add(time.Second * 341)

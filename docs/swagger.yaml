@@ -468,6 +468,27 @@ paths:
       summary: New Team
       tags:
       - Teams
+  /teams/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a team
+      parameters:
+      - description: Team ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Delete team
+      tags:
+      - Teams
   /teams/{id}/completions/{quest_id}:
     post:
       consumes:
@@ -798,6 +819,32 @@ paths:
         "500":
           description: Internal Server Error
       summary: New notification
+      tags:
+      - Users
+  /users/{id}/notifications/{notification_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a notification
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Notification ID
+        in: path
+        name: notification_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Users
       tags:
       - Users
   /users/sessions:

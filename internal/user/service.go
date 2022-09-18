@@ -25,6 +25,7 @@ type Service interface {
 	DeleteFriend(c *gin.Context, id int, friendID int) error
 	AddNotification(c *gin.Context, ID int, senderID int, notificationType string) error
 	GetNotifications(c *gin.Context, ID int) ([]domain.NotificationDTO, error)
+	DeleteNotification(c *gin.Context, id int, notificationID int) error
 }
 
 type service struct {
@@ -215,8 +216,14 @@ func (s *service) GetNotifications(c *gin.Context, id int) ([]domain.Notificatio
 		notificationsDTO[i].ID = notifications[i].ID
 		notificationsDTO[i].SenderID = notifications[i].SenderID
 		notificationsDTO[i].Type = notifications[i].Type
-		notificationsDTO[i].SenderName = senderDTO.Name
+		notificationsDTO[i].SenderName = senderDTO.Username
 	}
 
 	return notificationsDTO, nil
+}
+
+func (s *service) DeleteNotification(c *gin.Context, id int, notificationID int) error {
+	err := s.repo.DeleteNotification(c, id, notificationID)
+
+	return err
 }

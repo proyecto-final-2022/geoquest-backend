@@ -15,6 +15,7 @@ type Repository interface {
 	AddCompletion(c *gin.Context, teamID int, questId int, startTime time.Time, endTime time.Time) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletion, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
+	DeleteTeam(c *gin.Context, teamId int) error
 }
 
 type repository struct {
@@ -64,4 +65,14 @@ func (r *repository) GetRanking(c *gin.Context, questId int) ([]domain.QuestTeam
 		return nil, errors.New("DB Error")
 	}
 	return completions, nil
+}
+
+func (r *repository) DeleteTeam(c *gin.Context, teamId int) error {
+	if tx := config.MySql.Where("id = ?", teamId).Delete(&domain.Team{}); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+	if tx := config.MySql.Where("team_id = ?", teamId).Delete(&[]domain.UserXTeam{}); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+	return nil
 }

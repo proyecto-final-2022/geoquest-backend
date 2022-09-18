@@ -63,6 +63,7 @@ func (r *router) buildUsersRoutes() {
 		gGroup.POST("/:id/coupons", handler.CreateUserCoupon())
 		gGroup.POST("/:id/friends/:friend_id", handler.AddUserFriend())
 		gGroup.POST("/:id/notifications/", handler.AddNotification())
+		gGroup.DELETE("/:id/notifications/:notification_id", handler.DeleteNotification())
 		gGroup.GET("/:id/notifications/", handler.GetNotifications())
 		gGroup.GET("/:id/friends", handler.GetUserFriends())
 		gGroup.GET("/:id/coupons", handler.GetUserCoupons())
@@ -100,5 +101,6 @@ func (r *router) buildTeamRoutes() {
 		gGroup.POST("/", handler.CreateTeam())
 		gGroup.POST("/:id/completions/:quest_id", handler.AddCompletion())
 		gGroup.GET("/rankings/:quest_id", handler.GetRanking())
+		gGroup.DELETE("/:id/", handler.DeleteTeam())
 	}
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -461,5 +462,33 @@ func (u *User) GetNotifications() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, notifications)
+	}
+}
+
+// @Summary Users
+// @Schemes
+// @Description Delete a notification
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param notification_id path string true "Notification ID"
+// @Success 200
+// @Failure 500
+// @Router /users/{id}/notifications/{notification_id} [delete]
+func (g *User) DeleteNotification() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramNotificationId, _ := strconv.Atoi(c.Param("notification_id"))
+
+		fmt.Println(paramNotificationId)
+		if err = g.service.DeleteNotification(c, paramId, paramNotificationId); err != nil {
+			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
 	}
 }
