@@ -54,7 +54,11 @@ definitions:
     type: object
   handler.NotificationRequest:
     properties:
+      quest_name:
+        type: string
       sender_id:
+        type: integer
+      team_id:
         type: integer
       type:
         type: string
@@ -76,6 +80,8 @@ definitions:
     type: object
   handler.TeamRequest:
     properties:
+      quest_id:
+        type: integer
       user_ids:
         items:
           type: integer

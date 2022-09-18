@@ -57,6 +57,8 @@ type CouponRequest struct {
 type NotificationRequest struct {
 	SenderID         int    `json:"sender_id"`
 	NotificationType string `json:"type"`
+	QuestName        string `json:"quest_name"`
+	TeamID           int    `json:"team_id"`
 }
 
 // @Summary New user
@@ -471,7 +473,7 @@ func (u *User) AddNotification() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType); err != nil {
+		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType, req.QuestName, req.TeamID); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

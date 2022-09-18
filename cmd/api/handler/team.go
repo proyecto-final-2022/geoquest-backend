@@ -20,6 +20,7 @@ func NewTeam(s team.Service) *Team {
 
 type TeamRequest struct {
 	UserIDs []int `json:"user_ids"`
+	QuestID int   `json:"quest_id"`
 }
 
 type TeamCompletionRequest struct {
@@ -51,7 +52,7 @@ func (t *Team) CreateTeam() gin.HandlerFunc {
 			return
 		}
 
-		id, err := t.service.CreateTeam(c, req.UserIDs)
+		id, err := t.service.CreateTeam(c, req.UserIDs, req.QuestID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return

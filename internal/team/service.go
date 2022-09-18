@@ -12,7 +12,7 @@ import (
 )
 
 type Service interface {
-	CreateTeam(c *gin.Context, ids []int) (int, error)
+	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
@@ -30,7 +30,7 @@ func NewService(rep Repository, userRepo user.Repository) Service {
 	}
 }
 
-func (s *service) CreateTeam(c *gin.Context, ids []int) (int, error) {
+func (s *service) CreateTeam(c *gin.Context, ids []int, questID int) (int, error) {
 
 	teamID, err := s.repo.CreateTeam(c)
 
@@ -39,7 +39,7 @@ func (s *service) CreateTeam(c *gin.Context, ids []int) (int, error) {
 	}
 
 	for i := range ids {
-		err = s.repo.AddPlayer(c, teamID, ids[i])
+		err = s.repo.AddPlayer(c, teamID, ids[i], questID)
 		if err != nil {
 			return 0, err
 		}

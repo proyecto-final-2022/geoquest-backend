@@ -1225,7 +1225,13 @@ const docTemplate = `{
         "handler.NotificationRequest": {
             "type": "object",
             "properties": {
+                "quest_name": {
+                    "type": "string"
+                },
                 "sender_id": {
+                    "type": "integer"
+                },
+                "team_id": {
                     "type": "integer"
                 },
                 "type": {
@@ -1259,6 +1265,9 @@ const docTemplate = `{
         "handler.TeamRequest": {
             "type": "object",
             "properties": {
+                "quest_id": {
+                    "type": "integer"
+                },
                 "user_ids": {
                     "type": "array",
                     "items": {
