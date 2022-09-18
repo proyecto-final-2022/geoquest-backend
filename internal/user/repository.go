@@ -54,7 +54,7 @@ func (r *repository) GetUserByEmail(c *gin.Context, email string) (domain.UserDT
 	if tx := config.MySql.Where("email = ?", email).First(&user); tx.Error != nil {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{Email: user.Email, Name: user.Name, Username: user.Username, Password: user.Password}, nil
+	return domain.UserDTO{ID: user.ID, Email: user.Email, Name: user.Name, Username: user.Username, Password: user.Password}, nil
 }
 
 func (r *repository) UpdateUser(c *gin.Context, user domain.User) error {

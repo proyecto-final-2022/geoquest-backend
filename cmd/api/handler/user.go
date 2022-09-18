@@ -31,6 +31,14 @@ type LoginGoogleRequest struct {
 	Username string `json:"username"`
 }
 
+type UserResponse struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Token    string `json:"token"`
+}
+
 type UserRequest struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
@@ -65,6 +73,8 @@ type NotificationRequest struct {
 func (u *User) CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req domain.UserDTO
+		var createdUser domain.UserDTO
+
 		var pass string
 		var err error
 
@@ -89,7 +99,20 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, tokenString)
+		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		userResponse := UserResponse{
+			ID:       createdUser.ID,
+			Name:     createdUser.Name,
+			Email:    createdUser.Email,
+			Username: createdUser.Username,
+			Token:    tokenString,
+		}
+
+		c.JSON(http.StatusOK, userResponse)
 	}
 }
 
@@ -276,14 +299,23 @@ func (u *User) LoginUser() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, tokenString)
+		userResponse := UserResponse{
+			ID:       user.ID,
+			Name:     user.Name,
+			Email:    user.Email,
+			Username: user.Username,
+			Token:    tokenString,
+		}
 
+		c.JSON(http.StatusOK, userResponse)
 	}
 }
 
 func (u *User) LoginUserGoogle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginGoogleRequest
+		var createdUser domain.UserDTO
+
 		var err error
 
 		tokenGoogle := c.GetHeader("Authorization")
@@ -297,18 +329,19 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			return
 		}
 
-		/*
-			// Validate the JWT is valid
-			claims, err := auth.ValidateGoogleJWT(tokenGoogle)
-			if err != nil {
-				c.JSON(403, gin.H{"error": "Invalid google auth"})
+		//If user is not created, create it. If it is, get
+		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Username, req.Username, ""); err != nil {
+				c.JSON(http.StatusInternalServerError, err)
 				return
 			}
-			if claims.Email != req.Email {
-				c.JSON(403, gin.H{"error": "Emails don't match"})
-				return
+
+			if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			}
-		*/
+			return
+		}
+
 		// create a JWT for OUR app and give it back to the client for future requests
 		tokenString, err := auth.GenerateJWT(req.Email, req.Username)
 		if err != nil {
@@ -316,7 +349,17 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, tokenString)
+		userResponse := UserResponse{
+			ID:       createdUser.ID,
+			Email:    req.Email,
+			Name:     req.Username,
+			Username: req.Username,
+			Token:    tokenString,
+		}
+
+		fmt.Println(userResponse)
+
+		c.JSON(http.StatusOK, userResponse)
 	}
 }
 
