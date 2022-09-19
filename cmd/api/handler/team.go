@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -191,12 +190,8 @@ func (t *Team) DeleteTeam() gin.HandlerFunc {
 func (t *Team) AcceptQuestTeam() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		fmt.Println("hola")
 		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
 		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
-
-		fmt.Println(paramTeamId)
-		fmt.Println(paramUserId)
 
 		if err := t.service.AcceptQuestTeam(c, paramTeamId, paramUserId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)

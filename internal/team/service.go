@@ -140,10 +140,7 @@ func (s *service) DeleteTeam(c *gin.Context, teamId int) error {
 
 func (s *service) AcceptQuestTeam(c *gin.Context, teamId int, userId int) error {
 
-	waitRoom := domain.UserXTeam{
-		Accept: true,
-	}
-	err := s.repo.AcceptQuestTeam(c, teamId, userId, waitRoom)
+	err := s.repo.AcceptQuestTeam(c, teamId, userId)
 	if err != nil {
 		return err
 	}
