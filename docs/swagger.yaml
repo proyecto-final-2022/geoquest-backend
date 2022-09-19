@@ -552,6 +552,34 @@ paths:
       summary: Ranking of quest
       tags:
       - Teams
+  /teams/waitrooms/{team_id}/users/{user_id}:
+    put:
+      consumes:
+      - application/json
+      description: Accept invitation from a team
+      parameters:
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Accept invitation to Quest
+      tags:
+      - Teams
   /users/:
     post:
       consumes:

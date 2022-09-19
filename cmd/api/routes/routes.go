@@ -100,7 +100,8 @@ func (r *router) buildTeamRoutes() {
 	{
 		gGroup.POST("/", handler.CreateTeam())
 		gGroup.POST("/:id/completions/:quest_id", handler.AddCompletion())
-		gGroup.GET("/rankings/:quest_id", handler.GetRanking())
+		gGroup.PUT("/waitrooms/:team_id/users/:user_id", handler.AcceptQuestTeam())
+		gGroup.GET("/rankings/:quest_id", handler.AcceptQuestTeam())
 		gGroup.DELETE("/:id/", handler.DeleteTeam())
 	}
 }

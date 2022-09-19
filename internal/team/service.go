@@ -16,6 +16,7 @@ type Service interface {
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
+	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
 }
 
 type service struct {
@@ -129,13 +130,18 @@ func (s *service) DeleteTeam(c *gin.Context, teamId int) error {
 		return err
 	}
 
-	/*
-		for i := range team {
-			team, err := s.repo.DeleteTeam(c, completions[i].TeamID)
-			if err != nil {
-				return err
-			}
-		}
-	*/
+	return nil
+}
+
+func (s *service) AcceptQuestTeam(c *gin.Context, teamId int, userId int) error {
+
+	waitRoom := domain.UserXTeam{
+		Accept: true,
+	}
+	err := s.repo.AcceptQuestTeam(c, teamId, userId, waitRoom)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

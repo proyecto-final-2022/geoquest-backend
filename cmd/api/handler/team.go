@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -141,6 +142,37 @@ func (t *Team) DeleteTeam() gin.HandlerFunc {
 
 		if err = t.service.DeleteTeam(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Accept invitation to Quest
+// @Schemes
+// @Description Accept invitation from a team
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param team_id path string true "Team ID"
+// @Param user_id path string true "User ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /teams/waitrooms/{team_id}/users/{user_id} [put]
+func (t *Team) AcceptQuestTeam() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		fmt.Println("hola")
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
+
+		fmt.Println(paramTeamId)
+		fmt.Println(paramUserId)
+
+		if err := t.service.AcceptQuestTeam(c, paramTeamId, paramUserId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 

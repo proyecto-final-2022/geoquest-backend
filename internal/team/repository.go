@@ -16,6 +16,7 @@ type Repository interface {
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletion, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	DeleteTeam(c *gin.Context, teamId int) error
+	AcceptQuestTeam(c *gin.Context, teamId int, userId int, waitRoom domain.UserXTeam) error
 }
 
 type repository struct {
@@ -74,5 +75,14 @@ func (r *repository) DeleteTeam(c *gin.Context, teamId int) error {
 	if tx := config.MySql.Where("team_id = ?", teamId).Delete(&[]domain.UserXTeam{}); tx.Error != nil {
 		return errors.New("DB Error")
 	}
+	return nil
+}
+
+func (r *repository) AcceptQuestTeam(c *gin.Context, teamId int, userId int, waitRoom domain.UserXTeam) error {
+
+	if tx := config.MySql.Where("team_id = ? AND user_id = ?", teamId, userId).First(&domain.UserXTeam{}).Update("Accept", true); tx.Error != nil {
+		return tx.Error
+	}
+
 	return nil
 }
