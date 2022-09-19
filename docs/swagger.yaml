@@ -497,6 +497,28 @@ paths:
       summary: Delete team
       tags:
       - Teams
+    get:
+      consumes:
+      - application/json
+      description: Get Team players
+      parameters:
+      - description: Team ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Team players
+      tags:
+      - Teams
   /teams/{id}/completions/{quest_id}:
     post:
       consumes:

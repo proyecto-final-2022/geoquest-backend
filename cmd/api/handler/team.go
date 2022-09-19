@@ -151,6 +151,32 @@ func (t *Team) GetWaitRoomAccepted() gin.HandlerFunc {
 	}
 }
 
+// @Summary Team players
+// @Schemes
+// @Description Get Team players
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param id path int true "Team ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /teams/{id} [get]
+func (t *Team) GetTeam() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		teamId, _ := strconv.Atoi(c.Param("id"))
+
+		team, err := t.service.GetTeam(c, teamId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, team)
+	}
+}
+
 // @Summary Delete team
 // @Schemes
 // @Description Delete a team

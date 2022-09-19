@@ -14,6 +14,7 @@ import (
 
 type Service interface {
 	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
+	GetTeam(c *gin.Context, teamId int) (domain.TeamPlayers, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
 	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (domain.WaitRoomDTO, error)
@@ -165,4 +166,24 @@ func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (
 	}
 
 	return waitRoomDTO, nil
+}
+
+func (s *service) GetTeam(c *gin.Context, teamId int) (domain.TeamPlayers, error) {
+
+	var teamPlayers domain.TeamPlayers
+
+	team, err := s.repo.GetTeam(c, teamId)
+	if err != nil {
+		return domain.TeamPlayers{}, err
+	}
+
+	for i := range team {
+		userDTO, _, err := s.userRepo.GetUser(c, team[i].UserID)
+		if err != nil {
+			return domain.TeamPlayers{}, err
+		}
+		teamPlayers.Players = append(teamPlayers.Players, userDTO)
+	}
+
+	return teamPlayers, nil
 }
