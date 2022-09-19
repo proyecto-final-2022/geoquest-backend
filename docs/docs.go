@@ -565,7 +565,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/teams/waitrooms/quests/{quest_id}/teams/{team_id}": {
+        "/teams/waitrooms/{team_id}/quests/{quest_id}": {
             "get": {
                 "description": "Get Waitroom to see users that accepted the invitation",
                 "consumes": [
@@ -583,6 +583,13 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Team ID",
                         "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Quest ID",
+                        "name": "quest_id",
                         "in": "path",
                         "required": true
                     }

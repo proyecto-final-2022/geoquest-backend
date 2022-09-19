@@ -130,10 +130,11 @@ func (t *Team) GetRanking() gin.HandlerFunc {
 // @Accept json
 // @Produce json
 // @Param team_id path int true "Team ID"
+// @Param quest_id path int true "Quest ID"
 // @Success 200
 // @Failure 422
 // @Failure 500
-// @Router /teams/waitrooms/quests/{quest_id}/teams/{team_id} [get]
+// @Router /teams/waitrooms/{team_id}/quests/{quest_id} [get]
 func (t *Team) GetWaitRoomAccepted() gin.HandlerFunc {
 	return func(c *gin.Context) {
 

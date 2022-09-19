@@ -554,6 +554,34 @@ paths:
       summary: Ranking of quest
       tags:
       - Teams
+  /teams/waitrooms/{team_id}/quests/{quest_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Waitroom to see users that accepted the invitation
+      parameters:
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: integer
+      - description: Quest ID
+        in: path
+        name: quest_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: WaitRoom of a quest
+      tags:
+      - Teams
   /teams/waitrooms/{team_id}/users/{user_id}:
     put:
       consumes:
@@ -580,29 +608,6 @@ paths:
         "500":
           description: Internal Server Error
       summary: Accept invitation to Quest
-      tags:
-      - Teams
-  /teams/waitrooms/quests/{quest_id}/teams/{team_id}:
-    get:
-      consumes:
-      - application/json
-      description: Get Waitroom to see users that accepted the invitation
-      parameters:
-      - description: Team ID
-        in: path
-        name: team_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "422":
-          description: Unprocessable Entity
-        "500":
-          description: Internal Server Error
-      summary: WaitRoom of a quest
       tags:
       - Teams
   /users/:

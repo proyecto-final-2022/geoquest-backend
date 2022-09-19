@@ -1,7 +1,6 @@
 package team
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,7 +16,7 @@ type Service interface {
 	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
-	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.WaitRoomDTO, error)
+	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (domain.WaitRoomDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
 }
@@ -148,23 +147,21 @@ func (s *service) AcceptQuestTeam(c *gin.Context, teamId int, userId int) error 
 	return nil
 }
 
-func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.WaitRoomDTO, error) {
+func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (domain.WaitRoomDTO, error) {
+
+	var waitRoomDTO domain.WaitRoomDTO
 
 	waitRoom, err := s.repo.GetWaitRoomAccepted(c, teamId, questId)
 	if err != nil {
-		return nil, err
+		return domain.WaitRoomDTO{}, err
 	}
-
-	fmt.Println(waitRoom)
-
-	waitRoomDTO := make([]domain.WaitRoomDTO, len(waitRoom))
 
 	for i := range waitRoom {
 		userDTO, _, err := s.userRepo.GetUser(c, waitRoom[i].UserID)
 		if err != nil {
-			return nil, err
+			return domain.WaitRoomDTO{}, err
 		}
-		waitRoomDTO[i].UsersAccepted = append(waitRoomDTO[i].UsersAccepted, userDTO)
+		waitRoomDTO.UsersAccepted = append(waitRoomDTO.UsersAccepted, userDTO)
 	}
 
 	return waitRoomDTO, nil

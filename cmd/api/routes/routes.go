@@ -103,7 +103,7 @@ func (r *router) buildTeamRoutes() {
 		gGroup.POST("/:id/completions/:quest_id", handler.AddCompletion())
 		gGroup.PUT("/waitrooms/:team_id/users/:user_id", handler.AcceptQuestTeam())
 		gGroup.GET("/rankings/:quest_id", handler.AcceptQuestTeam())
-		gGroup.GET("/waitrooms/quests/:quest_id/teams/:team_id", handler.GetWaitRoomAccepted())
+		gGroup.GET("/waitrooms/:team_id/quests/:quest_id/", handler.GetWaitRoomAccepted())
 		gGroup.DELETE("/:id/", handler.DeleteTeam())
 	}
 }
