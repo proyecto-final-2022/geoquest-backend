@@ -1,6 +1,7 @@
 package team
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 )
 
@@ -15,19 +17,22 @@ type Service interface {
 	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
+	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.WaitRoomDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
 }
 
 type service struct {
-	repo     Repository
-	userRepo user.Repository
+	repo      Repository
+	userRepo  user.Repository
+	questRepo quest.Repository
 }
 
-func NewService(rep Repository, userRepo user.Repository) Service {
+func NewService(rep Repository, userRepo user.Repository, questRepo quest.Repository) Service {
 	return &service{
-		repo:     rep,
-		userRepo: userRepo,
+		repo:      rep,
+		userRepo:  userRepo,
+		questRepo: questRepo,
 	}
 }
 
@@ -144,4 +149,26 @@ func (s *service) AcceptQuestTeam(c *gin.Context, teamId int, userId int) error 
 	}
 
 	return nil
+}
+
+func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.WaitRoomDTO, error) {
+
+	waitRoom, err := s.repo.GetWaitRoomAccepted(c, teamId, questId)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(waitRoom)
+
+	waitRoomDTO := make([]domain.WaitRoomDTO, len(waitRoom))
+
+	for i := range waitRoom {
+		userDTO, _, err := s.userRepo.GetUser(c, waitRoom[i].UserID)
+		if err != nil {
+			return nil, err
+		}
+		waitRoomDTO[i].UsersAccepted = append(waitRoomDTO[i].UsersAccepted, userDTO)
+	}
+
+	return waitRoomDTO, nil
 }

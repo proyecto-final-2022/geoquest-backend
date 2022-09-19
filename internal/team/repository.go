@@ -17,6 +17,7 @@ type Repository interface {
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	DeleteTeam(c *gin.Context, teamId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int, waitRoom domain.UserXTeam) error
+	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.UserXTeam, error)
 }
 
 type repository struct {
@@ -38,6 +39,15 @@ func (r *repository) CreateTeam(c *gin.Context) (int, error) {
 func (r *repository) GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error) {
 	var team []domain.UserXTeam
 	if tx := config.MySql.Where("team_id = ?", teamID).Find(&team); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	return team, nil
+}
+
+func (r *repository) GetWaitRoomAccepted(c *gin.Context, teamID int, questID int) ([]domain.UserXTeam, error) {
+	var team []domain.UserXTeam
+	if tx := config.MySql.Where("team_id = ? AND quest_id = ? AND Accept = 1", teamID, questID).Find(&team); tx.Error != nil {
 		return nil, errors.New("DB Error")
 	}
 

@@ -17,6 +17,7 @@ type Repository interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
+	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
 	CreateQuest(c *gin.Context, name string) error
 	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
@@ -112,6 +113,14 @@ func (r *repository) UpdateQuest(c *gin.Context, id string, quest domain.QuestDT
 func (r *repository) GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error) {
 	var quest domain.QuestInfo
 	if tx := config.MySql.Where("id = ?", questID).First(&quest); tx.Error != nil {
+		return domain.QuestInfo{}, errors.New("DB Error")
+	}
+	return quest, nil
+}
+
+func (r *repository) GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error) {
+	var quest domain.QuestInfo
+	if tx := config.MySql.Where("name = ?", questName).First(&quest); tx.Error != nil {
 		return domain.QuestInfo{}, errors.New("DB Error")
 	}
 	return quest, nil

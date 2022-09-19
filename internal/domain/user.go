@@ -45,6 +45,10 @@ type UserXTeam struct {
 	Accept  bool `json:"accepted"`
 }
 
+type WaitRoomDTO struct {
+	UsersAccepted []UserDTO `json:"users_accepted"`
+}
+
 type Notification struct {
 	gorm.Model
 	ID         int       `json:"id,identity" gorm:"primary_key"`
@@ -53,6 +57,7 @@ type Notification struct {
 	Type       string    `json:"type"`
 	QuestName  string    `json:"quest_name"`
 	TeamID     int       `json:"team_id"`
+	QuestID    int       `json:"quest_id"`
 	SentTime   time.Time `json:"sent_time"`
 }
 
@@ -60,6 +65,7 @@ type NotificationDTO struct {
 	ID         int    `json:"id,identity" gorm:"primary_key"`
 	SenderID   int    `json:"sender_id"`
 	TeamID     int    `json:"team_id"`
+	QuestID    int    `json:"quest_id"`
 	SenderName string `json:"sender_name"`
 	Type       string `json:"type"`
 	QuestName  string `json:"quest_name"`

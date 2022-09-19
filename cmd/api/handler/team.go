@@ -124,6 +124,33 @@ func (t *Team) GetRanking() gin.HandlerFunc {
 	}
 }
 
+// @Summary WaitRoom of a quest
+// @Schemes
+// @Description Get Waitroom to see users that accepted the invitation
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param team_id path int true "Team ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /teams/waitrooms/quests/{quest_id}/teams/{team_id} [get]
+func (t *Team) GetWaitRoomAccepted() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		teamId, _ := strconv.Atoi(c.Param("team_id"))
+		questId, _ := strconv.Atoi(c.Param("quest_id"))
+
+		waitRoom, err := t.service.GetWaitRoomAccepted(c, teamId, questId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, waitRoom)
+	}
+}
+
 // @Summary Delete team
 // @Schemes
 // @Description Delete a team

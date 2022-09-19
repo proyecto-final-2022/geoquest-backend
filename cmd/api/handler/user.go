@@ -59,6 +59,7 @@ type NotificationRequest struct {
 	NotificationType string `json:"type"`
 	QuestName        string `json:"quest_name"`
 	TeamID           int    `json:"team_id"`
+	QuestID          int    `json:"quest_id"`
 }
 
 // @Summary New user
@@ -473,7 +474,7 @@ func (u *User) AddNotification() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType, req.QuestName, req.TeamID); err != nil {
+		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType, req.QuestName, req.TeamID, req.QuestID); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

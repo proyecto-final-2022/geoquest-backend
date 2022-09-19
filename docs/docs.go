@@ -565,6 +565,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/teams/waitrooms/quests/{quest_id}/teams/{team_id}": {
+            "get": {
+                "description": "Get Waitroom to see users that accepted the invitation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "WaitRoom of a quest",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/teams/waitrooms/{team_id}/users/{user_id}": {
             "put": {
                 "description": "Accept invitation from a team",
@@ -1267,6 +1302,9 @@ const docTemplate = `{
         "handler.NotificationRequest": {
             "type": "object",
             "properties": {
+                "quest_id": {
+                    "type": "integer"
+                },
                 "quest_name": {
                     "type": "string"
                 },

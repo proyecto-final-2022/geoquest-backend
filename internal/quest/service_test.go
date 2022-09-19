@@ -71,6 +71,10 @@ func (d *dummyRepo) GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo,
 	return domain.QuestInfo{}, nil
 }
 
+func (d *dummyRepo) GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error) {
+	return domain.QuestInfo{}, nil
+}
+
 func (d *dummyRepo) UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error {
 	return nil
 }
