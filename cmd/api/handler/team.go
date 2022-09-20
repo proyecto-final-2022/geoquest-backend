@@ -194,7 +194,34 @@ func (t *Team) DeleteTeam() gin.HandlerFunc {
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
 		if err = t.service.DeleteTeam(c, paramId); err != nil {
-			c.JSON(http.StatusInternalServerError, paramId)
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Delete player from team
+// @Schemes
+// @Description Delete player from team
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param id path string true "Team ID"
+// @Param user_id path string true "User ID"
+// @Success 200
+// @Failure 500
+// @Router /teams/{id}/users/{user_id} [delete]
+func (t *Team) DeletePlayerFromTeam() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramTeamId, _ := strconv.Atoi(c.Param("id"))
+		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
+
+		if err = t.service.DeletePlayerFromTeam(c, paramTeamId, paramUserId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 

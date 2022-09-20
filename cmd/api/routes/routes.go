@@ -106,5 +106,6 @@ func (r *router) buildTeamRoutes() {
 		gGroup.GET("/rankings/:quest_id", handler.AcceptQuestTeam())
 		gGroup.GET("/waitrooms/:team_id/quests/:quest_id/", handler.GetWaitRoomAccepted())
 		gGroup.DELETE("/:id/", handler.DeleteTeam())
+		gGroup.DELETE("/:id/users/:user_id", handler.DeletePlayerFromTeam())
 	}
 }

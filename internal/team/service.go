@@ -20,6 +20,7 @@ type Service interface {
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
 	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.UserDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
+	DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
 }
 
@@ -191,4 +192,14 @@ func (s *service) GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error) 
 	}
 
 	return teamPlayers, nil
+}
+
+func (s *service) DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) error {
+
+	err := s.repo.DeletePlayerFromTeam(c, teamId, userId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
