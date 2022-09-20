@@ -36,10 +36,6 @@ type Team struct {
 	ID int `json:"id,identity" gorm:"primary_key"`
 }
 
-type TeamPlayers struct {
-	Players []UserDTO `json:"players"`
-}
-
 type UserXTeam struct {
 	gorm.Model
 	ID      int  `json:"id,identity" gorm:"primary_key"`

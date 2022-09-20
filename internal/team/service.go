@@ -1,6 +1,7 @@
 package team
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -14,10 +15,10 @@ import (
 
 type Service interface {
 	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
-	GetTeam(c *gin.Context, teamId int) (domain.TeamPlayers, error)
+	GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
-	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (domain.WaitRoomDTO, error)
+	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.UserDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
 }
@@ -148,42 +149,44 @@ func (s *service) AcceptQuestTeam(c *gin.Context, teamId int, userId int) error 
 	return nil
 }
 
-func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (domain.WaitRoomDTO, error) {
-
-	var waitRoomDTO domain.WaitRoomDTO
+func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.UserDTO, error) {
 
 	waitRoom, err := s.repo.GetWaitRoomAccepted(c, teamId, questId)
 	if err != nil {
-		return domain.WaitRoomDTO{}, err
+		return nil, err
 	}
+
+	waitRoomAccepted := make([]domain.UserDTO, len(waitRoom))
 
 	for i := range waitRoom {
 		userDTO, _, err := s.userRepo.GetUser(c, waitRoom[i].UserID)
 		if err != nil {
-			return domain.WaitRoomDTO{}, err
+			return nil, err
 		}
-		waitRoomDTO.UsersAccepted = append(waitRoomDTO.UsersAccepted, userDTO)
+		waitRoomAccepted = append(waitRoomAccepted, userDTO)
 	}
 
-	return waitRoomDTO, nil
+	return waitRoomAccepted, nil
 }
 
-func (s *service) GetTeam(c *gin.Context, teamId int) (domain.TeamPlayers, error) {
-
-	var teamPlayers domain.TeamPlayers
+func (s *service) GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error) {
 
 	team, err := s.repo.GetTeam(c, teamId)
 	if err != nil {
-		return domain.TeamPlayers{}, err
+		return nil, err
 	}
+
+	var teamPlayers []domain.UserDTO
 
 	for i := range team {
 		userDTO, _, err := s.userRepo.GetUser(c, team[i].UserID)
+
 		if err != nil {
-			return domain.TeamPlayers{}, err
+			return nil, err
 		}
-		teamPlayers.Players = append(teamPlayers.Players, userDTO)
+		teamPlayers = append(teamPlayers, userDTO)
 	}
+	fmt.Println(teamPlayers)
 
 	return teamPlayers, nil
 }
