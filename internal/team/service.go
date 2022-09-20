@@ -1,7 +1,6 @@
 package team
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -156,7 +155,7 @@ func (s *service) GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) (
 		return nil, err
 	}
 
-	waitRoomAccepted := make([]domain.UserDTO, len(waitRoom))
+	var waitRoomAccepted []domain.UserDTO
 
 	for i := range waitRoom {
 		userDTO, _, err := s.userRepo.GetUser(c, waitRoom[i].UserID)
@@ -186,7 +185,6 @@ func (s *service) GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error) 
 		}
 		teamPlayers = append(teamPlayers, userDTO)
 	}
-	fmt.Println(teamPlayers)
 
 	return teamPlayers, nil
 }
