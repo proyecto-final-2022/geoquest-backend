@@ -93,7 +93,12 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, req.Image, pass); err != nil {
+		var image int
+		if req.Image == 0 {
+			image = 1
+		}
+
+		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, pass); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -334,9 +339,14 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			return
 		}
 
+		var image int
+		if req.Image == 0 {
+			image = 1
+		}
+
 		//If user is not created, create it. If it is, get
 		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
-			if err = u.service.CreateUser(c, req.Email, req.Username, req.Username, req.Image, ""); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Username, req.Username, image, ""); err != nil {
 				c.JSON(http.StatusInternalServerError, err)
 				return
 			}
