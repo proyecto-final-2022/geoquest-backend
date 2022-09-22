@@ -13,6 +13,7 @@ type User struct {
 	Username string   `json:"username" gorm:"unique"`
 	Email    string   `json:"email" gorm:"unique"`
 	Password string   `json:"password"`
+	Image    int      `json:"image"`
 	Coupons  []Coupon `json:"coupons" gorm:"foreignKey:UserID;references:ID"`
 }
 
@@ -22,6 +23,7 @@ type UserDTO struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Image    int    `json:"image"`
 }
 
 type UserFriends struct {

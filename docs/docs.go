@@ -765,6 +765,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/teams/{id}/users/{user_id}": {
+            "delete": {
+                "description": "Delete player from team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Delete player from team",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users/": {
             "post": {
                 "description": "Save new user",
@@ -1274,6 +1313,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1401,6 +1443,9 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string"
+                },
+                "image": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

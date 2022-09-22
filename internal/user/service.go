@@ -11,7 +11,7 @@ import (
 )
 
 type Service interface {
-	CreateUser(c *gin.Context, email string, name string, username string, password string) error
+	CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error
@@ -36,8 +36,8 @@ func NewService(rep Repository) Service {
 	return &service{repo: rep}
 }
 
-func (s *service) CreateUser(c *gin.Context, email string, name string, username string, password string) error {
-	err := s.repo.CreateUser(c, email, name, username, password)
+func (s *service) CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error {
+	err := s.repo.CreateUser(c, email, name, username, image, password)
 
 	return err
 }

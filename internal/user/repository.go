@@ -11,7 +11,7 @@ import (
 )
 
 type Repository interface {
-	CreateUser(c *gin.Context, email string, name string, username string, password string) error
+	CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, domain.User, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, user domain.User) error
@@ -33,8 +33,8 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) CreateUser(c *gin.Context, email string, name string, username string, password string) error {
-	user := domain.User{Email: email, Name: name, Username: username, Password: password}
+func (r *repository) CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error {
+	user := domain.User{Email: email, Name: name, Username: username, Image: image, Password: password}
 	if tx := config.MySql.Create(&user); tx.Error != nil {
 		return errors.New("DB Error")
 	}

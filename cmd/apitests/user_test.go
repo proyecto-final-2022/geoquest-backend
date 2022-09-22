@@ -18,7 +18,7 @@ import (
 
 type dummyRepo struct{}
 
-func (s *serviceMock) CreateUser(c *gin.Context, email string, name string, username string, password string) error {
+func (s *serviceMock) CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error {
 	if email == "testError" {
 		return errors.New("POST ERROR")
 	}
