@@ -37,6 +37,7 @@ type UserResponse struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
+	Image    int    `json:"image"`
 	Token    string `json:"token"`
 }
 
@@ -119,6 +120,7 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			Name:     createdUser.Name,
 			Email:    createdUser.Email,
 			Username: createdUser.Username,
+			Image:    createdUser.Image,
 			Token:    tokenString,
 		}
 
@@ -314,6 +316,7 @@ func (u *User) LoginUser() gin.HandlerFunc {
 			Name:     user.Name,
 			Email:    user.Email,
 			Username: user.Username,
+			Image:    user.Image,
 			Token:    tokenString,
 		}
 
@@ -369,6 +372,7 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			Email:    req.Email,
 			Name:     req.Username,
 			Username: req.Username,
+			Image:    createdUser.Image,
 			Token:    tokenString,
 		}
 
