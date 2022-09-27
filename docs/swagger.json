@@ -1307,6 +1307,15 @@
                 "image": {
                     "type": "integer"
                 },
+                "manual": {
+                    "type": "bool"
+                },
+                "google": {
+                    "type": "bool"
+                },
+                "facebook": {
+                    "type": "bool"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1437,6 +1446,15 @@
                 },
                 "image": {
                     "type": "integer"
+                },
+                "manual": {
+                    "type": "bool"
+                },
+                "google": {
+                    "type": "bool"
+                },
+                "facebook": {
+                    "type": "bool"
                 },
                 "name": {
                     "type": "string"

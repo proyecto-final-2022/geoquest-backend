@@ -12,6 +12,12 @@ definitions:
         type: integer
       image:
         type: integer
+      manual:
+        type: bool
+      google:
+        type: bool
+      facebook:
+        type: bool
       name:
         type: string
       password:
@@ -97,6 +103,12 @@ definitions:
         type: string
       image:
         type: integer
+      manual:
+        type: bool
+      google:
+        type: bool
+      facebook:
+        type: bool
       name:
         type: string
       password:

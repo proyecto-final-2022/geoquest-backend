@@ -39,6 +39,9 @@ type UserResponse struct {
 	Username string `json:"username"`
 	Image    int    `json:"image"`
 	Token    string `json:"token"`
+	Manual   bool   `json:"manual"`
+	Google   bool   `json:"google"`
+	Facebook bool   `json:"facebook"`
 }
 
 type UserRequest struct {
@@ -47,6 +50,9 @@ type UserRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Image    int    `json:"image"`
+	Manual   bool   `json:"manual"`
+	Google   bool   `json:"google"`
+	Facebook bool   `json:"facebook"`
 }
 
 type CouponRequest struct {
@@ -99,7 +105,7 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			image = 1
 		}
 
-		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, pass); err != nil {
+		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, true, false, false, pass); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -121,6 +127,9 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			Email:    createdUser.Email,
 			Username: createdUser.Username,
 			Image:    createdUser.Image,
+			Manual:   createdUser.Manual,
+			Google:   createdUser.Google,
+			Facebook: createdUser.Facebook,
 			Token:    tokenString,
 		}
 
@@ -317,6 +326,9 @@ func (u *User) LoginUser() gin.HandlerFunc {
 			Email:    user.Email,
 			Username: user.Username,
 			Image:    user.Image,
+			Manual:   user.Manual,
+			Google:   user.Google,
+			Facebook: user.Facebook,
 			Token:    tokenString,
 		}
 
@@ -349,7 +361,7 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 
 		//If user is not created, create it. If it is, get
 		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
-			if err = u.service.CreateUser(c, req.Email, req.Username, req.Username, image, ""); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Username, req.Username, image, false, true, false, ""); err != nil {
 				c.JSON(http.StatusInternalServerError, err)
 				return
 			}
@@ -373,6 +385,9 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			Name:     req.Username,
 			Username: req.Username,
 			Image:    createdUser.Image,
+			Manual:   createdUser.Manual,
+			Google:   createdUser.Google,
+			Facebook: createdUser.Facebook,
 			Token:    tokenString,
 		}
 
@@ -432,7 +447,7 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username); err != nil {
+		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username, req.Image); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
 		}

@@ -1316,6 +1316,15 @@ const docTemplate = `{
                 "image": {
                     "type": "integer"
                 },
+                "manual": {
+                    "type": "bool"
+                },
+                "google": {
+                    "type": "bool"
+                },
+                "facebook": {
+                    "type": "bool"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1446,6 +1455,15 @@ const docTemplate = `{
                 },
                 "image": {
                     "type": "integer"
+                },
+                "manual": {
+                    "type": "bool"
+                },
+                "google": {
+                    "type": "bool"
+                },
+                "facebook": {
+                    "type": "bool"
                 },
                 "name": {
                     "type": "string"
