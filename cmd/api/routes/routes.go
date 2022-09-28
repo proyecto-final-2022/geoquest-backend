@@ -69,6 +69,7 @@ func (r *router) buildUsersRoutes() {
 		gGroup.GET("/:id/coupons", handler.GetUserCoupons())
 		gGroup.GET("/:id", handler.GetUser())
 		gGroup.PUT("/:id", handler.UpdateUser())
+		gGroup.PUT("/:id/updateUserPassword", handler.UpdateUserPassword())
 		gGroup.DELETE("/:id", handler.DeleteUser())
 		gGroup.DELETE("/:id/friends/:friend_id", handler.DeleteUserFriend())
 	}
