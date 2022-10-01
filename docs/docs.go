@@ -880,7 +880,7 @@ const docTemplate = `{
         },
         "/users/sessions/google": {
             "post": {
-                "description": "Login user by Gmail",
+                "description": "Login user",
                 "consumes": [
                     "application/json"
                 ],
@@ -890,7 +890,7 @@ const docTemplate = `{
                 "tags": [
                     "Users"
                 ],
-                "summary": "Login user by Gmail",
+                "summary": "Login user",
                 "parameters": [
                     {
                         "description": "User to log in",
@@ -898,7 +898,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.LoginGoogleRequest"
+                            "$ref": "#/definitions/handler.LoginRequest"
                         }
                     }
                 ],
@@ -1014,49 +1014,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/users/{id}/updateUserPassword": {
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "User",
-                "parameters": [
-                    {
-                        "description": "User to update",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.UserPasswordChangeRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1373,6 +1330,49 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{id}/updateUserPassword": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User",
+                "parameters": [
+                    {
+                        "description": "User to update",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UserRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1390,6 +1390,12 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
+                "facebook": {
+                    "type": "boolean"
+                },
+                "google": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -1397,12 +1403,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "manual": {
-                    "type": "boolean"
-                },
-                "google": {
-                    "type": "boolean"
-                },
-                "facebook": {
                     "type": "boolean"
                 },
                 "name": {
@@ -1467,26 +1467,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
-                },
-                "image": {
-                    "type": "integer"
-                }
-            }
-        },
-        "handler.LoginGoogleRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                },
-                "image": {
-                    "type": "integer"
                 }
             }
         },
@@ -1553,16 +1533,16 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "image": {
-                    "type": "integer"
-                },
-                "manual": {
+                "facebook": {
                     "type": "boolean"
                 },
                 "google": {
                     "type": "boolean"
                 },
-                "facebook": {
+                "image": {
+                    "type": "integer"
+                },
+                "manual": {
                     "type": "boolean"
                 },
                 "name": {
@@ -1572,17 +1552,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.UserPasswordChangeRequest": {
-            "type": "object",
-            "properties": {
-                "oldPassword": {
-                    "type": "string"
-                },
-                "newPassword": {
                     "type": "string"
                 }
             }
