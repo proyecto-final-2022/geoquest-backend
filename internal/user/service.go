@@ -170,6 +170,7 @@ func (s *service) GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, erro
 		usersDTO[i].Username = user.Username
 		usersDTO[i].Email = user.Email
 		usersDTO[i].Password = user.Password
+		usersDTO[i].Image = user.Image
 	}
 
 	return usersDTO, nil
