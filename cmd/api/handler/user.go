@@ -94,12 +94,11 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		var image int
 		if req.Image == 0 {
-			image = 1
+			req.Image = 1
 		}
 
-		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, pass); err != nil {
+		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, req.Image, pass); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
