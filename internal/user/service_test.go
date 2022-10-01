@@ -63,6 +63,10 @@ func (d *dummyRepo) GetUserFriends(c *gin.Context, userID int) ([]domain.UserFri
 	return nil, nil
 }
 
+func (d *dummyRepo) GetUsers(c *gin.Context) ([]domain.User, error) {
+	return nil, nil
+}
+
 func (d *dummyRepo) AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, teamID int, questID int, actualTime time.Time) error {
 	return nil
 }

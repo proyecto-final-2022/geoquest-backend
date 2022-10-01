@@ -259,6 +259,31 @@ func (u *User) GetUserFriends() gin.HandlerFunc {
 	}
 }
 
+// @Summary Get all users
+// @Schemes
+// @Description Get users
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/ [get]
+func (u *User) GetUsers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		users, err := u.service.GetUsers(c)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, users)
+	}
+}
+
 // @Summary Coupon
 // @Schemes
 // @Description Coupon

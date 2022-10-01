@@ -13,6 +13,7 @@ import (
 type Service interface {
 	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
+	GetUsers(c *gin.Context) ([]domain.UserDTO, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int) error
 	DeleteUser(c *gin.Context, id int) error
@@ -46,6 +47,21 @@ func (s *service) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	user, _, err := s.repo.GetUser(c, id)
 
 	return user, err
+}
+
+func (s *service) GetUsers(c *gin.Context) ([]domain.UserDTO, error) {
+	users, err := s.repo.GetUsers(c)
+
+	usersDTO := make([]domain.UserDTO, len(users))
+	for i := range users {
+		usersDTO[i].ID = users[i].ID
+		usersDTO[i].Name = users[i].Name
+		usersDTO[i].Username = users[i].Username
+		usersDTO[i].Email = users[i].Email
+		usersDTO[i].Image = users[i].Image
+	}
+
+	return usersDTO, err
 }
 
 func (s *service) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
@@ -126,7 +142,6 @@ func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, er
 		return nil, err
 	}
 
-	//servicio
 	couponsDTO := make([]domain.CouponDTO, len(coupons))
 	for i := range coupons {
 		couponsDTO[i].ID = coupons[i].ID

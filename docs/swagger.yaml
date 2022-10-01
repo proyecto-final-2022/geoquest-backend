@@ -675,6 +675,22 @@ paths:
       tags:
       - Teams
   /users/:
+    get:
+      consumes:
+      - application/json
+      description: Get users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Get all users
+      tags:
+      - Users
     post:
       consumes:
       - application/json

@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, domain.User, error)
+	GetUsers(c *gin.Context) ([]domain.User, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, user domain.User) error
 	DeleteUser(c *gin.Context, id int) error
@@ -47,6 +48,14 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 		return domain.UserDTO{}, domain.User{}, errors.New("DB Error")
 	}
 	return domain.UserDTO{ID: id, Username: user.Username, Email: user.Email, Name: user.Name, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image}, user, nil
+}
+
+func (r *repository) GetUsers(c *gin.Context) ([]domain.User, error) {
+	var users []domain.User
+	if tx := config.MySql.Find(&users); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+	return users, nil
 }
 
 func (r *repository) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error) {
