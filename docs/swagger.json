@@ -869,6 +869,43 @@
                 }
             }
         },
+        "/users/sessions/google": {
+            "post": {
+                "description": "Login user by Gmail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login user by Gmail",
+                "parameters": [
+                    {
+                        "description": "User to log in",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginGoogleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "description": "User info",
@@ -1307,6 +1344,15 @@
                 "image": {
                     "type": "integer"
                 },
+                "manual": {
+                    "type": "boolean"
+                },
+                "google": {
+                    "type": "boolean"
+                },
+                "facebook": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1369,6 +1415,26 @@
                 },
                 "password": {
                     "type": "string"
+                },
+                "image": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.LoginGoogleRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "integer"
                 }
             }
         },
@@ -1438,6 +1504,15 @@
                 "image": {
                     "type": "integer"
                 },
+                "manual": {
+                    "type": "boolean"
+                },
+                "google": {
+                    "type": "boolean"
+                },
+                "facebook": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1445,6 +1520,17 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UserPasswordChangeRequest": {
+            "type": "object",
+            "properties": {
+                "oldPassword": {
+                    "type": "string"
+                },
+                "newPassword": {
                     "type": "string"
                 }
             }

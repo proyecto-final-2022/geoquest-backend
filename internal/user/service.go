@@ -11,10 +11,10 @@ import (
 )
 
 type Service interface {
-	CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error
+	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
-	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error
+	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int) error
 	DeleteUser(c *gin.Context, id int) error
 	HashPassword(password string) (string, error)
 	CheckPassword(providedPassword string, userPassword string) error
@@ -36,8 +36,8 @@ func NewService(rep Repository) Service {
 	return &service{repo: rep}
 }
 
-func (s *service) CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error {
-	err := s.repo.CreateUser(c, email, name, username, image, password)
+func (s *service) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error {
+	err := s.repo.CreateUser(c, email, name, username, image, manual, google, facebook, password)
 
 	return err
 }
@@ -54,7 +54,7 @@ func (s *service) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, 
 	return user, err
 }
 
-func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error {
+func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int) error {
 
 	_, user, err := s.repo.GetUser(c, id)
 	if err != nil {
@@ -75,6 +75,10 @@ func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, 
 
 	if username != "" {
 		user.Username = username
+	}
+
+	if image != 0 {
+		user.Image = image
 	}
 
 	err = s.repo.UpdateUser(c, user)

@@ -18,7 +18,7 @@ import (
 
 type dummyRepo struct{}
 
-func (s *serviceMock) CreateUser(c *gin.Context, email string, name string, username string, image int, password string) error {
+func (s *serviceMock) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error {
 	if email == "testError" {
 		return errors.New("POST ERROR")
 	}
@@ -32,7 +32,7 @@ func (s *serviceMock) GetUser(c *gin.Context, id int) (domain.UserDTO, error) {
 	return domain.UserDTO{Email: "test", Name: "test", Password: "test"}, nil
 }
 
-func (s *serviceMock) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string) error {
+func (s *serviceMock) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int) error {
 	if id == 9 {
 		return errors.New("GET ERROR")
 	}

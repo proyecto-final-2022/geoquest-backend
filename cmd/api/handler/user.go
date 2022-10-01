@@ -28,6 +28,7 @@ type LoginRequest struct {
 
 type LoginGoogleRequest struct {
 	Email    string `json:"email"`
+	Name     string `json:"name"`
 	Username string `json:"username"`
 	Image    int    `json:"image"`
 }
@@ -39,6 +40,9 @@ type UserResponse struct {
 	Username string `json:"username"`
 	Image    int    `json:"image"`
 	Token    string `json:"token"`
+	Manual   bool   `json:"manual"`
+	Google   bool   `json:"google"`
+	Facebook bool   `json:"facebook"`
 }
 
 type UserRequest struct {
@@ -47,6 +51,14 @@ type UserRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Image    int    `json:"image"`
+	Manual   bool   `json:"manual"`
+	Google   bool   `json:"google"`
+	Facebook bool   `json:"facebook"`
+}
+
+type UserPasswordChangeRequest struct {
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 type CouponRequest struct {
@@ -98,7 +110,7 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			req.Image = 1
 		}
 
-		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, req.Image, pass); err != nil {
+		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, req.Image, true, false, false, pass); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -120,6 +132,9 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			Email:    createdUser.Email,
 			Username: createdUser.Username,
 			Image:    createdUser.Image,
+			Manual:   createdUser.Manual,
+			Google:   createdUser.Google,
+			Facebook: createdUser.Facebook,
 			Token:    tokenString,
 		}
 
@@ -316,6 +331,9 @@ func (u *User) LoginUser() gin.HandlerFunc {
 			Email:    user.Email,
 			Username: user.Username,
 			Image:    user.Image,
+			Manual:   user.Manual,
+			Google:   user.Google,
+			Facebook: user.Facebook,
 			Token:    tokenString,
 		}
 
@@ -323,6 +341,17 @@ func (u *User) LoginUser() gin.HandlerFunc {
 	}
 }
 
+// @Summary Login user
+// @Schemes
+// @Description Login user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body LoginRequest true "User to log in"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/sessions/google [post]
 func (u *User) LoginUserGoogle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginGoogleRequest
@@ -348,7 +377,7 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 
 		//If user is not created, create it. If it is, get
 		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
-			if err = u.service.CreateUser(c, req.Email, req.Username, req.Username, image, ""); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, false, true, false, ""); err != nil {
 				c.JSON(http.StatusInternalServerError, err)
 				return
 			}
@@ -368,10 +397,13 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 
 		userResponse := UserResponse{
 			ID:       createdUser.ID,
-			Email:    req.Email,
-			Name:     req.Username,
-			Username: req.Username,
+			Email:    createdUser.Email,
+			Name:     createdUser.Name,
+			Username: createdUser.Username,
 			Image:    createdUser.Image,
+			Manual:   createdUser.Manual,
+			Google:   createdUser.Google,
+			Facebook: createdUser.Facebook,
 			Token:    tokenString,
 		}
 
@@ -431,7 +463,57 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username); err != nil {
+		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username, req.Image); err != nil {
+			c.JSON(http.StatusInternalServerError, paramId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary User
+// @Schemes
+// @Description
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body UserRequest true "User to update"
+// @Param id path string true "User ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/updateUserPassword [put]
+func (g *User) UpdateUserPassword() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req UserPasswordChangeRequest
+		var user domain.UserDTO
+		var pass string
+		var err error
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if user, err = g.service.GetUser(c, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		if err = g.service.CheckPassword(req.OldPassword, user.Password); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		if pass, err = g.service.HashPassword(req.NewPassword); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err = g.service.UpdateUser(c, paramId, user.Email, user.Name, pass, user.Username, user.Image); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
 		}

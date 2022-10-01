@@ -12,6 +12,12 @@ definitions:
         type: integer
       image:
         type: integer
+      manual:
+        type: boolean
+      google:
+        type: boolean
+      facebook:
+        type: boolean
       name:
         type: string
       password:
@@ -53,6 +59,19 @@ definitions:
         type: string
       password:
         type: string
+      image:
+        type: integer
+    type: object
+  handler.LoginGoogleRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+      image:
+        type: integer
     type: object
   handler.NotificationRequest:
     properties:
@@ -97,11 +116,24 @@ definitions:
         type: string
       image:
         type: integer
+      manual:
+        type: boolean
+      google:
+        type: boolean
+      facebook:
+        type: boolean
       name:
         type: string
       password:
         type: string
       username:
+        type: string
+    type: object
+  handler.UserPasswordChangeRequest:
+    properties:
+      oldPassword:
+        type: string
+      newPassword:
         type: string
     type: object
   handler.clientRequest:
@@ -985,6 +1017,30 @@ paths:
         "500":
           description: Internal Server Error
       summary: Login user
+      tags:
+      - Users
+  /users/sessions/google:
+    post:
+      consumes:
+      - application/json
+      description: Login user by Gmail
+      parameters:
+      - description: User to log in
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginGoogleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Login user by Gmail
       tags:
       - Users
 swagger: "2.0"
