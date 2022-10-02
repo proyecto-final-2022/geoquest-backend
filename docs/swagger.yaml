@@ -835,6 +835,33 @@ paths:
       summary: New coupon
       tags:
       - Users
+  /users/{id}/coupons/{coupon_id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Coupon ID
+        in: path
+        name: coupon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Coupon
+      tags:
+      - Users
   /users/{id}/friends:
     get:
       consumes:

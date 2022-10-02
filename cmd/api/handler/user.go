@@ -547,6 +547,33 @@ func (g *User) UpdateUserPassword() gin.HandlerFunc {
 	}
 }
 
+// @Summary Coupon
+// @Schemes
+// @Description
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param coupon_id path string true "Coupon ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/{id}/coupons/{coupon_id} [put]
+func (g *User) UpdateCouponUsed() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramCouponId, _ := strconv.Atoi(c.Param("coupon_id"))
+
+		if err = g.service.UpdateCoupon(c, paramCouponId); err != nil {
+			c.JSON(http.StatusInternalServerError, paramCouponId)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
 // @Summary Users
 // @Schemes
 // @Description Delete a user

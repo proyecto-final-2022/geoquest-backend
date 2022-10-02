@@ -21,6 +21,7 @@ type Service interface {
 	CheckPassword(providedPassword string, userPassword string) error
 	CreateCoupon(c *gin.Context, userID int, description string, expirationYear int, expirationMonth time.Month, expirationDay int, expirationHour int) error
 	GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error)
+	UpdateCoupon(c *gin.Context, couponID int) error
 	AddFriend(c *gin.Context, id int, friendID int) error
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
@@ -135,6 +136,23 @@ func (s *service) CreateCoupon(c *gin.Context, userID int, description string, e
 	return nil
 }
 
+func (s *service) UpdateCoupon(c *gin.Context, couponID int) error {
+
+	coupon, err := s.repo.GetCoupon(c, couponID)
+
+	if err != nil {
+		return err
+	}
+
+	coupon.Used = true
+
+	if err := s.repo.UpdateCoupon(c, coupon); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error) {
 
 	coupons, err := s.repo.GetCoupons(c, userID)
@@ -142,12 +160,17 @@ func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, er
 		return nil, err
 	}
 
-	couponsDTO := make([]domain.CouponDTO, len(coupons))
+	var couponsDTO []domain.CouponDTO
+
 	for i := range coupons {
-		couponsDTO[i].ID = coupons[i].ID
-		couponsDTO[i].Description = coupons[i].Description
-		couponsDTO[i].ExpirationDate = coupons[i].ExpirationDate
-		couponsDTO[i].Used = coupons[i].Used
+		if !coupons[i].Used {
+			var couponDTO domain.CouponDTO
+			couponDTO.ID = coupons[i].ID
+			couponDTO.Description = coupons[i].Description
+			couponDTO.ExpirationDate = coupons[i].ExpirationDate
+			couponDTO.Used = coupons[i].Used
+			couponsDTO = append(couponsDTO, couponDTO)
+		}
 	}
 
 	return couponsDTO, nil

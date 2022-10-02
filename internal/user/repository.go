@@ -16,6 +16,8 @@ type Repository interface {
 	GetUsers(c *gin.Context) ([]domain.User, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, user domain.User) error
+	UpdateCoupon(c *gin.Context, coupon domain.Coupon) error
+	GetCoupon(c *gin.Context, couponID int) (domain.Coupon, error)
 	DeleteUser(c *gin.Context, id int) error
 	CreateCoupon(c *gin.Context, userID int, description string, date time.Time) error
 	GetCoupons(c *gin.Context, userID int) ([]domain.Coupon, error)
@@ -75,6 +77,15 @@ func (r *repository) UpdateUser(c *gin.Context, user domain.User) error {
 	return nil
 }
 
+func (r *repository) UpdateCoupon(c *gin.Context, coupon domain.Coupon) error {
+
+	if tx := config.MySql.Save(&coupon); tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
 func (r *repository) DeleteUser(c *gin.Context, id int) error {
 	if tx := config.MySql.Delete(&domain.User{}, id); tx.Error != nil {
 		return tx.Error
@@ -99,6 +110,14 @@ func (r *repository) GetCoupons(c *gin.Context, userID int) ([]domain.Coupon, er
 		return nil, errors.New("DB Error")
 	}
 	return coupons, nil
+}
+
+func (r *repository) GetCoupon(c *gin.Context, couponID int) (domain.Coupon, error) {
+	var coupon domain.Coupon
+	if tx := config.MySql.Where("id = ?", couponID).Find(&coupon); tx.Error != nil {
+		return domain.Coupon{}, errors.New("DB Error")
+	}
+	return coupon, nil
 }
 
 func (r *repository) AddFriend(c *gin.Context, userID int, friendID int) error {

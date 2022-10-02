@@ -23,6 +23,7 @@ type QuestCompletion struct {
 
 type QuestCompletionDTO struct {
 	Username  string    `json:"username"`
+	UserImage int       `json:"image"`
 	StartTime time.Time `json:"completion_time"`
 	EndTime   time.Time `json:"end_time"`
 	Hours     float64   `json:"hours"`

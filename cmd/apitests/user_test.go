@@ -94,6 +94,10 @@ func (s *serviceMock) DeleteNotification(c *gin.Context, userID int, notificatio
 	return nil
 }
 
+func (s *serviceMock) UpdateCoupon(c *gin.Context, couponID int) error {
+	return nil
+}
+
 func createServerUser() *gin.Engine {
 
 	service := &serviceMock{}

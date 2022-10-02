@@ -126,6 +126,7 @@ func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDT
 		}
 
 		questCompletionsDTO[i].Username = userDTO.Username
+		questCompletionsDTO[i].UserImage = userDTO.Image
 		questCompletionsDTO[i].StartTime = quests[i].StartTime
 		questCompletionsDTO[i].EndTime = quests[i].EndTime
 
