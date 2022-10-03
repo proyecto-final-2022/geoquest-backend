@@ -91,7 +91,7 @@ func (s *service) GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCom
 			if err != nil {
 				return nil, err
 			}
-			questTeamCompletionsDTO[i].Users = append(questTeamCompletionsDTO[i].Users, userDTO.Username)
+			questTeamCompletionsDTO[i].Users = append(questTeamCompletionsDTO[i].Users, domain.UserDTO{Username: userDTO.Username, Image: userDTO.Image})
 		}
 
 		questTeamCompletionsDTO[i].StartTime = completions[i].StartTime
