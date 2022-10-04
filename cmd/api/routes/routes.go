@@ -60,6 +60,7 @@ func (r *router) buildUsersRoutes() {
 		gGroup.POST("/", handler.CreateUser())
 		gGroup.POST("/sessions/", handler.LoginUser())
 		gGroup.POST("/sessions/google", handler.LoginUserGoogle())
+		gGroup.POST("/sessions/facebook", handler.LoginUserFacebook())
 		gGroup.POST("/:id/coupons", handler.CreateUserCoupon())
 		gGroup.POST("/:id/friends/:friend_id", handler.AddUserFriend())
 		gGroup.POST("/:id/notifications/", handler.AddNotification())

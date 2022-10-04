@@ -57,6 +57,8 @@ definitions:
     properties:
       email:
         type: string
+      name:
+        type: string
       password:
         type: string
     type: object
@@ -1071,6 +1073,30 @@ paths:
       tags:
       - Users
   /users/sessions/google:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: User to log in
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Login user
+      tags:
+      - Users
+  /users/sessions/facebook:
     post:
       consumes:
       - application/json
