@@ -63,6 +63,14 @@ type QuestInfo struct {
 	Tags          []Tag   `json:"tags" gorm:"foreignKey:QuestID;references:ID"`
 }
 
+type Rating struct {
+	gorm.Model
+	ID      int `json:"id,identity" gorm:"primary_key"`
+	UserID  int `json:"user_id"`
+	QuestID int `json:"quest_id"`
+	Rate    int `json:"rate"`
+}
+
 type Tag struct {
 	gorm.Model
 	ID          int    `json:"id,identity" gorm:"primary_key"`

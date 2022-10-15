@@ -27,6 +27,7 @@ func Connect() {
 	db.AutoMigrate(&domain.Client{})
 	db.AutoMigrate(&domain.QuestInfo{})
 	db.AutoMigrate(&domain.Tag{})
+	db.AutoMigrate(&domain.Rating{})
 	db.AutoMigrate(&domain.UserFriends{})
 	db.AutoMigrate(&domain.QuestCompletion{})
 	db.AutoMigrate(&domain.Team{})

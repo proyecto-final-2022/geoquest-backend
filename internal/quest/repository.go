@@ -25,6 +25,9 @@ type Repository interface {
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
 	GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error)
 	AddCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error
+	GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error)
+	AddRating(c *gin.Context, rating domain.Rating) error
+	GetQuestRatings(c *gin.Context, questID int) ([]*domain.Rating, error)
 	SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error
 }
 
@@ -147,6 +150,31 @@ func (r *repository) AddCompletion(c *gin.Context, questID int, userID int, star
 		return errors.New("DB Error")
 	}
 	return nil
+}
+
+func (r *repository) GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error) {
+	var rating domain.Rating
+	if tx := config.MySql.Where("user_id = ? AND quest_id = ?", userID, questID).First(&rating); tx.Error != nil {
+		return domain.Rating{}, errors.New("DB Error")
+	}
+	return rating, nil
+}
+
+func (r *repository) AddRating(c *gin.Context, rating domain.Rating) error {
+	if tx := config.MySql.Save(&rating); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+	return nil
+}
+
+func (r *repository) GetQuestRatings(c *gin.Context, questID int) ([]*domain.Rating, error) {
+	var ratings []*domain.Rating
+
+	if tx := config.MySql.Where("quest_id = ?", questID).Find(&ratings); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	return ratings, nil
 }
 
 func (r *repository) SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error {

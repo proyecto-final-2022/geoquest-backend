@@ -99,6 +99,11 @@ definitions:
           type: integer
         type: array
     type: object
+  handler.Rating:
+    properties:
+      rating:
+        type: integer
+    type: object
   handler.UserRequest:
     properties:
       email:
@@ -468,6 +473,63 @@ paths:
         "500":
           description: Internal Server Error
       summary: Ranking
+      tags:
+      - Quests
+  /quests/{id}/rating/{user_id}:
+    get:
+      consumes:
+        - application/json
+      description: Get user rating
+      parameters:
+        - description: Quest ID
+          in: path
+          name: id
+          required: true
+          type: integer
+        - description: User ID
+          in: path
+          name: user_id
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Rating
+      tags:
+      - Quests
+    post:
+      consumes:
+        - application/json
+      description: Update user rating
+      parameters:
+        - description: Quest ID
+          in: path
+          name: id
+          required: true
+          type: integer
+        - description: User ID
+          in: path
+          name: user_id
+          required: true
+          type: integer
+        - description: Team to save
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: '#/definitions/handler.TeamRequest'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Update user rating
       tags:
       - Quests
   /teams/:

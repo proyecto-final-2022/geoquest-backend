@@ -24,6 +24,10 @@ type CompletionRequest struct {
 	StartSeconds int `json:"start_seconds"`
 }
 
+type Rating struct {
+	Rating int `json:"rating"`
+}
+
 type WaitRoomRequest struct {
 	UserIDS []int `json:"user_ids"`
 }
@@ -209,6 +213,71 @@ func (g *Quest) AddCompletion() gin.HandlerFunc {
 		}
 
 		if err = g.service.CreateCompletion(c, paramId, paramUserId, req.StartYear, time.Month(req.StartMonth), req.StartDay, req.StartHour, req.StartMinutes, req.StartSeconds); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Completion
+// @Schemes
+// @Description Get a User Rating
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param completion body CompletionRequest true "Quest completed by a User"
+// @Param Authorization header string true "Auth token"
+// @Param id path string true "Quest ID"
+// @Param user_id path string true "User ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id}/rating/{user_id} [post]
+func (g *Quest) GetRating() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var rating domain.Rating
+
+		paramQuestId, _ := strconv.Atoi(c.Param("id"))
+		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
+
+		if rating, err = g.service.GetRating(c, paramQuestId, paramUserId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, rating)
+	}
+}
+
+// @Summary Completion
+// @Schemes
+// @Description Rate a quest
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param completion body CompletionRequest true "Quest completed by a User"
+// @Param Authorization header string true "Auth token"
+// @Param id path string true "Quest ID"
+// @Param user_id path string true "User ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id}/rating/{user_id} [post]
+func (g *Quest) AddRating() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var req Rating
+
+		paramQuestId, _ := strconv.Atoi(c.Param("id"))
+		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
+
+		if err = c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err = g.service.CreateRating(c, paramQuestId, paramUserId, req.Rating); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
