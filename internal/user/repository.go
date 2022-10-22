@@ -24,7 +24,7 @@ type Repository interface {
 	AddFriend(c *gin.Context, id int, friendID int) error
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserFriends, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
-	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, teamID int, questID int, actualTime time.Time) error
+	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, image int, teamID int, questID int, actualTime time.Time) error
 	GetNotifications(c *gin.Context, userID int) ([]domain.Notification, error)
 	DeleteNotification(c *gin.Context, id int, notificationID int) error
 }
@@ -154,9 +154,9 @@ func (r *repository) DeleteNotification(c *gin.Context, userID int, notification
 	return nil
 }
 
-func (r *repository) AddNotification(c *gin.Context, userID int, senderID int, notificationType string, questName string, teamID int, questID int, actualTime time.Time) error {
+func (r *repository) AddNotification(c *gin.Context, userID int, senderID int, notificationType string, questName string, image int, teamID int, questID int, actualTime time.Time) error {
 
-	notification := domain.Notification{SenderID: senderID, ReceiverID: userID, Type: notificationType, SentTime: actualTime, QuestName: questName, TeamID: teamID, QuestID: questID}
+	notification := domain.Notification{SenderID: senderID, ReceiverID: userID, Type: notificationType, SenderImage: image, SentTime: actualTime, QuestName: questName, TeamID: teamID, QuestID: questID}
 
 	if tx := config.MySql.Create(&notification); tx.Error != nil {
 		return errors.New("DB Error")
