@@ -79,6 +79,18 @@ func (d *dummyRepo) UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) erro
 	return nil
 }
 
+func (d *dummyRepo) AddRating(c *gin.Context, rating domain.Rating) error {
+	return nil
+}
+
+func (d *dummyRepo) GetQuestRatings(c *gin.Context, questID int) ([]*domain.Rating, error) {
+	return nil, nil
+}
+
+func (d *dummyRepo) GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error) {
+	return domain.Rating{}, nil
+}
+
 func NewDummyRepository() Repository {
 	return &dummyRepo{}
 }

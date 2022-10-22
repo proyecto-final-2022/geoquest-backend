@@ -67,7 +67,7 @@ func (d *dummyRepo) GetUsers(c *gin.Context) ([]domain.User, error) {
 	return nil, nil
 }
 
-func (d *dummyRepo) AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, teamID int, questID int, actualTime time.Time) error {
+func (d *dummyRepo) AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, image int, teamID int, questID int, actualTime time.Time) error {
 	return nil
 }
 
@@ -76,6 +76,14 @@ func (d *dummyRepo) GetNotifications(c *gin.Context, userID int) ([]domain.Notif
 }
 
 func (d *dummyRepo) DeleteNotification(c *gin.Context, userID int, notificationID int) error {
+	return nil
+}
+
+func (d *dummyRepo) GetCoupon(c *gin.Context, couponID int) (domain.Coupon, error) {
+	return domain.Coupon{}, nil
+}
+
+func (d *dummyRepo) UpdateCoupon(c *gin.Context, coupon domain.Coupon) error {
 	return nil
 }
 

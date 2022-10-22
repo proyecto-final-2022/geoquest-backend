@@ -64,6 +64,14 @@ func (s *serviceMock) GetRanking(c *gin.Context, id int) ([]domain.QuestCompleti
 	return nil, nil
 }
 
+func (s *serviceMock) CreateRating(c *gin.Context, questID int, userID int, rating int) error {
+	return nil
+}
+
+func (s *serviceMock) GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error) {
+	return domain.Rating{}, nil
+}
+
 func NewServiceMock() quest.Service {
 	return &serviceMock{}
 }
