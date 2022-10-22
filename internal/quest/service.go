@@ -20,6 +20,8 @@ type Service interface {
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 		startDay int, startHour int, startMinutes int, startSeconds int) error
+	GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error)
+	CreateRating(c *gin.Context, questID int, userID int, rating int) error
 	GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error)
 }
 
@@ -107,6 +109,52 @@ func (s *service) CreateCompletion(c *gin.Context, questID int, userID int, star
 	}
 
 	return nil
+}
+
+func (s *service) GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error) {
+	rating, err := s.repo.GetRating(c, questID, userID)
+
+	return rating, err
+}
+
+func (s *service) CreateRating(c *gin.Context, questID int, userID int, rating int) error {
+
+	ratingRecord, err := s.repo.GetRating(c, questID, userID)
+
+	if err != nil {
+		ratingRecord.QuestID = questID
+		ratingRecord.UserID = userID
+		ratingRecord.Rate = rating
+		err = s.repo.AddRating(c, ratingRecord)
+	} else {
+		ratingRecord.Rate = rating
+		err = s.repo.AddRating(c, ratingRecord)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	quest, err := s.repo.GetQuestInfo(c, questID)
+
+	if err != nil {
+		return err
+	}
+
+	ratings, err := s.repo.GetQuestRatings(c, questID)
+
+	if err != nil {
+		return err
+	}
+
+	var ratingsSum int = 0
+	for _, rating := range ratings {
+		ratingsSum += rating.Rate
+	}
+
+	quest.Qualification = float32(ratingsSum) / float32(len(ratings))
+
+	return s.repo.UpdateQuestInfo(c, quest)
 }
 
 func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error) {

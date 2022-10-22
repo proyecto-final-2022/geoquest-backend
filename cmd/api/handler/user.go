@@ -33,6 +33,13 @@ type LoginGoogleRequest struct {
 	Image    int    `json:"image"`
 }
 
+type LoginFacebookRequest struct {
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Image    int    `json:"image"`
+}
+
 type UserResponse struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
@@ -410,8 +417,80 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 
 			if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
 			}
+		}
+
+		// create a JWT for OUR app and give it back to the client for future requests
+		tokenString, err := auth.GenerateJWT(req.Email, req.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
+		}
+
+		userResponse := UserResponse{
+			ID:       createdUser.ID,
+			Email:    createdUser.Email,
+			Name:     createdUser.Name,
+			Username: createdUser.Username,
+			Image:    createdUser.Image,
+			Manual:   createdUser.Manual,
+			Google:   createdUser.Google,
+			Facebook: createdUser.Facebook,
+			Token:    tokenString,
+		}
+
+		fmt.Println(userResponse)
+
+		c.JSON(http.StatusOK, userResponse)
+	}
+}
+
+// @Summary Login user
+// @Schemes
+// @Description Login user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body LoginRequest true "User to log in"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /users/sessions/facebook [post]
+func (u *User) LoginUserFacebook() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req LoginFacebookRequest
+		var createdUser domain.UserDTO
+
+		var err error
+
+		tokenFacebook := c.GetHeader("Authorization")
+		if tokenFacebook == "" {
+			c.JSON(401, gin.H{"error": "request does not contain a Google access token"})
+			return
+		}
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		var image int
+		if req.Image == 0 {
+			image = 1
+		}
+
+		//If user is not created, create it. If it is, get
+		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, false, false, true, ""); err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+
+			if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
 		}
 
 		// create a JWT for OUR app and give it back to the client for future requests

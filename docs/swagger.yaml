@@ -57,6 +57,8 @@ definitions:
     properties:
       email:
         type: string
+      name:
+        type: string
       password:
         type: string
     type: object
@@ -98,6 +100,11 @@ definitions:
         items:
           type: integer
         type: array
+    type: object
+  handler.Rating:
+    properties:
+      rating:
+        type: integer
     type: object
   handler.UserRequest:
     properties:
@@ -468,6 +475,63 @@ paths:
         "500":
           description: Internal Server Error
       summary: Ranking
+      tags:
+      - Quests
+  /quests/{id}/rating/{user_id}:
+    get:
+      consumes:
+        - application/json
+      description: Get user rating
+      parameters:
+        - description: Quest ID
+          in: path
+          name: id
+          required: true
+          type: integer
+        - description: User ID
+          in: path
+          name: user_id
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Rating
+      tags:
+      - Quests
+    post:
+      consumes:
+        - application/json
+      description: Update user rating
+      parameters:
+        - description: Quest ID
+          in: path
+          name: id
+          required: true
+          type: integer
+        - description: User ID
+          in: path
+          name: user_id
+          required: true
+          type: integer
+        - description: Team to save
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: '#/definitions/handler.TeamRequest'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Update user rating
       tags:
       - Quests
   /teams/:
@@ -1073,6 +1137,30 @@ paths:
       tags:
       - Users
   /users/sessions/google:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: User to log in
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Login user
+      tags:
+      - Users
+  /users/sessions/facebook:
     post:
       consumes:
       - application/json
