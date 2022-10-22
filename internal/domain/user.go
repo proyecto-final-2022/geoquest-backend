@@ -59,22 +59,24 @@ type WaitRoomDTO struct {
 
 type Notification struct {
 	gorm.Model
-	ID         int       `json:"id,identity" gorm:"primary_key"`
-	SenderID   int       `json:"sender_id"`
-	ReceiverID int       `json:"receiver_id"`
-	Type       string    `json:"type"`
-	QuestName  string    `json:"quest_name"`
-	TeamID     int       `json:"team_id"`
-	QuestID    int       `json:"quest_id"`
-	SentTime   time.Time `json:"sent_time"`
+	ID          int       `json:"id,identity" gorm:"primary_key"`
+	SenderID    int       `json:"sender_id"`
+	SenderImage int       `json:"sender_image"`
+	ReceiverID  int       `json:"receiver_id"`
+	Type        string    `json:"type"`
+	QuestName   string    `json:"quest_name"`
+	TeamID      int       `json:"team_id"`
+	QuestID     int       `json:"quest_id"`
+	SentTime    time.Time `json:"sent_time"`
 }
 
 type NotificationDTO struct {
-	ID         int    `json:"id,identity" gorm:"primary_key"`
-	SenderID   int    `json:"sender_id"`
-	TeamID     int    `json:"team_id"`
-	QuestID    int    `json:"quest_id"`
-	SenderName string `json:"sender_name"`
-	Type       string `json:"type"`
-	QuestName  string `json:"quest_name"`
+	ID          int    `json:"id,identity" gorm:"primary_key"`
+	SenderID    int    `json:"sender_id"`
+	TeamID      int    `json:"team_id"`
+	QuestID     int    `json:"quest_id"`
+	SenderName  string `json:"sender_name"`
+	SenderImage int    `json:"sender_image"`
+	Type        string `json:"type"`
+	QuestName   string `json:"quest_name"`
 }

@@ -1547,6 +1547,9 @@ const docTemplate = `{
                 "sender_id": {
                     "type": "integer"
                 },
+                "sender_image": {
+                    "type": "integer"
+                },
                 "team_id": {
                     "type": "integer"
                 },

@@ -25,7 +25,7 @@ type Service interface {
 	AddFriend(c *gin.Context, id int, friendID int) error
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
-	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, teamID int, questID int) error
+	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, image int, teamID int, questID int) error
 	GetNotifications(c *gin.Context, ID int) ([]domain.NotificationDTO, error)
 	DeleteNotification(c *gin.Context, id int, notificationID int) error
 }
@@ -224,11 +224,11 @@ func (s *service) DeleteFriend(c *gin.Context, id int, friendID int) error {
 	return nil
 }
 
-func (s *service) AddNotification(c *gin.Context, id int, senderID int, notificationType string, questName string, teamID int, questID int) error {
+func (s *service) AddNotification(c *gin.Context, id int, senderID int, notificationType string, questName string, image int, teamID int, questID int) error {
 
 	actualTime := time.Now()
 
-	err := s.repo.AddNotification(c, id, senderID, notificationType, questName, teamID, questID, actualTime)
+	err := s.repo.AddNotification(c, id, senderID, notificationType, questName, image, teamID, questID, actualTime)
 	if err != nil {
 		return err
 	}
@@ -264,6 +264,7 @@ func (s *service) GetNotifications(c *gin.Context, id int) ([]domain.Notificatio
 		notificationsDTO[i].TeamID = notifications[i].TeamID
 		notificationsDTO[i].SenderName = senderDTO.Username
 		notificationsDTO[i].QuestID = notifications[i].QuestID
+		notificationsDTO[i].SenderImage = notifications[i].SenderImage
 	}
 
 	return notificationsDTO, nil

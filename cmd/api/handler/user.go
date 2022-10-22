@@ -71,6 +71,7 @@ type CouponRequest struct {
 
 type NotificationRequest struct {
 	SenderID         int    `json:"sender_id"`
+	SenderImage      int    `json:"sender_image"`
 	NotificationType string `json:"type"`
 	QuestName        string `json:"quest_name"`
 	TeamID           int    `json:"team_id"`
@@ -623,7 +624,7 @@ func (u *User) AddNotification() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType, req.QuestName, req.TeamID, req.QuestID); err != nil {
+		if err = u.service.AddNotification(c, paramId, req.SenderID, req.NotificationType, req.QuestName, req.SenderImage, req.TeamID, req.QuestID); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
