@@ -27,40 +27,44 @@ type LoginRequest struct {
 }
 
 type LoginGoogleRequest struct {
-	Email    string `json:"email"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Image    int    `json:"image"`
+	Email         string `json:"email"`
+	Name          string `json:"name"`
+	Username      string `json:"username"`
+	FirebaseToken string `json:"firebaseToken"`
+	Image         int    `json:"image"`
 }
 
 type LoginFacebookRequest struct {
-	Email    string `json:"email"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Image    int    `json:"image"`
+	Email         string `json:"email"`
+	Name          string `json:"name"`
+	Username      string `json:"username"`
+	FirebaseToken string `json:"firebaseToken"`
+	Image         int    `json:"image"`
 }
 
 type UserResponse struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Image    int    `json:"image"`
-	Token    string `json:"token"`
-	Manual   bool   `json:"manual"`
-	Google   bool   `json:"google"`
-	Facebook bool   `json:"facebook"`
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	Email         string `json:"email"`
+	Username      string `json:"username"`
+	FirebaseToken string `json:"firebaseToken"`
+	Image         int    `json:"image"`
+	Token         string `json:"token"`
+	Manual        bool   `json:"manual"`
+	Google        bool   `json:"google"`
+	Facebook      bool   `json:"facebook"`
 }
 
 type UserRequest struct {
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Image    int    `json:"image"`
-	Manual   bool   `json:"manual"`
-	Google   bool   `json:"google"`
-	Facebook bool   `json:"facebook"`
+	Name          string `json:"name"`
+	Username      string `json:"username"`
+	Email         string `json:"email"`
+	Password      string `json:"password"`
+	FirebaseToken string `json:"firebaseToken"`
+	Image         int    `json:"image"`
+	Manual        bool   `json:"manual"`
+	Google        bool   `json:"google"`
+	Facebook      bool   `json:"facebook"`
 }
 
 type UserPasswordChangeRequest struct {
@@ -90,7 +94,7 @@ type NotificationRequest struct {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body UserRequest true "User to save"
+// @Param user body domain.UserDTO true "User to save"
 // @Success 200
 // @Failure 422
 // @Failure 500
@@ -117,7 +121,7 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			req.Image = 1
 		}
 
-		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, req.Image, true, false, false, pass); err != nil {
+		if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, req.Image, true, false, false, pass, req.FirebaseToken); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -134,15 +138,16 @@ func (u *User) CreateUser() gin.HandlerFunc {
 		}
 
 		userResponse := UserResponse{
-			ID:       createdUser.ID,
-			Name:     createdUser.Name,
-			Email:    createdUser.Email,
-			Username: createdUser.Username,
-			Image:    createdUser.Image,
-			Manual:   createdUser.Manual,
-			Google:   createdUser.Google,
-			Facebook: createdUser.Facebook,
-			Token:    tokenString,
+			ID:            createdUser.ID,
+			Name:          createdUser.Name,
+			Email:         createdUser.Email,
+			Username:      createdUser.Username,
+			FirebaseToken: createdUser.FirebaseToken,
+			Image:         createdUser.Image,
+			Manual:        createdUser.Manual,
+			Google:        createdUser.Google,
+			Facebook:      createdUser.Facebook,
+			Token:         tokenString,
 		}
 
 		c.JSON(http.StatusOK, userResponse)
@@ -358,15 +363,16 @@ func (u *User) LoginUser() gin.HandlerFunc {
 		}
 
 		userResponse := UserResponse{
-			ID:       user.ID,
-			Name:     user.Name,
-			Email:    user.Email,
-			Username: user.Username,
-			Image:    user.Image,
-			Manual:   user.Manual,
-			Google:   user.Google,
-			Facebook: user.Facebook,
-			Token:    tokenString,
+			ID:            user.ID,
+			Name:          user.Name,
+			Email:         user.Email,
+			Username:      user.Username,
+			FirebaseToken: user.FirebaseToken,
+			Image:         user.Image,
+			Manual:        user.Manual,
+			Google:        user.Google,
+			Facebook:      user.Facebook,
+			Token:         tokenString,
 		}
 
 		c.JSON(http.StatusOK, userResponse)
@@ -409,7 +415,7 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 
 		//If user is not created, create it. If it is, get
 		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
-			if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, false, true, false, ""); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, false, true, false, "", req.FirebaseToken); err != nil {
 				c.JSON(http.StatusInternalServerError, err)
 				return
 			}
@@ -428,15 +434,16 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 		}
 
 		userResponse := UserResponse{
-			ID:       createdUser.ID,
-			Email:    createdUser.Email,
-			Name:     createdUser.Name,
-			Username: createdUser.Username,
-			Image:    createdUser.Image,
-			Manual:   createdUser.Manual,
-			Google:   createdUser.Google,
-			Facebook: createdUser.Facebook,
-			Token:    tokenString,
+			ID:            createdUser.ID,
+			Email:         createdUser.Email,
+			Name:          createdUser.Name,
+			Username:      createdUser.Username,
+			FirebaseToken: createdUser.FirebaseToken,
+			Image:         createdUser.Image,
+			Manual:        createdUser.Manual,
+			Google:        createdUser.Google,
+			Facebook:      createdUser.Facebook,
+			Token:         tokenString,
 		}
 
 		fmt.Println(userResponse)
@@ -481,7 +488,7 @@ func (u *User) LoginUserFacebook() gin.HandlerFunc {
 
 		//If user is not created, create it. If it is, get
 		if createdUser, err = u.service.GetUserByEmail(c, req.Email); err != nil {
-			if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, false, false, true, ""); err != nil {
+			if err = u.service.CreateUser(c, req.Email, req.Name, req.Username, image, false, false, true, "", req.FirebaseToken); err != nil {
 				c.JSON(http.StatusInternalServerError, err)
 				return
 			}
@@ -500,15 +507,16 @@ func (u *User) LoginUserFacebook() gin.HandlerFunc {
 		}
 
 		userResponse := UserResponse{
-			ID:       createdUser.ID,
-			Email:    createdUser.Email,
-			Name:     createdUser.Name,
-			Username: createdUser.Username,
-			Image:    createdUser.Image,
-			Manual:   createdUser.Manual,
-			Google:   createdUser.Google,
-			Facebook: createdUser.Facebook,
-			Token:    tokenString,
+			ID:            createdUser.ID,
+			Email:         createdUser.Email,
+			Name:          createdUser.Name,
+			Username:      createdUser.Username,
+			FirebaseToken: createdUser.FirebaseToken,
+			Image:         createdUser.Image,
+			Manual:        createdUser.Manual,
+			Google:        createdUser.Google,
+			Facebook:      createdUser.Facebook,
+			Token:         tokenString,
 		}
 
 		fmt.Println(userResponse)
@@ -567,7 +575,7 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
-		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username, req.Image); err != nil {
+		if err = g.service.UpdateUser(c, paramId, req.Email, req.Name, req.Password, req.Username, req.Image, req.FirebaseToken); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
 		}
@@ -582,7 +590,7 @@ func (g *User) UpdateUser() gin.HandlerFunc {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body UserRequest true "User to update"
+// @Param user body UserPasswordChangeRequest true "User to update"
 // @Param id path string true "User ID"
 // @Success 200
 // @Failure 422
@@ -617,7 +625,7 @@ func (g *User) UpdateUserPassword() gin.HandlerFunc {
 			return
 		}
 
-		if err = g.service.UpdateUser(c, paramId, user.Email, user.Name, pass, user.Username, user.Image); err != nil {
+		if err = g.service.UpdateUser(c, paramId, user.Email, user.Name, pass, user.Username, user.Image, user.FirebaseToken); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
 		}

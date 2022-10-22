@@ -11,7 +11,7 @@ import (
 )
 
 type Repository interface {
-	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error
+	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string, firebaseToken string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, domain.User, error)
 	GetUsers(c *gin.Context) ([]domain.User, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
@@ -36,8 +36,8 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error {
-	user := domain.User{Email: email, Name: name, Username: username, Image: image, Manual: manual, Google: google, Facebook: facebook, Password: password}
+func (r *repository) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string, firebaseToken string) error {
+	user := domain.User{Email: email, Name: name, Username: username, Image: image, Manual: manual, Google: google, Facebook: facebook, Password: password, FirebaseToken: firebaseToken}
 	if tx := config.MySql.Create(&user); tx.Error != nil {
 		return errors.New("DB Error")
 	}
@@ -49,7 +49,7 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, domain.User{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: id, Username: user.Username, Email: user.Email, Name: user.Name, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image}, user, nil
+	return domain.UserDTO{ID: id, Username: user.Username, Email: user.Email, Name: user.Name, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image, FirebaseToken: user.FirebaseToken}, user, nil
 }
 
 func (r *repository) GetUsers(c *gin.Context) ([]domain.User, error) {
@@ -65,7 +65,7 @@ func (r *repository) GetUserByEmail(c *gin.Context, email string) (domain.UserDT
 	if tx := config.MySql.Where("email = ?", email).First(&user); tx.Error != nil {
 		return domain.UserDTO{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: user.ID, Email: user.Email, Name: user.Name, Username: user.Username, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image}, nil
+	return domain.UserDTO{ID: user.ID, Email: user.Email, Name: user.Name, Username: user.Username, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image, FirebaseToken: user.FirebaseToken}, nil
 }
 
 func (r *repository) UpdateUser(c *gin.Context, user domain.User) error {

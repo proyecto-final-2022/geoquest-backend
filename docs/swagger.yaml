@@ -24,6 +24,8 @@ definitions:
         type: string
       username:
         type: string
+      firebaseToken:
+        type: string
     type: object
   handler.CompletionRequest:
     properties:
@@ -121,6 +123,8 @@ definitions:
       password:
         type: string
       username:
+        type: string
+      firebaseToken:
         type: string
     type: object
   handler.clientRequest:

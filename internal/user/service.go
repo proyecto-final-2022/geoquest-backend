@@ -11,11 +11,11 @@ import (
 )
 
 type Service interface {
-	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error
+	CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string, firebaseToken string) error
 	GetUser(c *gin.Context, id int) (domain.UserDTO, error)
 	GetUsers(c *gin.Context) ([]domain.UserDTO, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
-	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int) error
+	UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int, firebaseToken string) error
 	DeleteUser(c *gin.Context, id int) error
 	HashPassword(password string) (string, error)
 	CheckPassword(providedPassword string, userPassword string) error
@@ -38,8 +38,8 @@ func NewService(rep Repository) Service {
 	return &service{repo: rep}
 }
 
-func (s *service) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error {
-	err := s.repo.CreateUser(c, email, name, username, image, manual, google, facebook, password)
+func (s *service) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string, firebaseToken string) error {
+	err := s.repo.CreateUser(c, email, name, username, image, manual, google, facebook, password, firebaseToken)
 
 	return err
 }
@@ -60,6 +60,7 @@ func (s *service) GetUsers(c *gin.Context) ([]domain.UserDTO, error) {
 		usersDTO[i].Username = users[i].Username
 		usersDTO[i].Email = users[i].Email
 		usersDTO[i].Image = users[i].Image
+		usersDTO[i].FirebaseToken = users[i].FirebaseToken
 	}
 
 	return usersDTO, err
@@ -71,7 +72,7 @@ func (s *service) GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, 
 	return user, err
 }
 
-func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int) error {
+func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, password string, username string, image int, firebaseToken string) error {
 
 	_, user, err := s.repo.GetUser(c, id)
 	if err != nil {
@@ -96,6 +97,10 @@ func (s *service) UpdateUser(c *gin.Context, id int, email string, name string, 
 
 	if image != 0 {
 		user.Image = image
+	}
+
+	if firebaseToken != "" {
+		user.FirebaseToken = firebaseToken
 	}
 
 	err = s.repo.UpdateUser(c, user)

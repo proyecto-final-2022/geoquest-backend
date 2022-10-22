@@ -1600,6 +1600,9 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                },
+                "firebaseToken": {
+                    "type": "string"
                 }
             }
         },
@@ -1742,6 +1745,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                },
+                "firebaseToken": {
                     "type": "string"
                 }
             }

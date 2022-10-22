@@ -1591,6 +1591,9 @@
                 },
                 "username": {
                     "type": "string"
+                },
+                "firebaseToken": {
+                    "type": "string"
                 }
             }
         },
@@ -1733,6 +1736,9 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                },
+                "firebaseToken": {
                     "type": "string"
                 }
             }
