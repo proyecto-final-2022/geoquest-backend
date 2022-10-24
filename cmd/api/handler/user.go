@@ -212,6 +212,11 @@ func (u *User) AddUserFriend() gin.HandlerFunc {
 			return
 		}
 
+		if err = u.service.AddFriend(c, paramFriendId, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
 		c.JSON(http.StatusOK, "")
 	}
 }
