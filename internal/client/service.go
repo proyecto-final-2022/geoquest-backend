@@ -87,6 +87,10 @@ func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestI
 			questsDTO[i].Tags = append(questsDTO[i].Tags, tags[j].Description)
 		}
 
+		if questsDTO[i].Tags == nil {
+			questsDTO[i].Tags = []string{}
+		}
+
 	}
 
 	return questsDTO, err
