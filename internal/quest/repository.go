@@ -43,8 +43,7 @@ func NewRepository() Repository {
 func (r *repository) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
 	var quest domain.QuestDTO
 
-	oid, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.M{"_id": oid}
+	filter := bson.M{"questid": id}
 
 	result := collection.FindOne(c, filter)
 
