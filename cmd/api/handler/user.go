@@ -53,6 +53,8 @@ type UserResponse struct {
 	Manual        bool   `json:"manual"`
 	Google        bool   `json:"google"`
 	Facebook      bool   `json:"facebook"`
+	Friends       int    `json:"friends"`
+	Notifications int    `json:"notifications"`
 }
 
 type UserRequest struct {
@@ -149,6 +151,8 @@ func (u *User) CreateUser() gin.HandlerFunc {
 			Google:        createdUser.Google,
 			Facebook:      createdUser.Facebook,
 			Token:         tokenString,
+			Friends:       0,
+			Notifications: 0,
 		}
 
 		c.JSON(http.StatusOK, userResponse)
@@ -208,6 +212,11 @@ func (u *User) AddUserFriend() gin.HandlerFunc {
 		paramFriendId, _ := strconv.Atoi(c.Param("friend_id"))
 
 		if err = u.service.AddFriend(c, paramId, paramFriendId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		if err = u.service.AddFriend(c, paramFriendId, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -363,6 +372,18 @@ func (u *User) LoginUser() gin.HandlerFunc {
 			return
 		}
 
+		var friends []domain.UserDTO
+		if friends, err = u.service.GetUserFriends(c, user.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		var notifications []domain.NotificationDTO
+		if notifications, err = u.service.GetNotifications(c, user.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
 		userResponse := UserResponse{
 			ID:            user.ID,
 			Name:          user.Name,
@@ -374,6 +395,8 @@ func (u *User) LoginUser() gin.HandlerFunc {
 			Google:        user.Google,
 			Facebook:      user.Facebook,
 			Token:         tokenString,
+			Friends:       len(friends),
+			Notifications: len(notifications),
 		}
 
 		c.JSON(http.StatusOK, userResponse)
@@ -434,6 +457,18 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			return
 		}
 
+		var friends []domain.UserDTO
+		if friends, err = u.service.GetUserFriends(c, createdUser.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		var notifications []domain.NotificationDTO
+		if notifications, err = u.service.GetNotifications(c, createdUser.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
 		userResponse := UserResponse{
 			ID:            createdUser.ID,
 			Email:         createdUser.Email,
@@ -445,6 +480,8 @@ func (u *User) LoginUserGoogle() gin.HandlerFunc {
 			Google:        createdUser.Google,
 			Facebook:      createdUser.Facebook,
 			Token:         tokenString,
+			Friends:       len(friends),
+			Notifications: len(notifications),
 		}
 
 		fmt.Println(userResponse)
@@ -506,6 +543,17 @@ func (u *User) LoginUserFacebook() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+		var friends []domain.UserDTO
+		if friends, err = u.service.GetUserFriends(c, createdUser.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		var notifications []domain.NotificationDTO
+		if notifications, err = u.service.GetNotifications(c, createdUser.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
 		userResponse := UserResponse{
 			ID:            createdUser.ID,
@@ -518,6 +566,8 @@ func (u *User) LoginUserFacebook() gin.HandlerFunc {
 			Google:        createdUser.Google,
 			Facebook:      createdUser.Facebook,
 			Token:         tokenString,
+			Friends:       len(friends),
+			Notifications: len(notifications),
 		}
 
 		fmt.Println(userResponse)
@@ -548,7 +598,40 @@ func (u *User) GetUser() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, user)
+		// create a JWT for OUR app and give it back to the client for future requests
+		tokenString, err := auth.GenerateJWT(user.Email, user.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		var friends []domain.UserDTO
+		if friends, err = u.service.GetUserFriends(c, user.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		var notifications []domain.NotificationDTO
+		if notifications, err = u.service.GetNotifications(c, user.ID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		userResponse := UserResponse{
+			ID:            user.ID,
+			Email:         user.Email,
+			Name:          user.Name,
+			Username:      user.Username,
+			FirebaseToken: user.FirebaseToken,
+			Image:         user.Image,
+			Manual:        user.Manual,
+			Google:        user.Google,
+			Facebook:      user.Facebook,
+			Token:         tokenString,
+			Friends:       len(friends),
+			Notifications: len(notifications),
+		}
+
+		c.JSON(http.StatusOK, userResponse)
 	}
 }
 

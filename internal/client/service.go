@@ -75,6 +75,8 @@ func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestI
 		questsDTO[i].Description = quests[i].Description
 		questsDTO[i].Difficulty = quests[i].Difficulty
 		questsDTO[i].Duration = quests[i].Duration
+		questsDTO[i].Image = quests[i].Image
+		questsDTO[i].Completions = quests[i].Completions
 
 		tags, err := s.repo.GetTags(c, id)
 		if err != nil {
@@ -83,6 +85,10 @@ func (s *service) GetClientQuests(c *gin.Context, clientID int) ([]domain.QuestI
 
 		for j := range tags {
 			questsDTO[i].Tags = append(questsDTO[i].Tags, tags[j].Description)
+		}
+
+		if questsDTO[i].Tags == nil {
+			questsDTO[i].Tags = []string{}
 		}
 
 	}

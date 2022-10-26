@@ -183,8 +183,18 @@ func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, er
 
 func (s *service) AddFriend(c *gin.Context, id int, friendID int) error {
 
-	err := s.repo.AddFriend(c, id, friendID)
+	userFriends, err := s.repo.GetUserFriends(c, id)
 	if err != nil {
+		return err
+	}
+
+	for _, user := range userFriends {
+		if user.FriendID == friendID {
+			return nil
+		}
+	}
+
+	if err := s.repo.AddFriend(c, id, friendID); err != nil {
 		return err
 	}
 
