@@ -268,7 +268,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.QuestDTO"
+                            "$ref": "#/definitions/handler.QuestRequest"
                         }
                     },
                     {
@@ -494,45 +494,8 @@ const docTemplate = `{
             }
         },
         "/quests/{id}/rating/{user_id}": {
-            "get": {
-                "description": "Get quest rating",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Quests"
-                ],
-                "summary": "Get Rating",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Quest ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
             "post": {
-                "description": "Update quest rating",
+                "description": "Rate a quest",
                 "consumes": [
                     "application/json"
                 ],
@@ -542,30 +505,37 @@ const docTemplate = `{
                 "tags": [
                     "Quests"
                 ],
-                "summary": "Update Rating",
+                "summary": "Completion",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Quest ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Rating to save",
-                        "name": "rating",
+                        "description": "Quest completed by a User",
+                        "name": "completion",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.Rating"
+                            "$ref": "#/definitions/handler.CompletionRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Auth token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -933,7 +903,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.UserRequest"
+                            "$ref": "#/definitions/domain.UserDTO"
                         }
                     }
                 ],
@@ -987,7 +957,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/sessions/google": {
+        "/users/sessions/facebook": {
             "post": {
                 "description": "Login user",
                 "consumes": [
@@ -1024,7 +994,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/sessions/facebook": {
+        "/users/sessions/google": {
             "post": {
                 "description": "Login user",
                 "consumes": [
@@ -1537,7 +1507,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.UserRequest"
+                            "$ref": "#/definitions/handler.UserPasswordChangeRequest"
                         }
                     },
                     {
@@ -1566,7 +1536,16 @@ const docTemplate = `{
         "domain.QuestDTO": {
             "type": "object",
             "properties": {
-                "name": {
+                "inventory": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "quest_id": {
+                    "type": "string"
+                },
+                "scene": {
                     "type": "string"
                 }
             }
@@ -1579,6 +1558,9 @@ const docTemplate = `{
                 },
                 "facebook": {
                     "type": "boolean"
+                },
+                "firebaseToken": {
+                    "type": "string"
                 },
                 "google": {
                     "type": "boolean"
@@ -1599,9 +1581,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
-                },
-                "firebaseToken": {
                     "type": "string"
                 }
             }
@@ -1655,9 +1634,6 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 }
@@ -1683,6 +1659,23 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.QuestRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "inventory": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "scene": {
+                    "type": "integer"
                 }
             }
         },
@@ -1723,6 +1716,17 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.UserPasswordChangeRequest": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
         "handler.UserRequest": {
             "type": "object",
             "properties": {
@@ -1731,6 +1735,9 @@ const docTemplate = `{
                 },
                 "facebook": {
                     "type": "boolean"
+                },
+                "firebaseToken": {
+                    "type": "string"
                 },
                 "google": {
                     "type": "boolean"
@@ -1748,9 +1755,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
-                },
-                "firebaseToken": {
                     "type": "string"
                 }
             }
@@ -1797,14 +1801,6 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
-                }
-            }
-        },
-        "handler.Rating": {
-            "type": "object",
-            "properties": {
-                "rating": {
-                    "type": "number"
                 }
             }
         }

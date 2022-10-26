@@ -24,6 +24,12 @@ type CompletionRequest struct {
 	StartSeconds int `json:"start_seconds"`
 }
 
+type QuestRequest struct {
+	ID        string   `json:"id"`
+	Scene     int      `json:"scene"`
+	Inventory []string `json:"inventory"`
+}
+
 type Rating struct {
 	Rating int `json:"rating"`
 }
@@ -53,7 +59,7 @@ func NewGame(s quest.Service) *Quest {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param quest body domain.QuestDTO true "Quest to save"
+// @Param quest body QuestRequest true "Quest to save"
 // @Param Authorization header string true "Auth token"
 // @Success 200
 // @Failure 422
@@ -61,7 +67,7 @@ func NewGame(s quest.Service) *Quest {
 // @Router /quests/ [post]
 func (u *Quest) CreateQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req domain.QuestDTO
+		var req QuestRequest
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -69,7 +75,7 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.CreateQuest(c, req.Name); err != nil {
+		if err = u.service.CreateQuest(c, req.ID, req.Scene, req.Inventory); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -150,10 +156,10 @@ func (g *Quest) UpdateQuest() gin.HandlerFunc {
 			return
 		}
 
-		paramId := c.Param("id")
+		//		paramId := c.Param("id")
 
-		if err = g.service.UpdateQuest(c, paramId, req); err != nil {
-			c.JSON(http.StatusInternalServerError, paramId)
+		if err = g.service.UpdateQuest(c, req); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 

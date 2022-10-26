@@ -8,8 +8,10 @@ import (
 )
 
 type Quest struct {
-	ID   primitive.ObjectID `bson:"_id,omitempty" json:"user_id,omitempty"`
-	Name string             `json:"name"`
+	ID        primitive.ObjectID `bson:"_id,omitempty" json:"user_id,omitempty"`
+	QuestID   string             `json:"quest_id"`
+	Scene     int                `json:"scene"`
+	Inventory []string           `json:"inventory"`
 }
 
 type QuestCompletion struct {
@@ -79,7 +81,9 @@ type Tag struct {
 }
 
 type QuestDTO struct {
-	Name string `json:"name"`
+	QuestID   string   `json:"quest_id"`
+	Scene     string   `json:"scene"`
+	Inventory []string `json:"inventory"`
 }
 
 type QuestInfoDTO struct {

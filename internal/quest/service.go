@@ -1,6 +1,7 @@
 package quest
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,8 +16,8 @@ import (
 type Service interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
-	CreateQuest(c *gin.Context, name string) error
-	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
+	CreateQuest(c *gin.Context, id string, scene int, inventory []string) error
+	UpdateQuest(c *gin.Context, quest domain.QuestDTO) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 		startDay int, startHour int, startMinutes int, startSeconds int) error
@@ -49,15 +50,16 @@ func (s *service) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
 	return quests, err
 }
 
-func (s *service) CreateQuest(c *gin.Context, name string) error {
-	err := s.repo.CreateQuest(c, name)
+func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+	fmt.Println("id: ", id)
+	err := s.repo.CreateQuest(c, id, scene, inventory)
 
 	return err
 }
 
-func (s *service) UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error {
+func (s *service) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
 
-	err := s.repo.UpdateQuest(c, id, quest)
+	err := s.repo.UpdateQuest(c, quest)
 
 	return err
 }

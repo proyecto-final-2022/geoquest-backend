@@ -19,8 +19,8 @@ type Repository interface {
 	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
-	CreateQuest(c *gin.Context, name string) error
-	UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error
+	CreateQuest(c *gin.Context, id string, scene int, inventory []string) error
+	UpdateQuest(c *gin.Context, quest domain.QuestDTO) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
 	GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error)
@@ -77,11 +77,11 @@ func (r *repository) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 	return quests, nil
 }
 
-func (r *repository) CreateQuest(c *gin.Context, name string) error {
+func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
 
 	var err error
 
-	_, err = collection.InsertOne(c, domain.Quest{Name: name})
+	_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory})
 
 	if err != nil {
 		return err
@@ -90,17 +90,19 @@ func (r *repository) CreateQuest(c *gin.Context, name string) error {
 	return nil
 }
 
-func (r *repository) UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error {
+func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
 
 	var err error
 
-	oid, _ := primitive.ObjectIDFromHex(id)
+	//	oid, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.M{"_id": oid}
+	filter := bson.M{"questid": quest.QuestID}
 
 	update := bson.M{
 		"$set": bson.M{
-			"name": quest.Name,
+			"quest_id":  quest.QuestID,
+			"scene":     quest.Scene,
+			"inventory": quest.Inventory,
 		},
 	}
 
