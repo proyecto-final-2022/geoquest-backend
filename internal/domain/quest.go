@@ -82,7 +82,7 @@ type Tag struct {
 
 type QuestDTO struct {
 	QuestID   string   `json:"quest_id"`
-	Scene     string   `json:"scene"`
+	Scene     int      `json:"scene"`
 	Inventory []string `json:"inventory"`
 }
 

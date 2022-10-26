@@ -2,6 +2,7 @@ package quest
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/config"
@@ -46,6 +47,8 @@ func (r *repository) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error
 	filter := bson.M{"questid": id}
 
 	result := collection.FindOne(c, filter)
+
+	fmt.Println("result: ", result)
 
 	if err := result.Decode(&quest); err != nil {
 		return domain.QuestDTO{}, err
@@ -99,7 +102,6 @@ func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
 
 	update := bson.M{
 		"$set": bson.M{
-			"quest_id":  quest.QuestID,
 			"scene":     quest.Scene,
 			"inventory": quest.Inventory,
 		},
