@@ -21,7 +21,7 @@ func (s *serviceMock) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 
 	var quests []*domain.QuestDTO
 
-	quests = append(quests, &domain.QuestDTO{Name: "test"})
+	quests = append(quests, &domain.QuestDTO{QuestID: "test"})
 
 	return quests, nil
 }
@@ -31,18 +31,18 @@ func (s *serviceMock) GetQuest(c *gin.Context, id string) (domain.QuestDTO, erro
 		return domain.QuestDTO{}, errors.New("Get Error")
 	}
 
-	return domain.QuestDTO{Name: "test"}, nil
+	return domain.QuestDTO{QuestID: "test"}, nil
 }
 
-func (s *serviceMock) CreateQuest(c *gin.Context, name string) error {
-	if name == "testError" {
+func (s *serviceMock) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+	if id == "testError" {
 		return errors.New("GET ERROR")
 	}
 	return nil
 }
 
-func (s *serviceMock) UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error {
-	if id == "error" {
+func (s *serviceMock) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
+	if quest.Scene == "error" {
 		return errors.New("UPDATE ERROR")
 	}
 	return nil

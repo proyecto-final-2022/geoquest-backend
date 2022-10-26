@@ -13,7 +13,7 @@ import (
 
 type dummyRepo struct{}
 
-func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string) error {
+func (d *dummyRepo) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string, firebaseToken string) error {
 	if email == "testError" {
 		return errors.New("POST ERROR")
 	}

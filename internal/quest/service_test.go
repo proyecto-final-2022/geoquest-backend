@@ -2,13 +2,11 @@ package quest
 
 import (
 	"errors"
-	"testing"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 )
 
 type dummyRepo struct{}
@@ -17,7 +15,7 @@ func (d *dummyRepo) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 
 	var quests []*domain.QuestDTO
 
-	quests = append(quests, &domain.QuestDTO{Name: "test"})
+	quests = append(quests, &domain.QuestDTO{QuestID: "test"})
 
 	return quests, nil
 }
@@ -27,18 +25,18 @@ func (d *dummyRepo) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 		return domain.QuestDTO{}, errors.New("Get Error")
 	}
 
-	return domain.QuestDTO{Name: "test"}, nil
+	return domain.QuestDTO{QuestID: "test"}, nil
 }
 
-func (d *dummyRepo) CreateQuest(c *gin.Context, name string) error {
-	if name == "testError" {
+func (d *dummyRepo) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+	if id == "testError" {
 		return errors.New("GET ERROR")
 	}
 	return nil
 }
 
-func (d *dummyRepo) UpdateQuest(c *gin.Context, id string, quest domain.QuestDTO) error {
-	if id == "error" {
+func (d *dummyRepo) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
+	if quest.QuestID == "error" {
 		return errors.New("UPDATE ERROR")
 	}
 	return nil
@@ -93,37 +91,4 @@ func (d *dummyRepo) GetRating(c *gin.Context, questID int, userID int) (domain.R
 
 func NewDummyRepository() Repository {
 	return &dummyRepo{}
-}
-
-func TestServiceGetShouldReturnOK(t *testing.T) {
-	repo := &dummyRepo{}
-	service := NewService(repo, nil)
-
-	result, err := service.GetQuests(&gin.Context{})
-	assert.Nil(t, err)
-	assert.Equal(t, result[0].Name, "test")
-}
-
-func TestServiceCreateWithPostErrorShouldFail(t *testing.T) {
-	repo := NewDummyRepository()
-	service := NewService(repo, nil)
-
-	err := service.CreateQuest(&gin.Context{}, "testError")
-	assert.NotNil(t, err)
-}
-
-func TestServiceCreateShouldReturnOK(t *testing.T) {
-	repo := NewDummyRepository()
-	service := NewService(repo, nil)
-
-	err := service.CreateQuest(&gin.Context{}, "test")
-	assert.Nil(t, err)
-}
-
-func TestServiceUpdateK(t *testing.T) {
-	repo := NewDummyRepository()
-	service := NewService(repo, nil)
-
-	err := service.UpdateQuest(&gin.Context{}, "62d5ea0c6c5608330d5d734b", domain.QuestDTO{Name: "test"})
-	assert.Nil(t, err)
 }
