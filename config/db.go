@@ -15,7 +15,7 @@ var Mongo *mongo.Client
 
 func Connect() {
 	//TODO: poner esto en archivo de configuracion
-	mySqlConn := "geoquest:geoquest@tcp(localhost:3306)/geoquest?charset=utf8mb4&parseTime=True&loc=Local"
+	mySqlConn := "geoquest:geoquest@tcp(test1-geoquest.c6pcyhhnplzm.us-east-1.rds.amazonaws.com:3306)/geoquest?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(mySqlConn), &gorm.Config{})
 
 	if err != nil {
