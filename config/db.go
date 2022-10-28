@@ -40,7 +40,7 @@ func Connect() {
 
 func GetCollection(collection string) *mongo.Collection {
 	//TODO: poner esto en archivo de configuracion
-	mongoConn := "mongodb://geoquest:geoquest@localhost:27017/?authSource=admin&readPreference=primary&ssl=false"
+	mongoConn := "mongodb://geoquest:geoquest@34.203.206.239:27017/?authSource=admin&readPreference=primary&ssl=false"
 	mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoConn))
 
 	//mongoClient, err := mongo.NewClient(options.Client().ApplyURI(mongoUri))
