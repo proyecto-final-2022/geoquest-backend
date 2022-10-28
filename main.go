@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/routes"
 	"github.com/proyecto-final-2022/geoquest-backend/config"
 
@@ -30,4 +33,14 @@ func main() {
 		panic(err)
 	}
 
+	done := make(chan bool)
+	go forever()
+	<-done // Block forever
+}
+
+func forever() {
+	for {
+		fmt.Printf("%v+\n", time.Now())
+		time.Sleep(time.Second)
+	}
 }
