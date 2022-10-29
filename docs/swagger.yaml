@@ -5,10 +5,14 @@ definitions:
         items:
           type: string
         type: array
+      objects:
+        additionalProperties:
+          type: integer
+        type: object
       quest_id:
         type: string
       scene:
-        type: string
+        type: integer
     type: object
   domain.UserDTO:
     properties:
@@ -417,17 +421,17 @@ paths:
       - application/json
       description: Quest info
       parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Quest to update
         in: body
         name: quest
         required: true
         schema:
           $ref: '#/definitions/domain.QuestDTO'
-      - description: Quest ID
-        in: path
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:

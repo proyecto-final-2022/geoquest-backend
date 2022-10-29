@@ -21,7 +21,7 @@ type Repository interface {
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string) error
-	UpdateQuest(c *gin.Context, quest domain.QuestDTO) error
+	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
 	GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error)
@@ -92,18 +92,19 @@ func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory
 	return nil
 }
 
-func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
+func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 
 	var err error
 
 	//	oid, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.M{"questid": quest.QuestID}
+	filter := bson.M{"questid": paramId}
 
 	update := bson.M{
 		"$set": bson.M{
 			"scene":     quest.Scene,
 			"inventory": quest.Inventory,
+			"objects":   quest.Objects,
 		},
 	}
 

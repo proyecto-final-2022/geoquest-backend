@@ -81,9 +81,10 @@ type Tag struct {
 }
 
 type QuestDTO struct {
-	QuestID   string   `json:"quest_id"`
-	Scene     int      `json:"scene"`
-	Inventory []string `json:"inventory"`
+	QuestID   string         `json:"quest_id"`
+	Scene     int            `json:"scene"`
+	Inventory []string       `json:"inventory"`
+	Objects   map[string]int `json:"objects"`
 }
 
 type QuestInfoDTO struct {

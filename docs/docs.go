@@ -347,6 +347,13 @@ const docTemplate = `{
                 "summary": "Quests",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Quest to update",
                         "name": "quest",
                         "in": "body",
@@ -354,13 +361,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/domain.QuestDTO"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Quest ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1542,11 +1542,17 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "objects": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
                 "quest_id": {
                     "type": "string"
                 },
                 "scene": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },

@@ -41,10 +41,7 @@ func (s *serviceMock) CreateQuest(c *gin.Context, id string, scene int, inventor
 	return nil
 }
 
-func (s *serviceMock) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
-	if quest.Scene == "error" {
-		return errors.New("UPDATE ERROR")
-	}
+func (s *serviceMock) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 	return nil
 }
 

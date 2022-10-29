@@ -35,7 +35,7 @@ func (d *dummyRepo) CreateQuest(c *gin.Context, id string, scene int, inventory 
 	return nil
 }
 
-func (d *dummyRepo) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
+func (d *dummyRepo) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 	if quest.QuestID == "error" {
 		return errors.New("UPDATE ERROR")
 	}
