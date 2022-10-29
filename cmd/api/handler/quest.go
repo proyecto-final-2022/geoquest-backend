@@ -140,8 +140,8 @@ func (g *Quest) GetQuest() gin.HandlerFunc {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param quest body domain.QuestDTO true "Quest to update"
 // @Param id path string true "Quest ID"
+// @Param quest body domain.QuestDTO true "Quest to update"
 // @Success 200
 // @Failure 422
 // @Failure 500
@@ -156,9 +156,9 @@ func (g *Quest) UpdateQuest() gin.HandlerFunc {
 			return
 		}
 
-		//		paramId := c.Param("id")
+		paramId := c.Param("id")
 
-		if err = g.service.UpdateQuest(c, req); err != nil {
+		if err = g.service.UpdateQuest(c, req, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
