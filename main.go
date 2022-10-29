@@ -31,3 +31,17 @@ func main() {
 	}
 
 }
+
+/*
+	done := make(chan bool)
+	go forever()
+	<-done // Block forever
+}
+
+func forever() {
+	for {
+		fmt.Printf("%v+\n", time.Now())
+		time.Sleep(time.Second)
+	}
+}
+*/
