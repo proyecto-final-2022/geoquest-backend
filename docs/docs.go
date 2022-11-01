@@ -1555,7 +1555,7 @@ const docTemplate = `{
                     }
                 },
                 "points": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "quest_id": {
                     "type": "string"

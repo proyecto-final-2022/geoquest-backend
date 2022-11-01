@@ -20,7 +20,7 @@ type Repository interface {
 	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
-	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points int) error
+	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
@@ -79,7 +79,7 @@ func (r *repository) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 	return quests, nil
 }
 
-func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points int) error {
+func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
 
 	var err error
 

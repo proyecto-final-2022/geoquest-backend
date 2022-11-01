@@ -13,7 +13,7 @@ type Quest struct {
 	Scene     int                `json:"scene"`
 	Logs      []string           `json:"logs"`
 	Inventory []string           `json:"inventory"`
-	Points    int                `json:"points"`
+	Points    float64            `json:"points"`
 	Objects   map[string]int     `json:"objects"`
 }
 
@@ -88,7 +88,7 @@ type QuestDTO struct {
 	Scene     int            `json:"scene"`
 	Inventory []string       `json:"inventory"`
 	Logs      []string       `json:"logs"`
-	Points    int            `json:"points"`
+	Points    float64        `json:"points"`
 	Objects   map[string]int `json:"objects"`
 }
 
