@@ -11,7 +11,10 @@ type Quest struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"user_id,omitempty"`
 	QuestID   string             `json:"quest_id"`
 	Scene     int                `json:"scene"`
+	Logs      []string           `json:"logs"`
 	Inventory []string           `json:"inventory"`
+	Points    int                `json:"points"`
+	Objects   map[string]int     `json:"objects"`
 }
 
 type QuestCompletion struct {
@@ -84,6 +87,8 @@ type QuestDTO struct {
 	QuestID   string         `json:"quest_id"`
 	Scene     int            `json:"scene"`
 	Inventory []string       `json:"inventory"`
+	Logs      []string       `json:"logs"`
+	Points    int            `json:"points"`
 	Objects   map[string]int `json:"objects"`
 }
 

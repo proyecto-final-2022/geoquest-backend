@@ -268,7 +268,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.QuestRequest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
                     {
@@ -1542,11 +1542,20 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "objects": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "integer"
                     }
+                },
+                "points": {
+                    "type": "integer"
                 },
                 "quest_id": {
                     "type": "string"
@@ -1665,23 +1674,6 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
-                }
-            }
-        },
-        "handler.QuestRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "inventory": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "scene": {
-                    "type": "integer"
                 }
             }
         },

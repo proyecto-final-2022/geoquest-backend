@@ -16,7 +16,7 @@ import (
 type Service interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
-	CreateQuest(c *gin.Context, id string, scene int, inventory []string) error
+	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points int) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
@@ -50,9 +50,9 @@ func (s *service) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
 	return quests, err
 }
 
-func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points int) error {
 	fmt.Println("id: ", id)
-	err := s.repo.CreateQuest(c, id, scene, inventory)
+	err := s.repo.CreateQuest(c, id, scene, inventory, logs, points)
 
 	return err
 }

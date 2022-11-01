@@ -20,7 +20,7 @@ type Repository interface {
 	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
-	CreateQuest(c *gin.Context, id string, scene int, inventory []string) error
+	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points int) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
@@ -79,11 +79,11 @@ func (r *repository) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 	return quests, nil
 }
 
-func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points int) error {
 
 	var err error
 
-	_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory})
+	_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory, Logs: logs, Points: points})
 
 	if err != nil {
 		return err
@@ -105,6 +105,8 @@ func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId 
 			"scene":     quest.Scene,
 			"inventory": quest.Inventory,
 			"objects":   quest.Objects,
+			"logs":      quest.Logs,
+			"points":    quest.Points,
 		},
 	}
 

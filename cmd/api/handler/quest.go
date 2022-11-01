@@ -59,7 +59,7 @@ func NewGame(s quest.Service) *Quest {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param quest body QuestRequest true "Quest to save"
+// @Param quest body domain.QuestDTO true "Quest to save"
 // @Param Authorization header string true "Auth token"
 // @Success 200
 // @Failure 422
@@ -67,7 +67,7 @@ func NewGame(s quest.Service) *Quest {
 // @Router /quests/ [post]
 func (u *Quest) CreateQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req QuestRequest
+		var req domain.QuestDTO
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -75,7 +75,7 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.CreateQuest(c, req.ID, req.Scene, req.Inventory); err != nil {
+		if err = u.service.CreateQuest(c, req.QuestID, req.Scene, req.Inventory, req.Logs, req.Points); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

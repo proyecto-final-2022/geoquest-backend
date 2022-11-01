@@ -5,10 +5,16 @@ definitions:
         items:
           type: string
         type: array
+      logs:
+        items:
+          type: string
+        type: array
       objects:
         additionalProperties:
           type: integer
         type: object
+      points:
+        type: integer
       quest_id:
         type: string
       scene:
@@ -86,17 +92,6 @@ definitions:
         type: integer
       type:
         type: string
-    type: object
-  handler.QuestRequest:
-    properties:
-      id:
-        type: string
-      inventory:
-        items:
-          type: string
-        type: array
-      scene:
-        type: integer
     type: object
   handler.TeamCompletionRequest:
     properties:
@@ -350,7 +345,7 @@ paths:
         name: quest
         required: true
         schema:
-          $ref: '#/definitions/handler.QuestRequest'
+          $ref: '#/definitions/domain.QuestDTO'
       - description: Auth token
         in: header
         name: Authorization
