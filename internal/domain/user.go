@@ -19,6 +19,17 @@ type User struct {
 	Google        bool     `json:"google" gorm:"default:false"`
 	Facebook      bool     `json:"facebook" gorm:"default:false"`
 	Coupons       []Coupon `json:"coupons" gorm:"foreignKey:UserID;references:ID"`
+
+	//Achivements
+	MadeFriend_ac         bool `json:"madeFriend_ac"`
+	StartedQuest_ac       bool `json:"startedQuest_ac"`
+	FinishedQuest_ac      bool `json:"finishedQuest_ac"`
+	FinishedTeamQuest_ac  bool `json:"finishedTeamQuest_ac"`
+	RatedQuest_ac         bool `json:"ratedQuest_ac"`
+	UsedCoupon_ac         bool `json:"usedCoupon_ac"`
+	FinishedFiveQuests_ac bool `json:"finishedFiveQuests_ac"`
+	TopThreeRanking_ac    bool `json:"topThreeRanking_ac"`
+	FiftyMinutes_ac       bool `json:"fiftyMinutes_ac"`
 }
 
 type UserDTO struct {
@@ -32,6 +43,17 @@ type UserDTO struct {
 	Manual        bool   `json:"manual"`
 	Google        bool   `json:"google"`
 	Facebook      bool   `json:"facebook"`
+
+	//Achivements
+	MadeFriend_ac         bool `json:"madeFriend_ac"`
+	StartedQuest_ac       bool `json:"startedQuest_ac"`
+	FinishedQuest_ac      bool `json:"finishedQuest_ac"`
+	FinishedTeamQuest_ac  bool `json:"finishedTeamQuest_ac"`
+	RatedQuest_ac         bool `json:"ratedQuest_ac"`
+	UsedCoupon_ac         bool `json:"usedCoupon_ac"`
+	FinishedFiveQuests_ac bool `json:"finishedFiveQuests_ac"`
+	TopThreeRanking_ac    bool `json:"topThreeRanking_ac"`
+	FiftyMinutes_ac       bool `json:"fiftyMinutes_ac"`
 }
 
 type UserFriends struct {

@@ -43,18 +43,19 @@ type LoginFacebookRequest struct {
 }
 
 type UserResponse struct {
-	ID            int    `json:"id"`
-	Name          string `json:"name"`
-	Email         string `json:"email"`
-	Username      string `json:"username"`
-	FirebaseToken string `json:"firebaseToken"`
-	Image         int    `json:"image"`
-	Token         string `json:"token"`
-	Manual        bool   `json:"manual"`
-	Google        bool   `json:"google"`
-	Facebook      bool   `json:"facebook"`
-	Friends       int    `json:"friends"`
-	Notifications int    `json:"notifications"`
+	ID            int      `json:"id"`
+	Name          string   `json:"name"`
+	Email         string   `json:"email"`
+	Username      string   `json:"username"`
+	FirebaseToken string   `json:"firebaseToken"`
+	Image         int      `json:"image"`
+	Token         string   `json:"token"`
+	Manual        bool     `json:"manual"`
+	Google        bool     `json:"google"`
+	Facebook      bool     `json:"facebook"`
+	Friends       int      `json:"friends"`
+	Notifications int      `json:"notifications"`
+	Achivements   []string `json:"achivements"`
 }
 
 type UserRequest struct {
@@ -616,6 +617,37 @@ func (u *User) GetUser() gin.HandlerFunc {
 			return
 		}
 
+		var achivements []string
+
+		//Achivements
+		if user.MadeFriend_ac == true {
+			achivements = append(achivements, "MadeFriend__ac")
+		}
+		if user.StartedQuest_ac == true {
+			achivements = append(achivements, "StartedQuest_ac")
+		}
+		if user.FinishedQuest_ac == true {
+			achivements = append(achivements, "MadeFriend__ac")
+		}
+		if user.FinishedTeamQuest_ac == true {
+			achivements = append(achivements, "FinishedTeamQuest_ac")
+		}
+		if user.RatedQuest_ac == true {
+			achivements = append(achivements, "MadeFriend__ac")
+		}
+		if user.UsedCoupon_ac == true {
+			achivements = append(achivements, "UsedCoupon_ac")
+		}
+		if user.FinishedFiveQuests_ac == true {
+			achivements = append(achivements, "FinishedFiveQuests_ac")
+		}
+		if user.TopThreeRanking_ac == true {
+			achivements = append(achivements, "TopThreeRanking_ac")
+		}
+		if user.FiftyMinutes_ac == true {
+			achivements = append(achivements, "FiftyMinutes_ac")
+		}
+
 		userResponse := UserResponse{
 			ID:            user.ID,
 			Email:         user.Email,
@@ -629,6 +661,7 @@ func (u *User) GetUser() gin.HandlerFunc {
 			Token:         tokenString,
 			Friends:       len(friends),
 			Notifications: len(notifications),
+			Achivements:   achivements,
 		}
 
 		c.JSON(http.StatusOK, userResponse)

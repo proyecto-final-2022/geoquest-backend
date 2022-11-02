@@ -49,7 +49,28 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, domain.User{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: id, Username: user.Username, Email: user.Email, Name: user.Name, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image, FirebaseToken: user.FirebaseToken}, user, nil
+	return domain.UserDTO{
+		ID:            id,
+		Username:      user.Username,
+		Email:         user.Email,
+		Name:          user.Name,
+		Password:      user.Password,
+		Manual:        user.Manual,
+		Google:        user.Google,
+		Facebook:      user.Facebook,
+		Image:         user.Image,
+		FirebaseToken: user.FirebaseToken,
+
+		//Achivements
+		MadeFriend_ac:         user.MadeFriend_ac,
+		StartedQuest_ac:       user.StartedQuest_ac,
+		FinishedQuest_ac:      user.FinishedQuest_ac,
+		FinishedTeamQuest_ac:  user.FinishedTeamQuest_ac,
+		RatedQuest_ac:         user.RatedQuest_ac,
+		UsedCoupon_ac:         user.UsedCoupon_ac,
+		FinishedFiveQuests_ac: user.FinishedFiveQuests_ac,
+		TopThreeRanking_ac:    user.TopThreeRanking_ac,
+		FiftyMinutes_ac:       user.FiftyMinutes_ac}, user, nil
 }
 
 func (r *repository) GetUsers(c *gin.Context) ([]domain.User, error) {
