@@ -504,7 +504,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.CompletionRequest"
+                            "$ref": "#/definitions/handler.Rating"
                         }
                     },
                     {
@@ -1790,6 +1790,14 @@
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "handler.Rating": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "number"
                 }
             }
         }

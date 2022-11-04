@@ -767,9 +767,10 @@ func (g *User) UpdateCouponUsed() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
 
+		paramId, _ := strconv.Atoi(c.Param("id"))
 		paramCouponId, _ := strconv.Atoi(c.Param("coupon_id"))
 
-		if err = g.service.UpdateCoupon(c, paramCouponId); err != nil {
+		if err = g.service.UpdateCoupon(c, paramId, paramCouponId); err != nil {
 			c.JSON(http.StatusInternalServerError, paramCouponId)
 			return
 		}

@@ -513,7 +513,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.CompletionRequest"
+                            "$ref": "#/definitions/handler.Rating"
                         }
                     },
                     {
@@ -1799,6 +1799,14 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "handler.Rating": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "number"
                 }
             }
         }

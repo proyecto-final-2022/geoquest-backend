@@ -21,7 +21,7 @@ type Service interface {
 	CheckPassword(providedPassword string, userPassword string) error
 	CreateCoupon(c *gin.Context, userID int, description string, expirationYear int, expirationMonth time.Month, expirationDay int, expirationHour int) error
 	GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, error)
-	UpdateCoupon(c *gin.Context, couponID int) error
+	UpdateCoupon(c *gin.Context, userID int, couponID int) error
 	AddFriend(c *gin.Context, id int, friendID int) error
 	GetUserFriends(c *gin.Context, id int) ([]domain.UserDTO, error)
 	DeleteFriend(c *gin.Context, id int, friendID int) error
@@ -141,7 +141,7 @@ func (s *service) CreateCoupon(c *gin.Context, userID int, description string, e
 	return nil
 }
 
-func (s *service) UpdateCoupon(c *gin.Context, couponID int) error {
+func (s *service) UpdateCoupon(c *gin.Context, userID int, couponID int) error {
 
 	coupon, err := s.repo.GetCoupon(c, couponID)
 
@@ -152,6 +152,10 @@ func (s *service) UpdateCoupon(c *gin.Context, couponID int) error {
 	coupon.Used = true
 
 	if err := s.repo.UpdateCoupon(c, coupon); err != nil {
+		return err
+	}
+
+	if err := s.repo.UnlockAchivement(c, userID, "UsedCoupon_ac"); err != nil {
 		return err
 	}
 
@@ -195,6 +199,10 @@ func (s *service) AddFriend(c *gin.Context, id int, friendID int) error {
 	}
 
 	if err := s.repo.AddFriend(c, id, friendID); err != nil {
+		return err
+	}
+
+	if err := s.repo.UnlockAchivement(c, id, "MadeFriend_ac"); err != nil {
 		return err
 	}
 
