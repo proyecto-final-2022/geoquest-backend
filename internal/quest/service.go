@@ -1,7 +1,6 @@
 package quest
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,6 +16,8 @@ type Service interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
+	CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
+	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
@@ -51,8 +52,19 @@ func (s *service) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
 }
 
 func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
-	fmt.Println("id: ", id)
 	err := s.repo.CreateQuest(c, id, scene, inventory, logs, points)
+
+	return err
+}
+
+func (s *service) CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+	err := s.repo.CreateQuestProgression(c, id, scene, inventory, logs, objects, points)
+
+	return err
+}
+
+func (s *service) UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+	err := s.repo.UpdateQuestProgression(c, id, scene, inventory, logs, objects, points)
 
 	return err
 }

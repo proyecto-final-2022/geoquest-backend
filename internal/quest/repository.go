@@ -1,6 +1,7 @@
 package quest
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -8,6 +9,8 @@ import (
 	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"go.mongodb.org/mongo-driver/bson"
+
+	"gorm.io/datatypes"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -21,6 +24,8 @@ type Repository interface {
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
+	CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
+	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
@@ -87,6 +92,47 @@ func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory
 
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (r *repository) CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+
+	questInfo := map[string]interface{}{
+		"quest_id":  id,
+		"scene":     scene,
+		"inventory": inventory,
+		"logs":      logs,
+		"points":    points,
+		"objects":   objects,
+	}
+
+	jsonQuest, _ := json.Marshal(questInfo)
+
+	questProgress := domain.QuestProgress{Info: datatypes.JSON(string(jsonQuest))}
+	if tx := config.MySql.Create(&questProgress); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+	return nil
+}
+
+func (r *repository) UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+	questInfo := map[string]interface{}{
+		"quest_id":  id,
+		"scene":     scene,
+		"inventory": inventory,
+		"logs":      logs,
+		"points":    points,
+		"objects":   objects,
+	}
+
+	jsonQuest, _ := json.Marshal(questInfo)
+
+	questProgress := domain.QuestProgress{Info: datatypes.JSON(string(jsonQuest))}
+
+	if tx := config.MySql.Save(&questProgress).Where("quest_id = ?", id); tx.Error != nil {
+		return tx.Error
 	}
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -102,4 +103,19 @@ type QuestInfoDTO struct {
 	Completions   int      `json:"completions"`
 	Image         string   `json:"image_url"`
 	Tags          []string `json:"tags"`
+}
+
+type QuestProgress struct {
+	gorm.Model
+	ID   int            `json:"id,identity" gorm:"primary_key"`
+	Info datatypes.JSON `json:"logs"`
+}
+
+type QuestProgressDTO struct {
+	QuestID   int            `json:"quest_id"`
+	Scene     int            `json:"scene"`
+	Logs      []string       `json:"logs"`
+	Inventory []string       `json:"inventory"`
+	Points    float64        `json:"points"`
+	Objects   map[string]int `json:"objects"`
 }

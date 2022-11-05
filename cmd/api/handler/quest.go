@@ -30,6 +30,14 @@ type QuestRequest struct {
 	Inventory []string `json:"inventory"`
 }
 
+type QuestProgressRequest struct {
+	Scene     int            `json:"scene"`
+	Logs      []string       `json:"logs"`
+	Inventory []string       `json:"inventory"`
+	Points    float64        `json:"points"`
+	Objects   map[string]int `json:"objects"`
+}
+
 type Rating struct {
 	Rating int `json:"rating"`
 }
@@ -76,6 +84,72 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 		}
 
 		if err = u.service.CreateQuest(c, req.QuestID, req.Scene, req.Inventory, req.Logs, req.Points); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary New quest progression
+// @Schemes
+// @Description Save new quest progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param quest body QuestProgressRequest true "Quest progress to save"
+// @Param id path string true "Quest ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/{id}/progression [post]
+func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req QuestProgressRequest
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err = u.service.CreateQuestProgression(c, paramId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Update quest progression
+// @Schemes
+// @Description Update quest progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param quest body QuestProgressRequest true "Quest progress to update"
+// @Param id path string true "Quest ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/{id}/progression [put]
+func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req QuestProgressRequest
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err = u.service.UpdateQuestProgression(c, paramId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

@@ -34,7 +34,7 @@ func (s *serviceMock) GetQuest(c *gin.Context, id string) (domain.QuestDTO, erro
 	return domain.QuestDTO{QuestID: "test"}, nil
 }
 
-func (s *serviceMock) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+func (s *serviceMock) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
 	if id == "testError" {
 		return errors.New("GET ERROR")
 	}

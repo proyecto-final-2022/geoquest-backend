@@ -93,6 +93,25 @@ definitions:
       type:
         type: string
     type: object
+  handler.QuestProgressRequest:
+    properties:
+      inventory:
+        items:
+          type: string
+        type: array
+      logs:
+        items:
+          type: string
+        type: array
+      objects:
+        additionalProperties:
+          type: integer
+        type: object
+      points:
+        type: number
+      scene:
+        type: integer
+    type: object
   handler.TeamCompletionRequest:
     properties:
       start_day:
@@ -474,6 +493,63 @@ paths:
         "500":
           description: Internal Server Error
       summary: Completion
+      tags:
+      - Quests
+  /quests/{id}/progression:
+    post:
+      consumes:
+      - application/json
+      description: Save new quest progression
+      parameters:
+      - description: Quest progress to save
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.QuestProgressRequest'
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New quest progression
+      tags:
+      - Quests
+    put:
+      consumes:
+      - application/json
+      description: Update quest progression
+      parameters:
+      - description: Quest progress to update
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.QuestProgressRequest'
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Update quest progression
       tags:
       - Quests
   /quests/{id}/rankings:
