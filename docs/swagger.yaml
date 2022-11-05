@@ -43,6 +43,11 @@ definitions:
       username:
         type: string
     type: object
+  handler.Rating:
+    properties:
+      rating:
+        type: integer
+    type: object
   handler.CompletionRequest:
     properties:
       start_day:
@@ -584,7 +589,7 @@ paths:
         name: completion
         required: true
         schema:
-          $ref: '#/definitions/handler.CompletionRequest'
+          $ref: '#/definitions/handler.Rating'
       - description: Auth token
         in: header
         name: Authorization

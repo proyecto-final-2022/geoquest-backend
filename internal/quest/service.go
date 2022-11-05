@@ -168,7 +168,17 @@ func (s *service) CreateRating(c *gin.Context, questID int, userID int, rating i
 
 	quest.Qualification = float32(ratingsSum) / float32(len(ratings))
 
-	return s.repo.UpdateQuestInfo(c, quest)
+	err = s.repo.UpdateQuestInfo(c, quest)
+	if err != nil {
+		return err
+	}
+
+	err = s.userRepo.UnlockAchivement(c, userID, "RatedQuest_ac")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error) {
