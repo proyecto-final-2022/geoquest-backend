@@ -543,7 +543,7 @@ paths:
       summary: Update quest progression
       tags:
       - Quests
-  /quests/{id}/progression/{team_id}:
+  /quests/{id}/progressions/{team_id}:
     get:
       consumes:
       - application/json

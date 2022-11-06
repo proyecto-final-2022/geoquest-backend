@@ -110,6 +110,7 @@ type QuestProgress struct {
 	ID      int            `json:"id,identity" gorm:"primary_key"`
 	TeamID  int            `json:"team_id"`
 	QuestID int            `json:"quest_id"`
+	Points  float32        `json:"qualification"`
 	Info    datatypes.JSON `json:"logs"`
 }
 

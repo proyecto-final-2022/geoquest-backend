@@ -17,9 +17,9 @@ type Service interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
-	CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
+	CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
-	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
+	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
@@ -59,7 +59,7 @@ func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []
 	return err
 }
 
-func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error {
 	err := s.repo.CreateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points)
 
 	return err
@@ -74,7 +74,7 @@ func (s *service) GetQuestProgression(c *gin.Context, id int, teamId int) (datat
 	return questProgress, nil
 }
 
-func (s *service) UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+func (s *service) UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error {
 	err := s.repo.UpdateQuestProgression(c, id, scene, inventory, logs, objects, points)
 
 	return err

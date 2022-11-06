@@ -35,7 +35,7 @@ type QuestProgressRequest struct {
 	Scene     int            `json:"scene"`
 	Logs      []string       `json:"logs"`
 	Inventory []string       `json:"inventory"`
-	Points    float64        `json:"points"`
+	Points    float32        `json:"points"`
 	Objects   map[string]int `json:"objects"`
 }
 
@@ -105,7 +105,7 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 // @Success 200
 // @Failure 422
 // @Failure 500
-// @Router /quests/{id}/progression/{team_id} [post]
+// @Router /quests/{id}/progressions/{team_id} [post]
 func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req QuestProgressRequest
@@ -138,7 +138,7 @@ func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
 // @Param team_id path string true "Team ID"
 // @Success 200
 // @Failure 500
-// @Router /quests/{id}/progression/{team_id} [get]
+// @Router /quests/{id}/progressions/{team_id} [get]
 func (g *Quest) GetQuestProgression() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error

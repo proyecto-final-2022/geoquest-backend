@@ -505,7 +505,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/quests/{id}/progression/{team_id}": {
+        "/quests/{id}/progressions/{team_id}": {
             "get": {
                 "description": "Team progression",
                 "consumes": [
