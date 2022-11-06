@@ -107,12 +107,15 @@ type QuestInfoDTO struct {
 
 type QuestProgress struct {
 	gorm.Model
-	ID   int            `json:"id,identity" gorm:"primary_key"`
-	Info datatypes.JSON `json:"logs"`
+	ID      int            `json:"id,identity" gorm:"primary_key"`
+	TeamID  int            `json:"team_id"`
+	QuestID int            `json:"quest_id"`
+	Info    datatypes.JSON `json:"logs"`
 }
 
 type QuestProgressDTO struct {
 	QuestID   int            `json:"quest_id"`
+	TeamID    int            `json:"team_id"`
 	Scene     int            `json:"scene"`
 	Logs      []string       `json:"logs"`
 	Inventory []string       `json:"inventory"`

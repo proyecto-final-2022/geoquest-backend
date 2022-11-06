@@ -8,6 +8,7 @@ import (
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
+	"gorm.io/datatypes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +17,8 @@ type Service interface {
 	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
 	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
-	CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
+	CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
+	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
 	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
@@ -57,10 +59,19 @@ func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []
 	return err
 }
 
-func (s *service) CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
-	err := s.repo.CreateQuestProgression(c, id, scene, inventory, logs, objects, points)
+func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+	err := s.repo.CreateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points)
 
 	return err
+}
+
+func (s *service) GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error) {
+	questProgress, err := s.repo.GetQuestProgression(c, id, teamId)
+
+	if err != nil {
+		return nil, err
+	}
+	return questProgress, nil
 }
 
 func (s *service) UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {

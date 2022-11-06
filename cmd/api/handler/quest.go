@@ -7,6 +7,7 @@ import (
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
+	"gorm.io/datatypes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -100,28 +101,58 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 // @Produce json
 // @Param quest body QuestProgressRequest true "Quest progress to save"
 // @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
 // @Success 200
 // @Failure 422
 // @Failure 500
-// @Router /quests/{id}/progression [post]
+// @Router /quests/{id}/progression/{team_id} [post]
 func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req QuestProgressRequest
 		var err error
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
 			return
 		}
 
-		if err = u.service.CreateQuestProgression(c, paramId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+		if err = u.service.CreateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 
 		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Get Team progression
+// @Schemes
+// @Description Team progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id}/progression/{team_id} [get]
+func (g *Quest) GetQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var questProgress datatypes.JSON
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+
+		if questProgress, err = g.service.GetQuestProgression(c, paramId, paramTeamId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, questProgress)
 	}
 }
 

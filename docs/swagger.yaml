@@ -26,6 +26,14 @@ definitions:
         type: string
       facebook:
         type: boolean
+      fiftyMinutes_ac:
+        type: boolean
+      finishedFiveQuests_ac:
+        type: boolean
+      finishedQuest_ac:
+        type: boolean
+      finishedTeamQuest_ac:
+        type: boolean
       firebaseToken:
         type: string
       google:
@@ -34,19 +42,25 @@ definitions:
         type: integer
       image:
         type: integer
+      madeFriend_ac:
+        description: Achivements
+        type: boolean
       manual:
         type: boolean
       name:
         type: string
       password:
         type: string
+      ratedQuest_ac:
+        type: boolean
+      startedQuest_ac:
+        type: boolean
+      topThreeRanking_ac:
+        type: boolean
+      usedCoupon_ac:
+        type: boolean
       username:
         type: string
-    type: object
-  handler.Rating:
-    properties:
-      rating:
-        type: integer
     type: object
   handler.CompletionRequest:
     properties:
@@ -501,34 +515,6 @@ paths:
       tags:
       - Quests
   /quests/{id}/progression:
-    post:
-      consumes:
-      - application/json
-      description: Save new quest progression
-      parameters:
-      - description: Quest progress to save
-        in: body
-        name: quest
-        required: true
-        schema:
-          $ref: '#/definitions/handler.QuestProgressRequest'
-      - description: Quest ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "422":
-          description: Unprocessable Entity
-        "500":
-          description: Internal Server Error
-      summary: New quest progression
-      tags:
-      - Quests
     put:
       consumes:
       - application/json
@@ -555,6 +541,65 @@ paths:
         "500":
           description: Internal Server Error
       summary: Update quest progression
+      tags:
+      - Quests
+  /quests/{id}/progression/{team_id}:
+    get:
+      consumes:
+      - application/json
+      description: Team progression
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Get Team progression
+      tags:
+      - Quests
+    post:
+      consumes:
+      - application/json
+      description: Save new quest progression
+      parameters:
+      - description: Quest progress to save
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.QuestProgressRequest'
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New quest progression
       tags:
       - Quests
   /quests/{id}/rankings:
@@ -589,7 +634,7 @@ paths:
         name: completion
         required: true
         schema:
-          $ref: '#/definitions/handler.Rating'
+          $ref: '#/definitions/handler.CompletionRequest'
       - description: Auth token
         in: header
         name: Authorization

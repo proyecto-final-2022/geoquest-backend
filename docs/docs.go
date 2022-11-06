@@ -503,6 +503,45 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
+            }
+        },
+        "/quests/{id}/progression/{team_id}": {
+            "get": {
+                "description": "Team progression",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Get Team progression",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             },
             "post": {
                 "description": "Save new quest progression",
@@ -530,6 +569,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Quest ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
                         "in": "path",
                         "required": true
                     }
@@ -599,7 +645,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.Rating"
+                            "$ref": "#/definitions/handler.CompletionRequest"
                         }
                     },
                     {
@@ -1660,6 +1706,18 @@ const docTemplate = `{
                 "facebook": {
                     "type": "boolean"
                 },
+                "fiftyMinutes_ac": {
+                    "type": "boolean"
+                },
+                "finishedFiveQuests_ac": {
+                    "type": "boolean"
+                },
+                "finishedQuest_ac": {
+                    "type": "boolean"
+                },
+                "finishedTeamQuest_ac": {
+                    "type": "boolean"
+                },
                 "firebaseToken": {
                     "type": "string"
                 },
@@ -1672,6 +1730,10 @@ const docTemplate = `{
                 "image": {
                     "type": "integer"
                 },
+                "madeFriend_ac": {
+                    "description": "Achivements",
+                    "type": "boolean"
+                },
                 "manual": {
                     "type": "boolean"
                 },
@@ -1680,6 +1742,18 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                },
+                "ratedQuest_ac": {
+                    "type": "boolean"
+                },
+                "startedQuest_ac": {
+                    "type": "boolean"
+                },
+                "topThreeRanking_ac": {
+                    "type": "boolean"
+                },
+                "usedCoupon_ac": {
+                    "type": "boolean"
                 },
                 "username": {
                     "type": "string"
@@ -1914,14 +1988,6 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
-                }
-            }
-        },
-        "handler.Rating": {
-            "type": "object",
-            "properties": {
-                "rating": {
-                    "type": "number"
                 }
             }
         }
