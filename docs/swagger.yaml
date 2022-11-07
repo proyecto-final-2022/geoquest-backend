@@ -543,6 +543,27 @@ paths:
       summary: Update quest progression
       tags:
       - Quests
+  /quests/{id}/progression/rankings:
+    get:
+      consumes:
+      - application/json
+      description: Quest ranking
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Ranking
+      tags:
+      - Quests
   /quests/{id}/progressions/{team_id}:
     get:
       consumes:

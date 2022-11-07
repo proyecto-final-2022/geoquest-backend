@@ -505,6 +505,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/quests/{id}/progression/rankings": {
+            "get": {
+                "description": "Quest ranking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Ranking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/quests/{id}/progressions/{team_id}": {
             "get": {
                 "description": "Team progression",

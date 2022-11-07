@@ -422,3 +422,29 @@ func (g *Quest) GetRanking() gin.HandlerFunc {
 		c.JSON(http.StatusOK, quests)
 	}
 }
+
+// @Summary Ranking
+// @Schemes
+// @Description Quest ranking
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id}/progression/rankings [get]
+func (g *Quest) GetQuestProgressRanking() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var quests []domain.QuestProgressDTO
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if quests, err = g.service.GetQuestRanking(c, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, quests)
+	}
+}

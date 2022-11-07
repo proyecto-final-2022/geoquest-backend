@@ -27,6 +27,7 @@ type Service interface {
 	GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error)
 	CreateRating(c *gin.Context, questID int, userID int, rating int) error
 	GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDTO, error)
+	GetQuestRanking(c *gin.Context, id int) ([]domain.QuestProgressDTO, error)
 }
 
 type service struct {
@@ -246,6 +247,39 @@ func (s *service) GetRanking(c *gin.Context, id int) ([]domain.QuestCompletionDT
 	}
 
 	return questCompletionsDTO, err
+}
+
+func (s *service) GetQuestRanking(c *gin.Context, id int) ([]domain.QuestProgressDTO, error) {
+
+	quests, err := s.repo.GetQuestProgressions(c, id)
+
+	questProgresses := make([]domain.QuestProgressDTO, len(quests))
+
+	for i := range quests {
+		if err != nil {
+			return nil, err
+		}
+		questProgresses[i].Info = quests[i].Info
+		questProgresses[i].TeamID = quests[i].TeamID
+		questProgresses[i].Points = quests[i].Points
+
+		team, err := s.repo.GetTeam(c, quests[i].TeamID)
+		if err != nil {
+			return nil, err
+		}
+
+		for j := range team {
+			userDTO, _, err := s.userRepo.GetUser(c, team[j].UserID)
+			if err != nil {
+				return nil, err
+			}
+			questProgresses[i].Users = append(questProgresses[i].Users, domain.UserDTO{Username: userDTO.Username, Image: userDTO.Image})
+		}
+	}
+
+	sort.Sort(QuestsProgresses(questProgresses))
+
+	return questProgresses, err
 }
 
 func isBestTime(startTime1 time.Time, endTime1 time.Time, startTime2 time.Time, endTime2 time.Time) bool {

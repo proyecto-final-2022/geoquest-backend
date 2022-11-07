@@ -26,6 +26,8 @@ type Repository interface {
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
+	GetQuestProgressions(c *gin.Context, questId int) ([]domain.QuestProgress, error)
+	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
@@ -239,6 +241,24 @@ func (r *repository) GetQuestRatings(c *gin.Context, questID int) ([]*domain.Rat
 	}
 
 	return ratings, nil
+}
+
+func (r *repository) GetQuestProgressions(c *gin.Context, questID int) ([]domain.QuestProgress, error) {
+	var questRankings []domain.QuestProgress
+	if tx := config.MySql.Find(&questRankings); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+	return questRankings, nil
+}
+
+//Por que??? porque import cycle
+func (r *repository) GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error) {
+	var team []domain.UserXTeam
+	if tx := config.MySql.Where("team_id = ?", teamID).Find(&team); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	return team, nil
 }
 
 func (r *repository) SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error {
