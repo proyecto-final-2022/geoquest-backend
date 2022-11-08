@@ -594,15 +594,6 @@ const docTemplate = `{
                 "summary": "New quest progression",
                 "parameters": [
                     {
-                        "description": "Quest progress to save",
-                        "name": "quest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.QuestProgressRequest"
-                        }
-                    },
-                    {
                         "type": "string",
                         "description": "Quest ID",
                         "name": "id",

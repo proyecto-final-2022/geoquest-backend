@@ -99,7 +99,6 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param quest body QuestProgressRequest true "Quest progress to save"
 // @Param id path string true "Quest ID"
 // @Param team_id path string true "Team ID"
 // @Success 200
@@ -108,18 +107,12 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 // @Router /quests/{id}/progressions/{team_id} [post]
 func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req QuestProgressRequest
 		var err error
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
 
-		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusUnprocessableEntity, err)
-			return
-		}
-
-		if err = u.service.CreateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+		if err = u.service.CreateQuestProgression(c, paramId, paramTeamId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -182,7 +175,7 @@ func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId,req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

@@ -566,12 +566,6 @@ paths:
       - application/json
       description: Save new quest progression
       parameters:
-      - description: Quest progress to save
-        in: body
-        name: quest
-        required: true
-        schema:
-          $ref: '#/definitions/handler.QuestProgressRequest'
       - description: Quest ID
         in: path
         name: id
