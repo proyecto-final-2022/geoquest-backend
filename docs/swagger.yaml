@@ -514,35 +514,6 @@ paths:
       summary: Completion
       tags:
       - Quests
-  /quests/{id}/progression:
-    put:
-      consumes:
-      - application/json
-      description: Update quest progression
-      parameters:
-      - description: Quest progress to update
-        in: body
-        name: quest
-        required: true
-        schema:
-          $ref: '#/definitions/handler.QuestProgressRequest'
-      - description: Quest ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "422":
-          description: Unprocessable Entity
-        "500":
-          description: Internal Server Error
-      summary: Update quest progression
-      tags:
-      - Quests
   /quests/{id}/progression/rankings:
     get:
       consumes:
@@ -621,6 +592,39 @@ paths:
         "500":
           description: Internal Server Error
       summary: New quest progression
+      tags:
+      - Quests
+    put:
+      consumes:
+      - application/json
+      description: Update quest progression
+      parameters:
+      - description: Quest progress to update
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.QuestProgressRequest'
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Quest ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Update quest progression
       tags:
       - Quests
   /quests/{id}/rankings:

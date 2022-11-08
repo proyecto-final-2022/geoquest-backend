@@ -164,23 +164,25 @@ func (g *Quest) GetQuestProgression() gin.HandlerFunc {
 // @Produce json
 // @Param quest body QuestProgressRequest true "Quest progress to update"
 // @Param id path string true "Quest ID"
+// @Param team_id path string true "Quest ID"
 // @Success 200
 // @Failure 422
 // @Failure 500
-// @Router /quests/{id}/progression [put]
+// @Router /quests/{id}/progressions/{team_id} [put]
 func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req QuestProgressRequest
 		var err error
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
 			return
 		}
 
-		if err = u.service.UpdateQuestProgression(c, paramId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId,req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

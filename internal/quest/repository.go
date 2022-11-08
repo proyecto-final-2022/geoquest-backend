@@ -28,7 +28,7 @@ type Repository interface {
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
 	GetQuestProgressions(c *gin.Context, questId int) ([]domain.QuestProgress, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
-	UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
+	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
@@ -131,7 +131,7 @@ func (r *repository) GetQuestProgression(c *gin.Context, id int, teamId int) (da
 	return questProgress.Info, nil
 }
 
-func (r *repository) UpdateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error {
+func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error {
 	questInfo := map[string]interface{}{
 		"quest_id":  id,
 		"scene":     scene,
@@ -145,7 +145,7 @@ func (r *repository) UpdateQuestProgression(c *gin.Context, id int, scene int, i
 
 	questProgress := domain.QuestProgress{Info: datatypes.JSON(string(jsonQuest))}
 
-	if tx := config.MySql.Save(&questProgress).Where("quest_id = ?", id); tx.Error != nil {
+	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", id, teamId).Update("info", datatypes.JSON(string(jsonQuest))).Update("points", points); tx.Error != nil {
 		return tx.Error
 	}
 

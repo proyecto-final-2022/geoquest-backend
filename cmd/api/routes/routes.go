@@ -49,6 +49,7 @@ func (r *router) buildGamesRoutes() {
 		gGroup.POST("/:id/rating/:user_id", handler.AddRating())
 		gGroup.POST("/:id/progressions/:team_id", handler.CreateQuestProgression())
 		gGroup.GET("/:id/progressions/:team_id", handler.GetQuestProgression())
+		gGroup.PUT("/:id/progressions/:team_id", handler.UpdateQuestProgression())
 		gGroup.GET("/:id/progression/rankings", handler.GetQuestProgressRanking())
 	}
 }
