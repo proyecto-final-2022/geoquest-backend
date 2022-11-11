@@ -118,6 +118,8 @@ definitions:
         items:
           type: string
         type: array
+      item_name:
+        type: string
       logs:
         items:
           type: string
@@ -129,6 +131,8 @@ definitions:
       points:
         type: number
       scene:
+        type: integer
+      user_id:
         type: integer
     type: object
   handler.TeamCompletionRequest:

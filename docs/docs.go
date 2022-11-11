@@ -1874,6 +1874,9 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "item_name": {
+                    "type": "string"
+                },
                 "logs": {
                     "type": "array",
                     "items": {
@@ -1890,6 +1893,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "scene": {
+                    "type": "integer"
+                },
+                "user_id": {
                     "type": "integer"
                 }
             }

@@ -33,6 +33,8 @@ type QuestRequest struct {
 
 type QuestProgressRequest struct {
 	Scene     int            `json:"scene"`
+	UserID    int            `json:"user_id"`
+	ItemName  string         `json:"item_name"`
 	Logs      []string       `json:"logs"`
 	Inventory []string       `json:"inventory"`
 	Points    float32        `json:"points"`
@@ -176,6 +178,11 @@ func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 		}
 
 		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		if err = u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

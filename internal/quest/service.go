@@ -1,11 +1,16 @@
 package quest
 
 import (
+	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
 	"gorm.io/datatypes"
@@ -20,6 +25,7 @@ type Service interface {
 	CreateQuestProgression(c *gin.Context, id int, teamId int) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
+	SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
@@ -95,6 +101,44 @@ func (s *service) UpdateQuestProgression(c *gin.Context, id int, teamId int, sce
 	err := s.repo.UpdateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points)
 
 	return err
+}
+
+func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error {
+	// fmt.Println("Team id: ", teamID)
+	// fmt.Println("User id: ", userID)
+	// fmt.Println("Item name: ", itemName)
+
+	team, err := s.repo.GetTeam(c, teamID)
+	if err != nil {
+		return err
+	}
+
+	senderDTO, _, err := s.userRepo.GetUser(c, userID)
+
+	for i := range team {
+		userDTO, _, err := s.userRepo.GetUser(c, team[i].UserID)
+		if err != nil {
+			return err
+		}
+
+		//Encode the data
+		postBody, _ := json.Marshal(map[string]string{
+			"team_id":   strconv.Itoa(teamID),
+			"sender":    senderDTO.Name,
+			"token":     userDTO.FirebaseToken,
+			"item_name": itemName,
+		})
+		responseBody := bytes.NewBuffer(postBody)
+		//Leverage Go's HTTP Post function to make request
+		resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
+		//Handle Error
+		if err != nil {
+			log.Fatalf("An Error Occured %v", err)
+		}
+		defer resp.Body.Close()
+	}
+
+	return nil
 }
 
 func (s *service) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
