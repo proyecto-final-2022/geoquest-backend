@@ -51,6 +51,7 @@ func (r *router) buildGamesRoutes() {
 		gGroup.GET("/:id/progressions/:team_id", handler.GetQuestProgression())
 		gGroup.PUT("/:id/progressions/:team_id", handler.UpdateQuestProgression())
 		gGroup.GET("/:id/progression/rankings", handler.GetQuestProgressRanking())
+		gGroup.GET("/:id/progressions/:team_id/timestamp", handler.GetQuestTimestamp())
 	}
 }
 

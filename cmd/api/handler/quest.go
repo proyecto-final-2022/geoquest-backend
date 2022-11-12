@@ -38,6 +38,7 @@ type QuestProgressRequest struct {
 	Logs      []string       `json:"logs"`
 	Inventory []string       `json:"inventory"`
 	Points    float32        `json:"points"`
+	Finished  bool           `json:"finished"`
 	Objects   map[string]int `json:"objects"`
 }
 
@@ -159,7 +160,7 @@ func (g *Quest) GetQuestProgression() gin.HandlerFunc {
 // @Produce json
 // @Param quest body QuestProgressRequest true "Quest progress to update"
 // @Param id path string true "Quest ID"
-// @Param team_id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
 // @Success 200
 // @Failure 422
 // @Failure 500
@@ -177,17 +178,48 @@ func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points); err != nil {
+		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points, req.Finished); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
-
-		if err = u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName); err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-			return
-		}
-
+		/*
+			if err = u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName); err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+		*/
 		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Get quest timestamp
+// @Schemes
+// @Description Get quest timestamp
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/{id}/progressions/{team_id}/timestamp [get]
+func (u *Quest) GetQuestTimestamp() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		now := time.Now()
+		sec := now.Unix()
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+
+		dif, err := u.service.GetTimeDifference(c, paramId, paramTeamId, sec)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, dif)
 	}
 }
 

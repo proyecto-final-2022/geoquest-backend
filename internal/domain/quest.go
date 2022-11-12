@@ -107,16 +107,18 @@ type QuestInfoDTO struct {
 
 type QuestProgress struct {
 	gorm.Model
-	ID      int            `json:"id,identity" gorm:"primary_key"`
-	TeamID  int            `json:"team_id"`
-	QuestID int            `json:"quest_id"`
-	Points  float32        `json:"points"`
-	Info    datatypes.JSON `json:"logs"`
+	ID        int            `json:"id,identity" gorm:"primary_key"`
+	TeamID    int            `json:"team_id"`
+	QuestID   int            `json:"quest_id"`
+	Points    float32        `json:"points"`
+	StartTime int64          `json:"start_time"`
+	Info      datatypes.JSON `json:"logs"`
 }
 
 type QuestProgressDTO struct {
-	TeamID int            `json:"team_id"`
-	Points float32        `json:"points"`
-	Users  []UserDTO      `json:"users"`
-	Info   datatypes.JSON `json:"logs"`
+	TeamID    int            `json:"team_id"`
+	Points    float32        `json:"points"`
+	StartTime int64          `json:"start_time"`
+	Users     []UserDTO      `json:"users"`
+	Info      datatypes.JSON `json:"logs"`
 }

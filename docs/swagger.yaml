@@ -114,6 +114,8 @@ definitions:
     type: object
   handler.QuestProgressRequest:
     properties:
+      finished:
+        type: boolean
       inventory:
         items:
           type: string
@@ -608,7 +610,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: Quest ID
+      - description: Team ID
         in: path
         name: team_id
         required: true
@@ -623,6 +625,34 @@ paths:
         "500":
           description: Internal Server Error
       summary: Update quest progression
+      tags:
+      - Quests
+  /quests/{id}/progressions/{team_id}/timestamp:
+    get:
+      consumes:
+      - application/json
+      description: Get quest timestamp
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Get quest timestamp
       tags:
       - Quests
   /quests/{id}/rankings:

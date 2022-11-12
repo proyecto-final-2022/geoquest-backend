@@ -24,7 +24,8 @@ type Service interface {
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	CreateQuestProgression(c *gin.Context, id int, teamId int) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
-	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error
+	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool) error
+	GetTimeDifference(c *gin.Context, id int, teamId int, compareTime int64) (int64, error)
 	SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
@@ -70,16 +71,19 @@ func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int) err
 
 	_, err := s.repo.GetQuestProgression(c, id, teamId)
 
+	now := time.Now()
+	sec := now.Unix()
+
 	//if quest already exists, start new quest
 	if err == nil {
-		err := s.repo.UpdateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0)
+		err := s.repo.UpdateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec)
 		if err != nil {
 			return err
 		}
 		return nil
 	}
 
-	err = s.repo.CreateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0)
+	err = s.repo.CreateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec)
 
 	if err != nil {
 		return err
@@ -97,8 +101,26 @@ func (s *service) GetQuestProgression(c *gin.Context, id int, teamId int) (datat
 	return questProgress, nil
 }
 
-func (s *service) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32) error {
-	err := s.repo.UpdateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points)
+func (s *service) GetTimeDifference(c *gin.Context, id int, teamId int, compareTime int64) (int64, error) {
+	questProgress, err := s.repo.GetQuestProgressionInfo(c, id, teamId)
+
+	if err != nil {
+		return 0, err
+	}
+
+	difference := compareTime - questProgress.StartTime
+
+	return difference, nil
+}
+
+func (s *service) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool) error {
+	questProgress, err := s.repo.GetQuestProgressionInfo(c, id, teamId)
+
+	if err != nil {
+		return err
+	}
+
+	err = s.repo.UpdateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points, finished, questProgress.StartTime)
 
 	return err
 }

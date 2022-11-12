@@ -562,7 +562,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Quest ID",
+                        "description": "Team ID",
                         "name": "team_id",
                         "in": "path",
                         "required": true
@@ -592,6 +592,48 @@ const docTemplate = `{
                     "Quests"
                 ],
                 "summary": "New quest progression",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/quests/{id}/progressions/{team_id}/timestamp": {
+            "get": {
+                "description": "Get quest timestamp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Get quest timestamp",
                 "parameters": [
                     {
                         "type": "string",
@@ -1868,6 +1910,9 @@ const docTemplate = `{
         "handler.QuestProgressRequest": {
             "type": "object",
             "properties": {
+                "finished": {
+                    "type": "boolean"
+                },
                 "inventory": {
                     "type": "array",
                     "items": {
