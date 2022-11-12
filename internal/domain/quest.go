@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -11,7 +12,10 @@ type Quest struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"user_id,omitempty"`
 	QuestID   string             `json:"quest_id"`
 	Scene     int                `json:"scene"`
+	Logs      []string           `json:"logs"`
 	Inventory []string           `json:"inventory"`
+	Points    float64            `json:"points"`
+	Objects   map[string]int     `json:"objects"`
 }
 
 type QuestCompletion struct {
@@ -81,9 +85,12 @@ type Tag struct {
 }
 
 type QuestDTO struct {
-	QuestID   string   `json:"quest_id"`
-	Scene     int      `json:"scene"`
-	Inventory []string `json:"inventory"`
+	QuestID   string         `json:"quest_id"`
+	Scene     int            `json:"scene"`
+	Inventory []string       `json:"inventory"`
+	Logs      []string       `json:"logs"`
+	Points    float64        `json:"points"`
+	Objects   map[string]int `json:"objects"`
 }
 
 type QuestInfoDTO struct {
@@ -96,4 +103,22 @@ type QuestInfoDTO struct {
 	Completions   int      `json:"completions"`
 	Image         string   `json:"image_url"`
 	Tags          []string `json:"tags"`
+}
+
+type QuestProgress struct {
+	gorm.Model
+	ID        int            `json:"id,identity" gorm:"primary_key"`
+	TeamID    int            `json:"team_id"`
+	QuestID   int            `json:"quest_id"`
+	Points    float32        `json:"points"`
+	StartTime int64          `json:"start_time"`
+	Info      datatypes.JSON `json:"logs"`
+}
+
+type QuestProgressDTO struct {
+	TeamID    int            `json:"team_id"`
+	Points    float32        `json:"points"`
+	StartTime int64          `json:"start_time"`
+	Users     []UserDTO      `json:"users"`
+	Info      datatypes.JSON `json:"logs"`
 }

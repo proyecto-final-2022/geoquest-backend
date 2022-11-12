@@ -5,16 +5,34 @@ definitions:
         items:
           type: string
         type: array
+      logs:
+        items:
+          type: string
+        type: array
+      objects:
+        additionalProperties:
+          type: integer
+        type: object
+      points:
+        type: number
       quest_id:
         type: string
       scene:
-        type: string
+        type: integer
     type: object
   domain.UserDTO:
     properties:
       email:
         type: string
       facebook:
+        type: boolean
+      fiftyMinutes_ac:
+        type: boolean
+      finishedFiveQuests_ac:
+        type: boolean
+      finishedQuest_ac:
+        type: boolean
+      finishedTeamQuest_ac:
         type: boolean
       firebaseToken:
         type: string
@@ -24,12 +42,23 @@ definitions:
         type: integer
       image:
         type: integer
+      madeFriend_ac:
+        description: Achivements
+        type: boolean
       manual:
         type: boolean
       name:
         type: string
       password:
         type: string
+      ratedQuest_ac:
+        type: boolean
+      startedQuest_ac:
+        type: boolean
+      topThreeRanking_ac:
+        type: boolean
+      usedCoupon_ac:
+        type: boolean
       username:
         type: string
     type: object
@@ -83,15 +112,29 @@ definitions:
       type:
         type: string
     type: object
-  handler.QuestRequest:
+  handler.QuestProgressRequest:
     properties:
-      id:
-        type: string
+      finished:
+        type: boolean
       inventory:
         items:
           type: string
         type: array
+      item_name:
+        type: string
+      logs:
+        items:
+          type: string
+        type: array
+      objects:
+        additionalProperties:
+          type: integer
+        type: object
+      points:
+        type: number
       scene:
+        type: integer
+      user_id:
         type: integer
     type: object
   handler.TeamCompletionRequest:
@@ -346,7 +389,7 @@ paths:
         name: quest
         required: true
         schema:
-          $ref: '#/definitions/handler.QuestRequest'
+          $ref: '#/definitions/domain.QuestDTO'
       - description: Auth token
         in: header
         name: Authorization
@@ -417,17 +460,17 @@ paths:
       - application/json
       description: Quest info
       parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Quest to update
         in: body
         name: quest
         required: true
         schema:
           $ref: '#/definitions/domain.QuestDTO'
-      - description: Quest ID
-        in: path
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -475,6 +518,141 @@ paths:
         "500":
           description: Internal Server Error
       summary: Completion
+      tags:
+      - Quests
+  /quests/{id}/progression/rankings:
+    get:
+      consumes:
+      - application/json
+      description: Quest ranking
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Ranking
+      tags:
+      - Quests
+  /quests/{id}/progressions/{team_id}:
+    get:
+      consumes:
+      - application/json
+      description: Team progression
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Get Team progression
+      tags:
+      - Quests
+    post:
+      consumes:
+      - application/json
+      description: Save new quest progression
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New quest progression
+      tags:
+      - Quests
+    put:
+      consumes:
+      - application/json
+      description: Update quest progression
+      parameters:
+      - description: Quest progress to update
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.QuestProgressRequest'
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Update quest progression
+      tags:
+      - Quests
+  /quests/{id}/progressions/{team_id}/timestamp:
+    get:
+      consumes:
+      - application/json
+      description: Get quest timestamp
+      parameters:
+      - description: Quest ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Get quest timestamp
       tags:
       - Quests
   /quests/{id}/rankings:

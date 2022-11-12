@@ -47,6 +47,11 @@ func (r *router) buildGamesRoutes() {
 		gGroup.DELETE("/:id", handler.DeleteQuest())
 		gGroup.GET("/:id/rating/:user_id", handler.GetRating())
 		gGroup.POST("/:id/rating/:user_id", handler.AddRating())
+		gGroup.POST("/:id/progressions/:team_id", handler.CreateQuestProgression())
+		gGroup.GET("/:id/progressions/:team_id", handler.GetQuestProgression())
+		gGroup.PUT("/:id/progressions/:team_id", handler.UpdateQuestProgression())
+		gGroup.GET("/:id/progression/rankings", handler.GetQuestProgressRanking())
+		gGroup.GET("/:id/progressions/:team_id/timestamp", handler.GetQuestTimestamp())
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
+	"gorm.io/datatypes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,12 +31,27 @@ type QuestRequest struct {
 	Inventory []string `json:"inventory"`
 }
 
+type QuestProgressRequest struct {
+	Scene     int            `json:"scene"`
+	UserID    int            `json:"user_id"`
+	ItemName  string         `json:"item_name"`
+	Logs      []string       `json:"logs"`
+	Inventory []string       `json:"inventory"`
+	Points    float32        `json:"points"`
+	Finished  bool           `json:"finished"`
+	Objects   map[string]int `json:"objects"`
+}
+
 type Rating struct {
 	Rating int `json:"rating"`
 }
 
 type WaitRoomRequest struct {
 	UserIDS []int `json:"user_ids"`
+}
+
+type TimestampResponse struct {
+	Timestamp int64 `json:"timestamp"`
 }
 
 /*
@@ -59,7 +75,7 @@ func NewGame(s quest.Service) *Quest {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param quest body QuestRequest true "Quest to save"
+// @Param quest body domain.QuestDTO true "Quest to save"
 // @Param Authorization header string true "Auth token"
 // @Success 200
 // @Failure 422
@@ -67,7 +83,7 @@ func NewGame(s quest.Service) *Quest {
 // @Router /quests/ [post]
 func (u *Quest) CreateQuest() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req QuestRequest
+		var req domain.QuestDTO
 		var err error
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -75,12 +91,139 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.CreateQuest(c, req.ID, req.Scene, req.Inventory); err != nil {
+		if err = u.service.CreateQuest(c, req.QuestID, req.Scene, req.Inventory, req.Logs, req.Points); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 
 		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary New quest progression
+// @Schemes
+// @Description Save new quest progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/{id}/progressions/{team_id} [post]
+func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+
+		if err = u.service.CreateQuestProgression(c, paramId, paramTeamId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Get Team progression
+// @Schemes
+// @Description Team progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id}/progressions/{team_id} [get]
+func (g *Quest) GetQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var questProgress datatypes.JSON
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+
+		if questProgress, err = g.service.GetQuestProgression(c, paramId, paramTeamId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, questProgress)
+	}
+}
+
+// @Summary Update quest progression
+// @Schemes
+// @Description Update quest progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param quest body QuestProgressRequest true "Quest progress to update"
+// @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/{id}/progressions/{team_id} [put]
+func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req QuestProgressRequest
+		var err error
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points, req.Finished); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+		/*
+			if err = u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName); err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+		*/
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+// @Summary Get quest timestamp
+// @Schemes
+// @Description Get quest timestamp
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Param team_id path string true "Team ID"
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/{id}/progressions/{team_id}/timestamp [get]
+func (u *Quest) GetQuestTimestamp() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		now := time.Now()
+		sec := now.Unix()
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+		paramTeamId, _ := strconv.Atoi(c.Param("team_id"))
+
+		dif, err := u.service.GetTimeDifference(c, paramId, paramTeamId, sec)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, TimestampResponse{Timestamp: dif})
 	}
 }
 
@@ -140,8 +283,8 @@ func (g *Quest) GetQuest() gin.HandlerFunc {
 // @Tags Quests
 // @Accept json
 // @Produce json
-// @Param quest body domain.QuestDTO true "Quest to update"
 // @Param id path string true "Quest ID"
+// @Param quest body domain.QuestDTO true "Quest to update"
 // @Success 200
 // @Failure 422
 // @Failure 500
@@ -156,9 +299,9 @@ func (g *Quest) UpdateQuest() gin.HandlerFunc {
 			return
 		}
 
-		//		paramId := c.Param("id")
+		paramId := c.Param("id")
 
-		if err = g.service.UpdateQuest(c, req); err != nil {
+		if err = g.service.UpdateQuest(c, req, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
@@ -310,6 +453,32 @@ func (g *Quest) GetRanking() gin.HandlerFunc {
 		paramId, _ := strconv.Atoi(c.Param("id"))
 
 		if quests, err = g.service.GetRanking(c, paramId); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, quests)
+	}
+}
+
+// @Summary Ranking
+// @Schemes
+// @Description Quest ranking
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Param id path string true "Quest ID"
+// @Success 200
+// @Failure 500
+// @Router /quests/{id}/progression/rankings [get]
+func (g *Quest) GetQuestProgressRanking() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var quests []domain.QuestProgressDTO
+
+		paramId, _ := strconv.Atoi(c.Param("id"))
+
+		if quests, err = g.service.GetQuestRanking(c, paramId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

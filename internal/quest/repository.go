@@ -1,6 +1,7 @@
 package quest
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -8,6 +9,8 @@ import (
 	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"go.mongodb.org/mongo-driver/bson"
+
+	"gorm.io/datatypes"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -20,8 +23,14 @@ type Repository interface {
 	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
-	CreateQuest(c *gin.Context, id string, scene int, inventory []string) error
-	UpdateQuest(c *gin.Context, quest domain.QuestDTO) error
+	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
+	CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error
+	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
+	GetQuestProgressionInfo(c *gin.Context, id int, teamId int) (domain.QuestProgress, error)
+	GetQuestProgressions(c *gin.Context, questId int) ([]domain.QuestProgress, error)
+	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
+	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error
+	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
 	GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error)
@@ -79,11 +88,11 @@ func (r *repository) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
 	return quests, nil
 }
 
-func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
 
 	var err error
 
-	_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory})
+	_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory, Logs: logs, Points: points})
 
 	if err != nil {
 		return err
@@ -92,18 +101,87 @@ func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory
 	return nil
 }
 
-func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
+func (r *repository) CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error {
+
+	questInfo := map[string]interface{}{
+		"quest_id":   id,
+		"team_id":    teamId,
+		"scene":      scene,
+		"inventory":  inventory,
+		"logs":       logs,
+		"points":     points,
+		"objects":    objects,
+		"finished":   finished,
+		"start_time": startTime,
+	}
+
+	jsonQuest, _ := json.Marshal(questInfo)
+
+	questProgress := domain.QuestProgress{QuestID: id, TeamID: teamId, Points: float32(points), StartTime: startTime, Info: datatypes.JSON(string(jsonQuest))}
+	if tx := config.MySql.Create(&questProgress); tx.Error != nil {
+		return errors.New("DB Error")
+	}
+	return nil
+}
+
+func (r *repository) GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error) {
+
+	var questProgress domain.QuestProgress
+	if tx := config.MySql.Where("quest_id = ? AND team_id = ?", id, teamId).First(&questProgress); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	return questProgress.Info, nil
+}
+
+func (r *repository) GetQuestProgressionInfo(c *gin.Context, id int, teamId int) (domain.QuestProgress, error) {
+
+	var questProgress domain.QuestProgress
+	if tx := config.MySql.Where("quest_id = ? AND team_id = ?", id, teamId).First(&questProgress); tx.Error != nil {
+		return domain.QuestProgress{}, errors.New("DB Error")
+	}
+
+	return questProgress, nil
+}
+
+func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error {
+	questInfo := map[string]interface{}{
+		"quest_id":   id,
+		"scene":      scene,
+		"inventory":  inventory,
+		"logs":       logs,
+		"points":     points,
+		"objects":    objects,
+		"finished":   finished,
+		"start_time": startTime,
+	}
+
+	jsonQuest, _ := json.Marshal(questInfo)
+
+	questProgress := domain.QuestProgress{Info: datatypes.JSON(string(jsonQuest))}
+
+	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", id, teamId).Update("info", datatypes.JSON(string(jsonQuest))).Update("points", points).Update("start_time", startTime); tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
+func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 
 	var err error
 
 	//	oid, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.M{"questid": quest.QuestID}
+	filter := bson.M{"questid": paramId}
 
 	update := bson.M{
 		"$set": bson.M{
 			"scene":     quest.Scene,
 			"inventory": quest.Inventory,
+			"objects":   quest.Objects,
+			"logs":      quest.Logs,
+			"points":    quest.Points,
 		},
 	}
 
@@ -178,6 +256,24 @@ func (r *repository) GetQuestRatings(c *gin.Context, questID int) ([]*domain.Rat
 	}
 
 	return ratings, nil
+}
+
+func (r *repository) GetQuestProgressions(c *gin.Context, questID int) ([]domain.QuestProgress, error) {
+	var questRankings []domain.QuestProgress
+	if tx := config.MySql.Find(&questRankings); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+	return questRankings, nil
+}
+
+//Por que??? porque import cycle
+func (r *repository) GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error) {
+	var team []domain.UserXTeam
+	if tx := config.MySql.Where("team_id = ?", teamID).Find(&team); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	return team, nil
 }
 
 func (r *repository) SaveCompletion(c *gin.Context, completion domain.QuestCompletion) error {

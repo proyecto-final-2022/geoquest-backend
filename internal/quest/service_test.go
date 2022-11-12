@@ -28,14 +28,14 @@ func (d *dummyRepo) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 	return domain.QuestDTO{QuestID: "test"}, nil
 }
 
-func (d *dummyRepo) CreateQuest(c *gin.Context, id string, scene int, inventory []string) error {
+func (d *dummyRepo) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
 	if id == "testError" {
 		return errors.New("GET ERROR")
 	}
 	return nil
 }
 
-func (d *dummyRepo) UpdateQuest(c *gin.Context, quest domain.QuestDTO) error {
+func (d *dummyRepo) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 	if quest.QuestID == "error" {
 		return errors.New("UPDATE ERROR")
 	}
@@ -87,6 +87,10 @@ func (d *dummyRepo) GetQuestRatings(c *gin.Context, questID int) ([]*domain.Rati
 
 func (d *dummyRepo) GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error) {
 	return domain.Rating{}, nil
+}
+
+func (d *dummyRepo) CreateQuestProgression(c *gin.Context, id int, scene int, inventory []string, logs []string, objects map[string]int, points float64) error {
+	return nil
 }
 
 func NewDummyRepository() Repository {

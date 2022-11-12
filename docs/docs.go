@@ -268,7 +268,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.QuestRequest"
+                            "$ref": "#/definitions/domain.QuestDTO"
                         }
                     },
                     {
@@ -347,6 +347,13 @@ const docTemplate = `{
                 "summary": "Quests",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Quest to update",
                         "name": "quest",
                         "in": "body",
@@ -354,13 +361,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/domain.QuestDTO"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Quest ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -454,6 +454,208 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/quests/{id}/progression/rankings": {
+            "get": {
+                "description": "Quest ranking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Ranking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/quests/{id}/progressions/{team_id}": {
+            "get": {
+                "description": "Team progression",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Get Team progression",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update quest progression",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Update quest progression",
+                "parameters": [
+                    {
+                        "description": "Quest progress to update",
+                        "name": "quest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.QuestProgressRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "description": "Save new quest progression",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "New quest progression",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/quests/{id}/progressions/{team_id}/timestamp": {
+            "get": {
+                "description": "Get quest timestamp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quests"
+                ],
+                "summary": "Get quest timestamp",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quest ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1542,11 +1744,26 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "objects": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "points": {
+                    "type": "number"
+                },
                 "quest_id": {
                     "type": "string"
                 },
                 "scene": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -1557,6 +1774,18 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "facebook": {
+                    "type": "boolean"
+                },
+                "fiftyMinutes_ac": {
+                    "type": "boolean"
+                },
+                "finishedFiveQuests_ac": {
+                    "type": "boolean"
+                },
+                "finishedQuest_ac": {
+                    "type": "boolean"
+                },
+                "finishedTeamQuest_ac": {
                     "type": "boolean"
                 },
                 "firebaseToken": {
@@ -1571,6 +1800,10 @@ const docTemplate = `{
                 "image": {
                     "type": "integer"
                 },
+                "madeFriend_ac": {
+                    "description": "Achivements",
+                    "type": "boolean"
+                },
                 "manual": {
                     "type": "boolean"
                 },
@@ -1579,6 +1812,18 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                },
+                "ratedQuest_ac": {
+                    "type": "boolean"
+                },
+                "startedQuest_ac": {
+                    "type": "boolean"
+                },
+                "topThreeRanking_ac": {
+                    "type": "boolean"
+                },
+                "usedCoupon_ac": {
+                    "type": "boolean"
                 },
                 "username": {
                     "type": "string"
@@ -1662,11 +1907,11 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.QuestRequest": {
+        "handler.QuestProgressRequest": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
+                "finished": {
+                    "type": "boolean"
                 },
                 "inventory": {
                     "type": "array",
@@ -1674,7 +1919,28 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "item_name": {
+                    "type": "string"
+                },
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "objects": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "points": {
+                    "type": "number"
+                },
                 "scene": {
+                    "type": "integer"
+                },
+                "user_id": {
                     "type": "integer"
                 }
             }

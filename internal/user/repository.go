@@ -16,6 +16,7 @@ type Repository interface {
 	GetUsers(c *gin.Context) ([]domain.User, error)
 	GetUserByEmail(c *gin.Context, email string) (domain.UserDTO, error)
 	UpdateUser(c *gin.Context, user domain.User) error
+	UnlockAchivement(c *gin.Context, id int, achivement string) error
 	UpdateCoupon(c *gin.Context, coupon domain.Coupon) error
 	GetCoupon(c *gin.Context, couponID int) (domain.Coupon, error)
 	DeleteUser(c *gin.Context, id int) error
@@ -37,7 +38,27 @@ func NewRepository() Repository {
 }
 
 func (r *repository) CreateUser(c *gin.Context, email string, name string, username string, image int, manual bool, google bool, facebook bool, password string, firebaseToken string) error {
-	user := domain.User{Email: email, Name: name, Username: username, Image: image, Manual: manual, Google: google, Facebook: facebook, Password: password, FirebaseToken: firebaseToken}
+	user := domain.User{Email: email,
+		Name:          name,
+		Username:      username,
+		Image:         image,
+		Manual:        manual,
+		Google:        google,
+		Facebook:      facebook,
+		Password:      password,
+		FirebaseToken: firebaseToken,
+
+		//Achivements
+		MadeFriend_ac:         false,
+		StartedQuest_ac:       false,
+		FinishedQuest_ac:      false,
+		FinishedTeamQuest_ac:  false,
+		RatedQuest_ac:         false,
+		UsedCoupon_ac:         false,
+		FinishedFiveQuests_ac: false,
+		TopThreeRanking_ac:    false,
+		FiftyMinutes_ac:       false,
+	}
 	if tx := config.MySql.Create(&user); tx.Error != nil {
 		return errors.New("DB Error")
 	}
@@ -49,7 +70,28 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 	if tx := config.MySql.First(&user, id); tx.Error != nil {
 		return domain.UserDTO{}, domain.User{}, errors.New("DB Error")
 	}
-	return domain.UserDTO{ID: id, Username: user.Username, Email: user.Email, Name: user.Name, Password: user.Password, Manual: user.Manual, Google: user.Google, Facebook: user.Facebook, Image: user.Image, FirebaseToken: user.FirebaseToken}, user, nil
+	return domain.UserDTO{
+		ID:            id,
+		Username:      user.Username,
+		Email:         user.Email,
+		Name:          user.Name,
+		Password:      user.Password,
+		Manual:        user.Manual,
+		Google:        user.Google,
+		Facebook:      user.Facebook,
+		Image:         user.Image,
+		FirebaseToken: user.FirebaseToken,
+
+		//Achivements
+		MadeFriend_ac:         user.MadeFriend_ac,
+		StartedQuest_ac:       user.StartedQuest_ac,
+		FinishedQuest_ac:      user.FinishedQuest_ac,
+		FinishedTeamQuest_ac:  user.FinishedTeamQuest_ac,
+		RatedQuest_ac:         user.RatedQuest_ac,
+		UsedCoupon_ac:         user.UsedCoupon_ac,
+		FinishedFiveQuests_ac: user.FinishedFiveQuests_ac,
+		TopThreeRanking_ac:    user.TopThreeRanking_ac,
+		FiftyMinutes_ac:       user.FiftyMinutes_ac}, user, nil
 }
 
 func (r *repository) GetUsers(c *gin.Context) ([]domain.User, error) {
@@ -75,6 +117,39 @@ func (r *repository) UpdateUser(c *gin.Context, user domain.User) error {
 	}
 
 	return nil
+}
+
+func (r *repository) UnlockAchivement(c *gin.Context, id int, achivement string) error {
+
+	_, user, err := r.GetUser(c, id)
+	if err != nil {
+		return err
+	}
+
+	switch achivement {
+	case "MadeFriend_ac":
+		user.MadeFriend_ac = true
+	case "StartedQuest_ac": //TODO
+		user.StartedQuest_ac = true
+	case "FinishedQuest_ac": //TODO
+		user.FinishedQuest_ac = true
+	case "FinishedTeamQuest_ac": //TODO
+		user.FinishedTeamQuest_ac = true
+	case "RatedQuest_ac":
+		user.RatedQuest_ac = true
+	case "UsedCoupon_ac":
+		user.UsedCoupon_ac = true
+	case "FinishedFiveQuests_ac": //TODO
+		user.FinishedFiveQuests_ac = true
+	case "TopThreeRanking_ac": //TODO
+		user.TopThreeRanking_ac = true
+	case "FiftyMinutes_ac": //TODO
+		user.FiftyMinutes_ac = true
+	}
+
+	err = r.UpdateUser(c, user)
+
+	return err
 }
 
 func (r *repository) UpdateCoupon(c *gin.Context, coupon domain.Coupon) error {
