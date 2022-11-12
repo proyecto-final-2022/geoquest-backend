@@ -50,6 +50,10 @@ type WaitRoomRequest struct {
 	UserIDS []int `json:"user_ids"`
 }
 
+type TimestampResponse struct {
+	Timestamp int64 `json:"timestamp"`
+}
+
 /*
 t1 := time.Now()
 t2 := t1.Add(time.Second * 341)
@@ -219,7 +223,7 @@ func (u *Quest) GetQuestTimestamp() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, dif)
+		c.JSON(http.StatusOK, TimestampResponse{Timestamp: dif})
 	}
 }
 
