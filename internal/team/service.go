@@ -2,6 +2,7 @@ package team
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -40,7 +41,40 @@ func NewService(rep Repository, userRepo user.Repository, questRepo quest.Reposi
 
 func (s *service) CreateTeam(c *gin.Context, ids []int, questID int) (int, error) {
 
-	teamID, err := s.repo.CreateTeam(c)
+	teams, err := s.repo.GetTeams(c, questID)
+
+	if err != nil {
+		return 0, err
+	}
+
+	sort.Ints(ids)
+
+	var teamIDFound int
+
+	for i := range teams {
+
+		usersTeam, err := s.repo.GetTeam(c, teams[i].ID)
+		if err != nil {
+			break
+		}
+
+		//		users := make([]int, 0)
+		var users []int
+		for j := range usersTeam {
+			users = append(users, usersTeam[j].UserID)
+		}
+		sort.Ints(users)
+
+		if reflect.DeepEqual(users, ids) {
+			teamIDFound = teams[i].ID
+		}
+	}
+
+	if teamIDFound != 0 {
+		return teamIDFound, nil
+	}
+
+	teamID, err := s.repo.CreateTeam(c, questID)
 
 	if err != nil {
 		return 0, err

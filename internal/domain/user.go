@@ -65,7 +65,8 @@ type UserFriends struct {
 
 type Team struct {
 	gorm.Model
-	ID int `json:"id,identity" gorm:"primary_key"`
+	ID      int `json:"id,identity" gorm:"primary_key"`
+	QuestID int `json:"quest_id"`
 }
 
 type UserXTeam struct {

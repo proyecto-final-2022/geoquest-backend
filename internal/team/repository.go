@@ -10,11 +10,12 @@ import (
 )
 
 type Repository interface {
-	CreateTeam(c *gin.Context) (int, error)
-	AddPlayer(c *gin.Context, teamID, playerID int, questID int) error
+	CreateTeam(c *gin.Context, questID int) (int, error)
+	AddPlayer(c *gin.Context, teamID int, playerID int, questID int) error
 	AddCompletion(c *gin.Context, teamID int, questId int, startTime time.Time, endTime time.Time) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletion, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
+	GetTeams(c *gin.Context, questID int) ([]domain.Team, error)
 	DeleteTeam(c *gin.Context, teamId int) error
 	DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
@@ -28,8 +29,8 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) CreateTeam(c *gin.Context) (int, error) {
-	team := domain.Team{}
+func (r *repository) CreateTeam(c *gin.Context, questID int) (int, error) {
+	team := domain.Team{QuestID: questID}
 	if tx := config.MySql.Create(&team); tx.Error != nil {
 		return 0, errors.New("DB Error")
 	}
@@ -40,6 +41,15 @@ func (r *repository) CreateTeam(c *gin.Context) (int, error) {
 func (r *repository) GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error) {
 	var team []domain.UserXTeam
 	if tx := config.MySql.Where("team_id = ?", teamID).Find(&team); tx.Error != nil {
+		return nil, errors.New("DB Error")
+	}
+
+	return team, nil
+}
+
+func (r *repository) GetTeams(c *gin.Context, questID int) ([]domain.Team, error) {
+	var team []domain.Team
+	if tx := config.MySql.Where("quest_id = ?", questID).Find(&team); tx.Error != nil {
 		return nil, errors.New("DB Error")
 	}
 
