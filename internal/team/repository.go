@@ -11,7 +11,7 @@ import (
 
 type Repository interface {
 	CreateTeam(c *gin.Context, questID int) (int, error)
-	AddPlayer(c *gin.Context, teamID int, playerID int, questID int) error
+	AddPlayer(c *gin.Context, teamID int, playerID int, questID int, accepted bool) error
 	AddCompletion(c *gin.Context, teamID int, questId int, startTime time.Time, endTime time.Time) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletion, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
@@ -65,8 +65,8 @@ func (r *repository) GetWaitRoomAccepted(c *gin.Context, teamID int, questID int
 	return team, nil
 }
 
-func (r *repository) AddPlayer(c *gin.Context, teamID int, playerID int, questID int) error {
-	addPlayer := domain.UserXTeam{TeamID: teamID, UserID: playerID, QuestID: questID, Accept: false}
+func (r *repository) AddPlayer(c *gin.Context, teamID int, playerID int, questID int, accepted bool) error {
+	addPlayer := domain.UserXTeam{TeamID: teamID, UserID: playerID, QuestID: questID, Accept: accepted}
 	if tx := config.MySql.Create(&addPlayer); tx.Error != nil {
 		return errors.New("DB Error")
 	}

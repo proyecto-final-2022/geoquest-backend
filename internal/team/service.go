@@ -15,7 +15,7 @@ import (
 )
 
 type Service interface {
-	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
+	CreateTeam(c *gin.Context, ids []int, questID int, userID int) (int, error)
 	GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
@@ -39,7 +39,7 @@ func NewService(rep Repository, userRepo user.Repository, questRepo quest.Reposi
 	}
 }
 
-func (s *service) CreateTeam(c *gin.Context, ids []int, questID int) (int, error) {
+func (s *service) CreateTeam(c *gin.Context, ids []int, questID int, userID int) (int, error) {
 
 	teams, err := s.repo.GetTeams(c, questID)
 
@@ -58,7 +58,6 @@ func (s *service) CreateTeam(c *gin.Context, ids []int, questID int) (int, error
 			break
 		}
 
-		//		users := make([]int, 0)
 		var users []int
 		for j := range usersTeam {
 			users = append(users, usersTeam[j].UserID)
@@ -81,10 +80,18 @@ func (s *service) CreateTeam(c *gin.Context, ids []int, questID int) (int, error
 	}
 
 	for i := range ids {
-		err = s.repo.AddPlayer(c, teamID, ids[i], questID)
-		if err != nil {
-			return 0, err
+		if ids[i] != userID {
+			err = s.repo.AddPlayer(c, teamID, ids[i], questID, false)
+			if err != nil {
+				return 0, err
+			}
+		} else {
+			err = s.repo.AddPlayer(c, teamID, ids[i], questID, true)
+			if err != nil {
+				return 0, err
+			}
 		}
+
 	}
 
 	return teamID, err

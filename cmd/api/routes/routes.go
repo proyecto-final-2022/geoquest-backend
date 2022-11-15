@@ -4,6 +4,7 @@ import (
 	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/handler"
 	//	"github.com/proyecto-final-2022/geoquest-backend/cmd/api/middlewares"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/client"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/coupon"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/quest"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/team"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/user"
@@ -28,6 +29,7 @@ func (r *router) MapRoutes() {
 	r.buildUsersRoutes()
 	r.buildTeamRoutes()
 	r.buildClientsRoutes()
+	r.buildCouponsRoutes()
 }
 
 func (r *router) buildGamesRoutes() {
@@ -101,6 +103,17 @@ func (r *router) buildClientsRoutes() {
 	}
 }
 
+func (r *router) buildCouponsRoutes() {
+	repo := coupon.NewRepository()
+	service := coupon.NewService(repo)
+	handler := handler.NewCoupon(service)
+
+	gGroup := r.r.Group("/coupons")
+	{
+		gGroup.POST("/:client_id/completions/:user_id", handler.CompletionCoupons())
+	}
+}
+
 func (r *router) buildTeamRoutes() {
 	userRepo := user.NewRepository()
 	repo := team.NewRepository()
@@ -110,7 +123,7 @@ func (r *router) buildTeamRoutes() {
 
 	gGroup := r.r.Group("/teams")
 	{
-		gGroup.POST("/", handler.CreateTeam())
+		gGroup.POST("/:id", handler.CreateTeam())
 		gGroup.POST("/:id/completions/:quest_id", handler.AddCompletion())
 		gGroup.PUT("/waitrooms/:team_id/users/:user_id", handler.AcceptQuestTeam())
 		gGroup.GET("/:id", handler.GetTeam())
