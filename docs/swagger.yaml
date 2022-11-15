@@ -66,6 +66,8 @@ definitions:
     properties:
       points:
         type: number
+      start_time:
+        type: integer
     type: object
   handler.CompletionRequest:
     properties:

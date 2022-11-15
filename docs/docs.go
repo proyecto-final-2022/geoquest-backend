@@ -1890,6 +1890,9 @@ const docTemplate = `{
             "properties": {
                 "points": {
                     "type": "number"
+                },
+                "start_time": {
+                    "type": "integer"
                 }
             }
         },
