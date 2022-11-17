@@ -26,7 +26,7 @@ func (s *service) GenerateCoupons(c *gin.Context, clientID int, userID int, poin
 	var performance string
 	var err error
 
-	if points > 400 {
+	if points <= 800 {
 		performance = "ok"
 	}
 
