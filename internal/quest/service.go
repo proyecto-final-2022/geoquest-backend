@@ -89,6 +89,12 @@ func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int) err
 		return err
 	}
 
+	teamUsers, _ := s.repo.GetTeam(c, teamId)
+
+	for i := range teamUsers {
+		s.userRepo.UnlockAchivement(c, teamUsers[i].UserID, "StartedQuest_ac")
+	}
+
 	return nil
 }
 

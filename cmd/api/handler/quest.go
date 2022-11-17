@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -186,12 +187,13 @@ func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
-		/*
-			if err = u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName); err != nil {
-				c.JSON(http.StatusInternalServerError, err)
-				return
-			}
-		*/
+
+		if err = u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName); err != nil {
+			fmt.Println("notifs")
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
 		c.JSON(http.StatusOK, "")
 	}
 }

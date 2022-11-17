@@ -104,8 +104,9 @@ func (r *router) buildClientsRoutes() {
 }
 
 func (r *router) buildCouponsRoutes() {
+	userRepo := user.NewRepository()
 	repo := coupon.NewRepository()
-	service := coupon.NewService(repo)
+	service := coupon.NewService(repo, userRepo)
 	handler := handler.NewCoupon(service)
 
 	gGroup := r.r.Group("/coupons")

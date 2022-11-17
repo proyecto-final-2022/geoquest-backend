@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/coupon"
+	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 )
 
 type Coupon struct {
@@ -17,6 +17,11 @@ type Coupon struct {
 type ClientCouponRequest struct {
 	Points    float64 `json:"points"`
 	StartTime int64   `json:"start_time"`
+}
+
+type ClientCouponResponse struct {
+	Coupon        domain.CouponDTO `json:"coupon"`
+	QuestDuration string           `json:"quest_duration"`
 }
 
 func NewCoupon(s coupon.Service) *Coupon {
@@ -41,6 +46,7 @@ func (co *Coupon) CompletionCoupons() gin.HandlerFunc {
 		var err error
 
 		var req ClientCouponRequest
+		var res ClientCouponResponse
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
@@ -64,13 +70,12 @@ func (co *Coupon) CompletionCoupons() gin.HandlerFunc {
 			panic(err)
 		}
 		tm := time.Unix(i, 0)
-		fmt.Println(tm)
-
 		actualTime := time.Now()
-
 		diff := actualTime.Sub(tm)
-		fmt.Println(diff.String())
 
-		c.JSON(http.StatusOK, coupon)
+		res.QuestDuration = diff.String()
+		res.Coupon = coupon
+
+		c.JSON(http.StatusOK, res)
 	}
 }
