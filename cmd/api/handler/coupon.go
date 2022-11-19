@@ -72,8 +72,10 @@ func (co *Coupon) CompletionCoupons() gin.HandlerFunc {
 		tm := time.Unix(i, 0)
 		actualTime := time.Now()
 		diff := actualTime.Sub(tm)
+		//		diff.parse
 
 		res.QuestDuration = diff.String()
+		//fmt.Sprintf("%d", int(diff.Hours())) + " H " + fmt.Sprintf("%d", int(diff.Minutes())) + " m " + fmt.Sprintf("%d", int(diff.Seconds())) + " s "
 		res.Coupon = coupon
 
 		c.JSON(http.StatusOK, res)
