@@ -38,13 +38,13 @@ func (r *router) buildGamesRoutes() {
 
 	gGroup := r.r.Group("/quests")
 	{
-		gGroup.POST("/", handler.CreateQuest())
+		//		gGroup.POST("/", handler.CreateQuest())
 		gGroup.POST("/:id/completions/:user_id", handler.AddCompletion())
 		gGroup.GET("/:id/rankings", handler.GetRanking())
-		gGroup.GET("/", handler.GetQuests())
-		gGroup.GET("/:id", handler.GetQuest())
-		gGroup.PUT("/:id", handler.UpdateQuest())
-		gGroup.DELETE("/:id", handler.DeleteQuest())
+		//		gGroup.GET("/", handler.GetQuests())
+		//		gGroup.GET("/:id", handler.GetQuest())
+		//		gGroup.PUT("/:id", handler.UpdateQuest())
+		//		gGroup.DELETE("/:id", handler.DeleteQuest())
 		gGroup.GET("/:id/rating/:user_id", handler.GetRating())
 		gGroup.POST("/:id/rating/:user_id", handler.AddRating())
 		gGroup.POST("/:id/progressions/:team_id", handler.CreateQuestProgression())

@@ -54,21 +54,11 @@ type TimestampResponse struct {
 	Timestamp int64 `json:"timestamp"`
 }
 
-/*
-t1 := time.Now()
-t2 := t1.Add(time.Second * 341)
-
-fmt.Println(t1)
-fmt.Println(t2)
-
-diff := t2.Sub(t1)
-fmt.Println(diff)
-*/
-
 func NewGame(s quest.Service) *Quest {
 	return &Quest{service: s}
 }
 
+/*
 // @Summary New quest
 // @Schemes
 // @Description Save new quest
@@ -99,7 +89,7 @@ func (u *Quest) CreateQuest() gin.HandlerFunc {
 		c.JSON(http.StatusOK, "")
 	}
 }
-
+*/
 // @Summary New quest progression
 // @Schemes
 // @Description Save new quest progression
@@ -227,6 +217,7 @@ func (u *Quest) GetQuestTimestamp() gin.HandlerFunc {
 	}
 }
 
+/*
 // @Summary Quests
 // @Schemes
 // @Description Quest info
@@ -334,7 +325,7 @@ func (g *Quest) DeleteQuest() gin.HandlerFunc {
 		c.JSON(http.StatusOK, "")
 	}
 }
-
+*/
 // @Summary Completion
 // @Schemes
 // @Description Completion of a quest

@@ -3,35 +3,31 @@ package quest
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
-	"go.mongodb.org/mongo-driver/bson"
 
 	"gorm.io/datatypes"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Repository interface {
-	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
-	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
+	//GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
+	//	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
 	GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error)
 	GetQuestInfoByName(c *gin.Context, questName string) (domain.QuestInfo, error)
 	UpdateQuestInfo(c *gin.Context, quest domain.QuestInfo) error
-	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
+	//	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
 	GetQuestProgressionInfo(c *gin.Context, id int, teamId int) (domain.QuestProgress, error)
 	GetQuestProgressions(c *gin.Context, questId int) ([]domain.QuestProgress, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error
-	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
-	DeleteQuest(c *gin.Context, id string) error
+	//UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
+	//	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
 	GetCompletion(c *gin.Context, questID int, userID int) (domain.QuestCompletion, error)
 	AddCompletion(c *gin.Context, questID int, userID int, startTime time.Time, endTime time.Time) error
@@ -44,63 +40,64 @@ type Repository interface {
 type repository struct {
 }
 
-var collection = config.GetCollection("quest")
-
 func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
-	var quest domain.QuestDTO
+/*
+var collection = config.GetCollection("quest")
 
-	filter := bson.M{"questid": id}
-
-	result := collection.FindOne(c, filter)
-
-	fmt.Println("result: ", result)
-
-	if err := result.Decode(&quest); err != nil {
-		return domain.QuestDTO{}, err
-	}
-
-	return quest, nil
-}
-
-func (r *repository) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
-	var quests []*domain.QuestDTO
-
-	filter := bson.D{}
-
-	coll, err := collection.Find(c, filter)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for coll.Next(c) {
+	func (r *repository) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
 		var quest domain.QuestDTO
-		if err = coll.Decode(&quest); err != nil {
+
+		filter := bson.M{"questid": id}
+
+		result := collection.FindOne(c, filter)
+
+		fmt.Println("result: ", result)
+
+		if err := result.Decode(&quest); err != nil {
+			return domain.QuestDTO{}, err
+		}
+
+		return quest, nil
+	}
+
+	func (r *repository) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
+		var quests []*domain.QuestDTO
+
+		filter := bson.D{}
+
+		coll, err := collection.Find(c, filter)
+
+		if err != nil {
 			return nil, err
 		}
-		quests = append(quests, &quest)
-	}
 
-	return quests, nil
-}
+		for coll.Next(c) {
+			var quest domain.QuestDTO
+			if err = coll.Decode(&quest); err != nil {
+				return nil, err
+			}
+			quests = append(quests, &quest)
+		}
+
+		return quests, nil
+	}
 
 func (r *repository) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
 
-	var err error
+		var err error
 
-	_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory, Logs: logs, Points: points})
+		_, err = collection.InsertOne(c, domain.Quest{QuestID: id, Scene: scene, Inventory: inventory, Logs: logs, Points: points})
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		return nil
 	}
-
-	return nil
-}
-
+*/
 func (r *repository) CreateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64) error {
 
 	questInfo := map[string]interface{}{
@@ -167,33 +164,34 @@ func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, 
 	return nil
 }
 
+/*
 func (r *repository) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 
-	var err error
+		var err error
 
-	//	oid, _ := primitive.ObjectIDFromHex(id)
+		//	oid, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.M{"questid": paramId}
+		filter := bson.M{"questid": paramId}
 
-	update := bson.M{
-		"$set": bson.M{
-			"scene":     quest.Scene,
-			"inventory": quest.Inventory,
-			"objects":   quest.Objects,
-			"logs":      quest.Logs,
-			"points":    quest.Points,
-		},
+		update := bson.M{
+			"$set": bson.M{
+				"scene":     quest.Scene,
+				"inventory": quest.Inventory,
+				"objects":   quest.Objects,
+				"logs":      quest.Logs,
+				"points":    quest.Points,
+			},
+		}
+
+		_, err = collection.UpdateOne(c, filter, update)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
 	}
-
-	_, err = collection.UpdateOne(c, filter, update)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
+*/
 func (r *repository) GetQuestInfo(c *gin.Context, questID int) (domain.QuestInfo, error) {
 	var quest domain.QuestInfo
 	if tx := config.MySql.Where("id = ?", questID).First(&quest); tx.Error != nil {
@@ -266,7 +264,7 @@ func (r *repository) GetQuestProgressions(c *gin.Context, questID int) ([]domain
 	return questRankings, nil
 }
 
-//Por que??? porque import cycle
+// Por que??? porque import cycle
 func (r *repository) GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error) {
 	var team []domain.UserXTeam
 	if tx := config.MySql.Where("team_id = ?", teamID).Find(&team); tx.Error != nil {
@@ -283,23 +281,24 @@ func (r *repository) SaveCompletion(c *gin.Context, completion domain.QuestCompl
 	return nil
 }
 
+/*
 func (r *repository) DeleteQuest(c *gin.Context, id string) error {
 
-	var err error
+		var err error
 
-	oid, _ := primitive.ObjectIDFromHex(id)
+		oid, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.M{"_id": oid}
+		filter := bson.M{"_id": oid}
 
-	_, err = collection.DeleteOne(c, filter)
+		_, err = collection.DeleteOne(c, filter)
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		return nil
 	}
-
-	return nil
-}
-
+*/
 func (r *repository) GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error) {
 	var questsCompletions []domain.QuestCompletion
 	if tx := config.MySql.Where("quest_id = ?", questID).Find(&questsCompletions); tx.Error != nil {

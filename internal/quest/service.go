@@ -19,16 +19,16 @@ import (
 )
 
 type Service interface {
-	GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
-	GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
-	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
+	//GetQuests(c *gin.Context) ([]*domain.QuestDTO, error)
+	//GetQuest(c *gin.Context, id string) (domain.QuestDTO, error)
+	//CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	CreateQuestProgression(c *gin.Context, id int, teamId int) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool) error
 	GetTimeDifference(c *gin.Context, id int, teamId int, compareTime int64) (int64, error)
 	SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error
-	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
-	DeleteQuest(c *gin.Context, id string) error
+	//UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
+	//DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 		startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRating(c *gin.Context, questID int, userID int) (domain.Rating, error)
@@ -49,24 +49,25 @@ func NewService(rep Repository, userRepo user.Repository) Service {
 	}
 }
 
-func (s *service) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
-	quests, err := s.repo.GetQuests(c)
+/*
+	func (s *service) GetQuests(c *gin.Context) ([]*domain.QuestDTO, error) {
+		quests, err := s.repo.GetQuests(c)
 
-	return quests, err
-}
+		return quests, err
+	}
 
-func (s *service) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
-	quests, err := s.repo.GetQuest(c, id)
+	func (s *service) GetQuest(c *gin.Context, id string) (domain.QuestDTO, error) {
+		quests, err := s.repo.GetQuest(c, id)
 
-	return quests, err
-}
+		return quests, err
+	}
 
-func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
-	err := s.repo.CreateQuest(c, id, scene, inventory, logs, points)
+	func (s *service) CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error {
+		err := s.repo.CreateQuest(c, id, scene, inventory, logs, points)
 
-	return err
-}
-
+		return err
+	}
+*/
 func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int) error {
 
 	_, err := s.repo.GetQuestProgression(c, id, teamId)
@@ -163,19 +164,20 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 	return nil
 }
 
+/*
 func (s *service) UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error {
 
-	err := s.repo.UpdateQuest(c, quest, paramId)
+		err := s.repo.UpdateQuest(c, quest, paramId)
 
-	return err
-}
+		return err
+	}
 
-func (s *service) DeleteQuest(c *gin.Context, id string) error {
-	err := s.repo.DeleteQuest(c, id)
+	func (s *service) DeleteQuest(c *gin.Context, id string) error {
+		err := s.repo.DeleteQuest(c, id)
 
-	return err
-}
-
+		return err
+	}
+*/
 func (s *service) CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
 	startDay int, startHour int, startMinutes int, startSeconds int) error {
 
