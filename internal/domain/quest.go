@@ -112,6 +112,7 @@ type QuestProgress struct {
 	QuestID   int            `json:"quest_id"`
 	Points    float32        `json:"points"`
 	StartTime int64          `json:"start_time"`
+	Started   bool           `json:"started"`
 	Info      datatypes.JSON `json:"logs"`
 }
 

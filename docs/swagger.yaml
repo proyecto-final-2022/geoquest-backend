@@ -62,6 +62,13 @@ definitions:
       username:
         type: string
     type: object
+  handler.ClientCouponRequest:
+    properties:
+      points:
+        type: number
+      start_time:
+        type: integer
+    type: object
   handler.CompletionRequest:
     properties:
       start_day:
@@ -362,6 +369,39 @@ paths:
       summary: New Tag for quest
       tags:
       - Clients
+  /coupons/{client_id}/completions/{user_id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Client ID
+        in: path
+        name: client_id
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Coupon characteristics
+        in: body
+        name: quest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ClientCouponRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Coupon
+      tags:
+      - Coupons
   /quests/:
     get:
       consumes:
@@ -713,30 +753,6 @@ paths:
       summary: Completion
       tags:
       - Quests
-  /teams/:
-    post:
-      consumes:
-      - application/json
-      description: Save new team
-      parameters:
-      - description: Team to save
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/handler.TeamRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "422":
-          description: Unprocessable Entity
-        "500":
-          description: Internal Server Error
-      summary: New Team
-      tags:
-      - Teams
   /teams/{id}:
     delete:
       consumes:
@@ -778,6 +794,34 @@ paths:
         "500":
           description: Internal Server Error
       summary: Team players
+      tags:
+      - Teams
+    post:
+      consumes:
+      - application/json
+      description: Save new team
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Team to save
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.TeamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: New Team
       tags:
       - Teams
   /teams/{id}/completions/{quest_id}:

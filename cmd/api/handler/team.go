@@ -23,6 +23,11 @@ type TeamRequest struct {
 	QuestID int   `json:"quest_id"`
 }
 
+type WaitRoomResponse struct {
+	Users    []domain.UserDTO `json:"users"`
+	Accepted int              `json:"accepted"`
+}
+
 type TeamCompletionRequest struct {
 	StartYear    int `json:"start_year"`
 	StartMonth   int `json:"start_month"`
@@ -38,21 +43,23 @@ type TeamCompletionRequest struct {
 // @Tags Teams
 // @Accept json
 // @Produce json
+// @Param id path int true "User ID"
 // @Param user body TeamRequest true "Team to save"
 // @Success 200
 // @Failure 422
 // @Failure 500
-// @Router /teams/ [post]
+// @Router /teams/{id} [post]
 func (t *Team) CreateTeam() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req TeamRequest
+		paramUserId, _ := strconv.Atoi(c.Param("id"))
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, err)
 			return
 		}
 
-		id, err := t.service.CreateTeam(c, req.UserIDs, req.QuestID)
+		id, err := t.service.CreateTeam(c, req.UserIDs, req.QuestID, paramUserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
@@ -147,7 +154,12 @@ func (t *Team) GetWaitRoomAccepted() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, waitRoom)
+		var response WaitRoomResponse
+
+		response.Accepted = len(waitRoom)
+		response.Users = waitRoom
+
+		c.JSON(http.StatusOK, response)
 	}
 }
 
