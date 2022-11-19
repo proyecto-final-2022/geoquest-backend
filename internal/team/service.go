@@ -2,6 +2,7 @@ package team
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -14,7 +15,7 @@ import (
 )
 
 type Service interface {
-	CreateTeam(c *gin.Context, ids []int, questID int) (int, error)
+	CreateTeam(c *gin.Context, ids []int, questID int, userID int) (int, error)
 	GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error)
 	AddCompletion(c *gin.Context, id int, questId int, startYear int, startMonth time.Month, startDay int, startHour int, startMinutes int, startSeconds int) error
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
@@ -38,19 +39,59 @@ func NewService(rep Repository, userRepo user.Repository, questRepo quest.Reposi
 	}
 }
 
-func (s *service) CreateTeam(c *gin.Context, ids []int, questID int) (int, error) {
+func (s *service) CreateTeam(c *gin.Context, ids []int, questID int, userID int) (int, error) {
 
-	teamID, err := s.repo.CreateTeam(c)
+	teams, err := s.repo.GetTeams(c, questID)
+
+	if err != nil {
+		return 0, err
+	}
+
+	sort.Ints(ids)
+
+	var teamIDFound int
+
+	for i := range teams {
+
+		usersTeam, err := s.repo.GetTeam(c, teams[i].ID)
+		if err != nil {
+			break
+		}
+
+		var users []int
+		for j := range usersTeam {
+			users = append(users, usersTeam[j].UserID)
+		}
+		sort.Ints(users)
+
+		if reflect.DeepEqual(users, ids) {
+			teamIDFound = teams[i].ID
+		}
+	}
+
+	if teamIDFound != 0 {
+		return teamIDFound, nil
+	}
+
+	teamID, err := s.repo.CreateTeam(c, questID)
 
 	if err != nil {
 		return 0, err
 	}
 
 	for i := range ids {
-		err = s.repo.AddPlayer(c, teamID, ids[i], questID)
-		if err != nil {
-			return 0, err
+		if ids[i] != userID {
+			err = s.repo.AddPlayer(c, teamID, ids[i], questID, false)
+			if err != nil {
+				return 0, err
+			}
+		} else {
+			err = s.repo.AddPlayer(c, teamID, ids[i], questID, true)
+			if err != nil {
+				return 0, err
+			}
 		}
+
 	}
 
 	return teamID, err
