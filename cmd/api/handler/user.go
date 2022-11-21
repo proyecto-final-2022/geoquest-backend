@@ -826,8 +826,13 @@ func (u *User) AddNotification() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
+
 		if req.NotificationType == "friend_request" {
 			u.service.SendUpdateNewFriend(c, paramId, req.SenderID)
+		}
+
+		if req.NotificationType == "quest_invite" {
+			u.service.SendUpdateQuestInvite(c, paramId, req.SenderID)
 		}
 
 		c.JSON(http.StatusOK, "")

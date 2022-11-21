@@ -36,6 +36,7 @@ type Service interface {
 	SendUpdateNewFriend(c *gin.Context, receiverID, senderID int) error
 	SendUpdateQuestAccept(c *gin.Context, userID int, notificationID int) error
 	SendUpdateAcceptFriend(c *gin.Context, userID int, friendID int) error
+	SendUpdateQuestInvite(c *gin.Context, receiverID int, senderID int) error
 }
 
 type service struct {
@@ -326,6 +327,31 @@ func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID i
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
 	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/friend_request", "application/json", responseBody)
+	//Handle Error
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+func (s *service) SendUpdateQuestInvite(c *gin.Context, receiverID int, senderID int) error {
+
+	senderDTO, _, err := s.repo.GetUser(c, senderID)
+	receiverDTO, _, err := s.repo.GetUser(c, receiverID)
+
+	if err != nil {
+		return nil
+	}
+
+	postBody, _ := json.Marshal(map[string]interface{}{
+		"token":       receiverDTO.FirebaseToken,
+		"sender_name": senderDTO.Username,
+	})
+	responseBody := bytes.NewBuffer(postBody)
+	//Leverage Go's HTTP Post function to make request
+	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_invite", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		return err
