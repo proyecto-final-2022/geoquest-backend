@@ -336,7 +336,6 @@ func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID i
 }
 
 func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notificationID int) error {
-	fmt.Println("*******Quest accept")
 	notificationDTO, err := s.repo.GetNotification(c, notificationID)
 	if err != nil {
 		return err
@@ -345,10 +344,12 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 	if err != nil {
 		return err
 	}
+	fmt.Println("******Sender name: ", senderDTO.Username)
 	receiverDTO, _, err := s.repo.GetUser(c, notificationDTO.SenderID)
 	if err != nil {
 		return err
 	}
+	fmt.Println("******Receiver name: ", receiverDTO.Username)
 
 	postBody, _ := json.Marshal(map[string]interface{}{
 		"sender_id":   userID,
