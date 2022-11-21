@@ -176,6 +176,8 @@ func (s *service) GetCoupons(c *gin.Context, userID int) ([]domain.CouponDTO, er
 			var couponDTO domain.CouponDTO
 			couponDTO.ID = coupons[i].ID
 			couponDTO.Description = coupons[i].Description
+			couponDTO.ClientID = coupons[i].ClientID
+			couponDTO.UserID = coupons[i].UserID
 			couponDTO.ExpirationDate = coupons[i].ExpirationDate
 			couponDTO.Used = coupons[i].Used
 			couponsDTO = append(couponsDTO, couponDTO)
