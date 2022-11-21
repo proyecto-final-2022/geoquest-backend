@@ -97,7 +97,7 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 
 func (r *repository) GetNotification(c *gin.Context, notificationID int) (domain.NotificationDTO, error) {
 	var notif domain.Notification
-	if tx := config.MySql.First(&notif, notificationID); tx.Error != nil {
+	if tx := config.MySql.Where("id = ?", notificationID).First(&notif); tx.Error != nil {
 		return domain.NotificationDTO{}, errors.New("DB Error")
 	}
 	return domain.NotificationDTO{
