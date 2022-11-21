@@ -187,7 +187,7 @@ func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 			return
 		}
 
-		//		u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName)
+		u.service.SendUpdate(c, paramTeamId, req.UserID, req.ItemName)
 
 		c.JSON(http.StatusOK, "")
 	}

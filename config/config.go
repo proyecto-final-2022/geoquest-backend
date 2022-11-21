@@ -15,7 +15,7 @@ func GetConfig(env string) Configuration {
 	//	if len(params) > 0 {
 	//		env = params[0]
 	//	}
-	fileName := fmt.Sprintf("./dev_config.json")
+	fileName := fmt.Sprintf("./prod_config.json")
 	gonfig.GetConf(fileName, &configuration)
 	fmt.Println("***Conf: ", configuration.APP_NOTIFICATIONS_URL)
 	return configuration
