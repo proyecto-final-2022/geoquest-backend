@@ -108,7 +108,7 @@ func (r *repository) DeletePlayerFromTeam(c *gin.Context, teamId int, userId int
 
 func (r *repository) AcceptQuestTeam(c *gin.Context, teamId int, userId int) error {
 
-	if tx := config.MySql.Where("team_id = ? AND user_id = ? AND Accept = 0", teamId, userId).First(&domain.UserXTeam{}).Update("Accept", true); tx.Error != nil {
+	if tx := config.MySql.Where("team_id = ? AND user_id = ?", teamId, userId).First(&domain.UserXTeam{}).Update("Accept", true); tx.Error != nil {
 		return tx.Error
 	}
 

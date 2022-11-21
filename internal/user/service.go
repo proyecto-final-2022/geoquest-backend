@@ -350,6 +350,10 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 		return err
 	}
 	fmt.Println("******Receiver name: ", receiverDTO.Username)
+	fmt.Println("******Sender ID: ", userID)
+	fmt.Println("******Token: ", receiverDTO.FirebaseToken)
+	fmt.Println("******Sender name: ", senderDTO.Username)
+	fmt.Println("******Team ID: ", notificationDTO.TeamID)
 
 	postBody, _ := json.Marshal(map[string]interface{}{
 		"sender_id":   userID,
@@ -360,6 +364,7 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
 	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_accept", "application/json", responseBody)
+	fmt.Println("******Response status: ", resp.StatusCode)
 	//Handle Error
 	if err != nil {
 		return err
