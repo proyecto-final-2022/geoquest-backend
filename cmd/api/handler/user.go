@@ -92,6 +92,10 @@ type NotificationRequest struct {
 	QuestID          int    `json:"quest_id"`
 }
 
+type NotificationDeleteRequest struct {
+	NotificationType string `json:"type"`
+}
+
 // @Summary New user
 // @Schemes
 // @Description Save new user
@@ -221,6 +225,8 @@ func (u *User) AddUserFriend() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
+
+		u.service.SendUpdateAcceptFriend(c, paramId, paramFriendId)
 
 		c.JSON(http.StatusOK, "")
 	}
@@ -832,6 +838,9 @@ func (u *User) AddNotification() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
+		if req.NotificationType == "friend_request" {
+			u.service.SendUpdateNewFriend(c, paramId, req.SenderID)
+		}
 
 		c.JSON(http.StatusOK, "")
 	}
@@ -873,20 +882,31 @@ func (u *User) GetNotifications() gin.HandlerFunc {
 // @Produce json
 // @Param id path string true "User ID"
 // @Param notification_id path string true "Notification ID"
+// @Param user body NotificationDeleteRequest true "Notification: Specify Sender and Type of notification: 'friend_request' or 'quest_invite'"
 // @Success 200
 // @Failure 500
 // @Router /users/{id}/notifications/{notification_id} [delete]
 func (g *User) DeleteNotification() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
+		var req NotificationDeleteRequest
 
 		paramId, _ := strconv.Atoi(c.Param("id"))
 		paramNotificationId, _ := strconv.Atoi(c.Param("notification_id"))
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, err)
+			return
+		}
 
 		fmt.Println(paramNotificationId)
 		if err = g.service.DeleteNotification(c, paramId, paramNotificationId); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
+		}
+
+		if req.NotificationType == "quest_accept" {
+			g.service.SendUpdateQuestAccept(c, paramId, paramNotificationId)
 		}
 
 		c.JSON(http.StatusOK, "")

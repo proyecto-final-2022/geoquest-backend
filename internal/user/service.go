@@ -1,9 +1,14 @@
 package user
 
 import (
+	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
 	"sort"
 	"time"
 
+	"github.com/proyecto-final-2022/geoquest-backend/config"
 	"github.com/proyecto-final-2022/geoquest-backend/internal/domain"
 	"golang.org/x/crypto/bcrypt"
 
@@ -28,6 +33,9 @@ type Service interface {
 	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, image int, teamID int, questID int) error
 	GetNotifications(c *gin.Context, ID int) ([]domain.NotificationDTO, error)
 	DeleteNotification(c *gin.Context, id int, notificationID int) error
+	SendUpdateNewFriend(c *gin.Context, receiverID, senderID int) error
+	SendUpdateQuestAccept(c *gin.Context, userID int, notificationID int) error
+	SendUpdateAcceptFriend(c *gin.Context, userID int, friendID int) error
 }
 
 type service struct {
@@ -299,4 +307,83 @@ func (s *service) DeleteNotification(c *gin.Context, id int, notificationID int)
 	err := s.repo.DeleteNotification(c, id, notificationID)
 
 	return err
+}
+
+func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID int) error {
+
+	senderDTO, _, err := s.repo.GetUser(c, senderID)
+	receiverDTO, _, err := s.repo.GetUser(c, senderID)
+
+	if err != nil {
+		return nil
+	}
+
+	postBody, _ := json.Marshal(map[string]interface{}{
+		"sender_id":   senderID,
+		"token":       receiverDTO.FirebaseToken,
+		"sender_name": senderDTO.Username,
+	})
+	responseBody := bytes.NewBuffer(postBody)
+	//Leverage Go's HTTP Post function to make request
+	resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/friend_request", "application/json", responseBody)
+	//Handle Error
+	if err != nil {
+		log.Fatalf("An Error Occured %v", err)
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notificationID int) error {
+
+	notificationDTO, err := s.repo.GetNotification(c, notificationID)
+	senderDTO, _, err := s.repo.GetUser(c, userID)
+	receiverDTO, _, err := s.repo.GetUser(c, notificationDTO.SenderID)
+
+	if err != nil {
+		return nil
+	}
+
+	postBody, _ := json.Marshal(map[string]interface{}{
+		"sender_id":   userID,
+		"token":       receiverDTO.FirebaseToken,
+		"sender_name": senderDTO.Username,
+		"team_id":     notificationDTO.TeamID,
+	})
+	responseBody := bytes.NewBuffer(postBody)
+	//Leverage Go's HTTP Post function to make request
+	resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/quest_accept", "application/json", responseBody)
+	//Handle Error
+	if err != nil {
+		log.Fatalf("An Error Occured %v", err)
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+func (s *service) SendUpdateAcceptFriend(c *gin.Context, userID int, friendID int) error {
+
+	userDTO, _, err := s.repo.GetUser(c, userID)
+	friendDTO, _, err := s.repo.GetUser(c, friendID)
+
+	if err != nil {
+		return nil
+	}
+
+	postBody, _ := json.Marshal(map[string]interface{}{
+		"sender_name": userDTO.Username,
+		"token":       friendDTO.FirebaseToken,
+	})
+	responseBody := bytes.NewBuffer(postBody)
+	//Leverage Go's HTTP Post function to make request
+	resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/friend_accept", "application/json", responseBody)
+	//Handle Error
+	if err != nil {
+		log.Fatalf("An Error Occured %v", err)
+	}
+	defer resp.Body.Close()
+
+	return nil
 }
