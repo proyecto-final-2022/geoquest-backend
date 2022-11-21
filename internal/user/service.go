@@ -3,7 +3,7 @@ package user
 import (
 	"bytes"
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -328,7 +328,7 @@ func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID i
 	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/friend_request", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -336,13 +336,12 @@ func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID i
 }
 
 func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notificationID int) error {
-
+	fmt.Println("*******Quest accept")
 	notificationDTO, err := s.repo.GetNotification(c, notificationID)
 	senderDTO, _, err := s.repo.GetUser(c, userID)
 	receiverDTO, _, err := s.repo.GetUser(c, notificationDTO.SenderID)
-
 	if err != nil {
-		return nil
+		return err
 	}
 
 	postBody, _ := json.Marshal(map[string]interface{}{
@@ -356,8 +355,9 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_accept", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
+		return err
 	}
+
 	defer resp.Body.Close()
 
 	return nil
@@ -381,7 +381,7 @@ func (s *service) SendUpdateAcceptFriend(c *gin.Context, friendID int, userID in
 	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/friend_accept", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
+		return err
 	}
 	defer resp.Body.Close()
 

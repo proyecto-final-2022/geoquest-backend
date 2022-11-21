@@ -3,7 +3,6 @@ package quest
 import (
 	"bytes"
 	"encoding/json"
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -161,7 +160,7 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 			resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
 			//Handle Error
 			if err != nil {
-				log.Fatalf("An Error Occured %v", err)
+				return err
 			}
 			defer resp.Body.Close()
 		}
