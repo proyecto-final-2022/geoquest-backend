@@ -144,26 +144,28 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 	senderDTO, _, err := s.userRepo.GetUser(c, userID)
 
 	for i := range team {
-		userDTO, _, err := s.userRepo.GetUser(c, team[i].UserID)
-		if err != nil {
-			return err
+		if team[i].UserID != userID {
+			userDTO, _, err := s.userRepo.GetUser(c, team[i].UserID)
+			if err != nil {
+				return err
+			}
+			//Encode the data
+			postBody, _ := json.Marshal(map[string]string{
+				"team_id":   strconv.Itoa(teamID),
+				"sender":    senderDTO.Name,
+				"token":     userDTO.FirebaseToken,
+				"item_name": itemName,
+			})
+			responseBody := bytes.NewBuffer(postBody)
+			//Leverage Go's HTTP Post function to make request
+			resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
+			//Handle Error
+			if err != nil {
+				log.Fatalf("An Error Occured %v", err)
+			}
+			defer resp.Body.Close()
 		}
 
-		//Encode the data
-		postBody, _ := json.Marshal(map[string]string{
-			"team_id":   strconv.Itoa(teamID),
-			"sender":    senderDTO.Name,
-			"token":     userDTO.FirebaseToken,
-			"item_name": itemName,
-		})
-		responseBody := bytes.NewBuffer(postBody)
-		//Leverage Go's HTTP Post function to make request
-		resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
-		//Handle Error
-		if err != nil {
-			log.Fatalf("An Error Occured %v", err)
-		}
-		defer resp.Body.Close()
 	}
 
 	return nil
