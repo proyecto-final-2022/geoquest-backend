@@ -93,7 +93,7 @@ type NotificationRequest struct {
 }
 
 type NotificationDeleteRequest struct {
-	NotificationType string `json:"type"`
+	NotificationType string `json:"type,omitempty"`
 }
 
 // @Summary New user
