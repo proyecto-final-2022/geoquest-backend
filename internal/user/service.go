@@ -336,6 +336,7 @@ func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID i
 }
 
 func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notificationID int) error {
+	fmt.Println("******Notification ID: ", notificationID)
 	notificationDTO, err := s.repo.GetNotification(c, notificationID)
 	if err != nil {
 		return err
