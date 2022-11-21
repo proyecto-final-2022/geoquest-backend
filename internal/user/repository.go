@@ -101,6 +101,7 @@ func (r *repository) GetNotification(c *gin.Context, notificationID int) (domain
 		return domain.NotificationDTO{}, errors.New("DB Error")
 	}
 	return domain.NotificationDTO{
+		QuestID:  notif.QuestID,
 		SenderID: notif.SenderID,
 		TeamID:   notif.TeamID,
 	}, nil
