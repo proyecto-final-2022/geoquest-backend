@@ -39,6 +39,7 @@ type QuestProgressRequest struct {
 	Inventory []string       `json:"inventory"`
 	Points    float32        `json:"points"`
 	Finished  bool           `json:"finished"`
+	CanFinish bool           `json:"can_finish"`
 	Objects   map[string]int `json:"objects"`
 }
 
@@ -182,7 +183,7 @@ func (u *Quest) UpdateQuestProgression() gin.HandlerFunc {
 			return
 		}
 
-		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points, req.Finished); err != nil {
+		if err = u.service.UpdateQuestProgression(c, paramId, paramTeamId, req.Scene, req.Inventory, req.Logs, req.Objects, req.Points, req.Finished, req.CanFinish); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

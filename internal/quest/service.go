@@ -24,7 +24,7 @@ type Service interface {
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	CreateQuestProgression(c *gin.Context, id int, teamId int) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
-	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool) error
+	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, canFinish bool) error
 	GetTimeDifference(c *gin.Context, id int, teamId int, compareTime int64) (int64, error)
 	SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
@@ -76,7 +76,7 @@ func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int) err
 
 	//if quest already exists, start new quest
 	if err == nil {
-		err := s.repo.UpdateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec, false)
+		err := s.repo.UpdateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec, false, false)
 		if err != nil {
 			return err
 		}
@@ -119,14 +119,14 @@ func (s *service) GetTimeDifference(c *gin.Context, id int, teamId int, compareT
 	return difference, nil
 }
 
-func (s *service) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool) error {
+func (s *service) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, canFinish bool) error {
 	questProgress, err := s.repo.GetQuestProgressionInfo(c, id, teamId)
 
 	if err != nil {
 		return err
 	}
 
-	err = s.repo.UpdateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points, finished, questProgress.StartTime, true)
+	err = s.repo.UpdateQuestProgression(c, id, teamId, scene, inventory, logs, objects, points, finished, questProgress.StartTime, true, canFinish)
 
 	return err
 }

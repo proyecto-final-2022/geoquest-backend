@@ -29,7 +29,7 @@ type Repository interface {
 	GetQuestProgressionInfo(c *gin.Context, id int, teamId int) (domain.QuestProgress, error)
 	GetQuestProgressions(c *gin.Context, questId int) ([]domain.QuestProgress, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
-	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64, started bool) error
+	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64, started bool, canFinish bool) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
@@ -145,7 +145,7 @@ func (r *repository) GetQuestProgressionInfo(c *gin.Context, id int, teamId int)
 	return questProgress, nil
 }
 
-func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64, started bool) error {
+func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64, started bool, canFinish bool) error {
 	questInfo := map[string]interface{}{
 		"quest_id":   id,
 		"scene":      scene,
@@ -156,6 +156,7 @@ func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, 
 		"finished":   finished,
 		"start_time": startTime,
 		"started":    started,
+		"can_finish": canFinish,
 	}
 
 	jsonQuest, _ := json.Marshal(questInfo)
