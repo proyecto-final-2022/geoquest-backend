@@ -887,14 +887,14 @@ func (g *User) DeleteNotification() gin.HandlerFunc {
 			return
 		}
 
+		if req.NotificationType == "quest_accept" {
+			g.service.SendUpdateQuestAccept(c, paramId, paramNotificationId)
+		}
+
 		fmt.Println(paramNotificationId)
 		if err = g.service.DeleteNotification(c, paramId, paramNotificationId); err != nil {
 			c.JSON(http.StatusInternalServerError, paramId)
 			return
-		}
-
-		if req.NotificationType == "quest_accept" {
-			g.service.SendUpdateQuestAccept(c, paramId, paramNotificationId)
 		}
 
 		c.JSON(http.StatusOK, "")
