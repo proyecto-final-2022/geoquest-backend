@@ -27,6 +27,7 @@ type Repository interface {
 	DeleteFriend(c *gin.Context, id int, friendID int) error
 	AddNotification(c *gin.Context, ID int, senderID int, notificationType string, questName string, image int, teamID int, questID int, actualTime time.Time) error
 	GetNotifications(c *gin.Context, userID int) ([]domain.Notification, error)
+	GetNotification(c *gin.Context, notificationID int) (domain.NotificationDTO, error)
 	DeleteNotification(c *gin.Context, id int, notificationID int) error
 }
 
@@ -92,6 +93,17 @@ func (r *repository) GetUser(c *gin.Context, id int) (domain.UserDTO, domain.Use
 		FinishedFiveQuests_ac: user.FinishedFiveQuests_ac,
 		TopThreeRanking_ac:    user.TopThreeRanking_ac,
 		FiftyMinutes_ac:       user.FiftyMinutes_ac}, user, nil
+}
+
+func (r *repository) GetNotification(c *gin.Context, notificationID int) (domain.NotificationDTO, error) {
+	var notif domain.Notification
+	if tx := config.MySql.First(&notif, notificationID); tx.Error != nil {
+		return domain.NotificationDTO{}, errors.New("DB Error")
+	}
+	return domain.NotificationDTO{
+		SenderID: notif.SenderID,
+		TeamID:   notif.TeamID,
+	}, nil
 }
 
 func (r *repository) GetUsers(c *gin.Context) ([]domain.User, error) {
