@@ -158,7 +158,7 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 			})
 			responseBody := bytes.NewBuffer(postBody)
 			//Leverage Go's HTTP Post function to make request
-			resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
+			resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
 			//Handle Error
 			if err != nil {
 				log.Fatalf("An Error Occured %v", err)

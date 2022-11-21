@@ -627,31 +627,19 @@ func (u *User) GetUser() gin.HandlerFunc {
 
 		//Achivements
 		if user.MadeFriend_ac == true {
-			achivements = append(achivements, "MadeFriend__ac")
+			achivements = append(achivements, "MadeFriend_ac")
 		}
 		if user.StartedQuest_ac == true {
 			achivements = append(achivements, "StartedQuest_ac")
 		}
 		if user.FinishedQuest_ac == true {
-			achivements = append(achivements, "MadeFriend__ac")
+			achivements = append(achivements, "FinishedQuest_ac")
 		}
 		if user.FinishedTeamQuest_ac == true {
 			achivements = append(achivements, "FinishedTeamQuest_ac")
 		}
 		if user.RatedQuest_ac == true {
-			achivements = append(achivements, "MadeFriend__ac")
-		}
-		if user.UsedCoupon_ac == true {
-			achivements = append(achivements, "UsedCoupon_ac")
-		}
-		if user.FinishedFiveQuests_ac == true {
-			achivements = append(achivements, "FinishedFiveQuests_ac")
-		}
-		if user.TopThreeRanking_ac == true {
-			achivements = append(achivements, "TopThreeRanking_ac")
-		}
-		if user.FiftyMinutes_ac == true {
-			achivements = append(achivements, "FiftyMinutes_ac")
+			achivements = append(achivements, "RatedQuest_ac")
 		}
 
 		userResponse := UserResponse{

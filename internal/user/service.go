@@ -312,7 +312,7 @@ func (s *service) DeleteNotification(c *gin.Context, id int, notificationID int)
 func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID int) error {
 
 	senderDTO, _, err := s.repo.GetUser(c, senderID)
-	receiverDTO, _, err := s.repo.GetUser(c, senderID)
+	receiverDTO, _, err := s.repo.GetUser(c, receiverID)
 
 	if err != nil {
 		return nil
@@ -325,7 +325,7 @@ func (s *service) SendUpdateNewFriend(c *gin.Context, receiverID int, senderID i
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/friend_request", "application/json", responseBody)
+	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/friend_request", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		log.Fatalf("An Error Occured %v", err)
@@ -353,7 +353,7 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/quest_accept", "application/json", responseBody)
+	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_accept", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		log.Fatalf("An Error Occured %v", err)
@@ -363,7 +363,7 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 	return nil
 }
 
-func (s *service) SendUpdateAcceptFriend(c *gin.Context, userID int, friendID int) error {
+func (s *service) SendUpdateAcceptFriend(c *gin.Context, friendID int, userID int) error {
 
 	userDTO, _, err := s.repo.GetUser(c, userID)
 	friendDTO, _, err := s.repo.GetUser(c, friendID)
@@ -378,7 +378,7 @@ func (s *service) SendUpdateAcceptFriend(c *gin.Context, userID int, friendID in
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post(config.GetConfig("dev").APP_NOTIFICATIONS_URL+"notifications/friend_accept", "application/json", responseBody)
+	resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/friend_accept", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		log.Fatalf("An Error Occured %v", err)
