@@ -344,7 +344,7 @@ func (s *service) SendUpdateQuestAccept(c *gin.Context, userID int, notification
 	if err != nil {
 		return err
 	}
-	fmt.Println("******Sender name: ", senderDTO.Username)
+	fmt.Println("******Quest ID: ", notificationDTO.QuestID)
 	receiverDTO, _, err := s.repo.GetUser(c, notificationDTO.SenderID)
 	if err != nil {
 		return err
