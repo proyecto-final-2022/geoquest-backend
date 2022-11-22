@@ -76,14 +76,14 @@ func (s *service) CreateQuestProgression(c *gin.Context, id int, teamId int) err
 
 	//if quest already exists, start new quest
 	if err == nil {
-		err := s.repo.UpdateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec, false, false)
+		err := s.repo.UpdateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec, true, false)
 		if err != nil {
 			return err
 		}
 		return nil
 	}
 
-	err = s.repo.CreateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec, false)
+	err = s.repo.CreateQuestProgression(c, id, teamId, 0, []string{}, []string{}, map[string]int{}, 0, false, sec, true)
 
 	if err != nil {
 		return err

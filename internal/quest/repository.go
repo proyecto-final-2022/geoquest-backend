@@ -174,7 +174,7 @@ func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, 
 
 	questProgress := domain.QuestProgress{Info: datatypes.JSON(string(jsonQuest))}
 
-	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", id, teamId).Update("info", datatypes.JSON(string(jsonQuest))).Update("points", points).Update("start_time", startTime).Update("started", started); tx.Error != nil {
+	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", id, teamId).Update("info", datatypes.JSON(string(jsonQuest))).Update("points", points).Update("start_time", startTime).Update("started", started).Update("finished", finished); tx.Error != nil {
 		return tx.Error
 	}
 
