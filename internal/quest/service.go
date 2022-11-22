@@ -26,7 +26,7 @@ type Service interface {
 	GetLastQuestProgression(c *gin.Context) (domain.QuestProgressDTO, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, canFinish bool) error
 	GetTimeDifference(c *gin.Context, id int, teamId int, compareTime int64) (int64, error)
-	SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error
+	SendUpdate(c *gin.Context, teamID int, userID int, itemName string, questID int) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	CreateCompletion(c *gin.Context, questID int, userID int, startYear int, startMonth time.Month,
@@ -140,7 +140,7 @@ func (s *service) UpdateQuestProgression(c *gin.Context, id int, teamId int, sce
 	return err
 }
 
-func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error {
+func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName string, questID int) error {
 	// fmt.Println("Team id: ", teamID)
 	// fmt.Println("User id: ", userID)
 	// fmt.Println("Item name: ", itemName)
@@ -159,8 +159,9 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 				return err
 			}
 			//Encode the data
-			postBody, _ := json.Marshal(map[string]string{
+			postBody, _ := json.Marshal(map[string]interface{}{
 				"team_id":   strconv.Itoa(teamID),
+				"quest_id":  questID,
 				"sender":    senderDTO.Name,
 				"token":     userDTO.FirebaseToken,
 				"item_name": itemName,
