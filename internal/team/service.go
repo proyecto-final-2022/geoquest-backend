@@ -242,5 +242,17 @@ func (s *service) DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) e
 		return err
 	}
 
+	team, err := s.repo.GetTeam(c, teamId)
+	if err != nil {
+		return err
+	}
+
+	if len(team) == 0 {
+		err := s.questRepo.UpdateQuestProgressionFinished(c, teamId, userId)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

@@ -31,6 +31,7 @@ type Repository interface {
 	GetLastQuestProgression(c *gin.Context) (domain.QuestProgressDTO, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64, started bool, canFinish bool) error
+	UpdateQuestProgressionFinished(c *gin.Context, id int, teamId int) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
 	DeleteQuest(c *gin.Context, id string) error
 	GetQuestsCompletions(c *gin.Context, questID int) ([]domain.QuestCompletion, error)
@@ -175,6 +176,16 @@ func (r *repository) UpdateQuestProgression(c *gin.Context, id int, teamId int, 
 	questProgress := domain.QuestProgress{Info: datatypes.JSON(string(jsonQuest))}
 
 	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", id, teamId).Update("info", datatypes.JSON(string(jsonQuest))).Update("points", points).Update("start_time", startTime).Update("started", started).Update("finished", finished); tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
+func (r *repository) UpdateQuestProgressionFinished(c *gin.Context, id int, teamId int) error {
+
+	var questProgress domain.QuestProgress
+	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", id, teamId).Update("finished", true); tx.Error != nil {
 		return tx.Error
 	}
 
