@@ -171,7 +171,11 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 			//Leverage Go's HTTP Post function to make request
 			resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
 			fmt.Println("****resp quest update: ", resp)
+			fmt.Println("****Team ID: ", teamID)
 			fmt.Println("****Quest ID: ", questID)
+			fmt.Println("****Sender name: ", senderDTO.Name)
+			fmt.Println("****Firebase token: ", userDTO.FirebaseToken)
+			fmt.Println("****Item name: ", itemName)
 
 			//Handle Error
 			if err != nil {
