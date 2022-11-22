@@ -113,10 +113,12 @@ type QuestProgress struct {
 	Points    float32        `json:"points"`
 	StartTime int64          `json:"start_time"`
 	Started   bool           `json:"started"`
+	Finished  bool           `json:"finished"`
 	Info      datatypes.JSON `json:"logs"`
 }
 
 type QuestProgressDTO struct {
+	QuestID   int            `json:"quest_id"`
 	TeamID    int            `json:"team_id"`
 	Points    float32        `json:"points"`
 	StartTime int64          `json:"start_time"`

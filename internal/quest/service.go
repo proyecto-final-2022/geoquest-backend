@@ -23,6 +23,7 @@ type Service interface {
 	CreateQuest(c *gin.Context, id string, scene int, inventory []string, logs []string, points float64) error
 	CreateQuestProgression(c *gin.Context, id int, teamId int) error
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
+	GetLastQuestProgression(c *gin.Context) (domain.QuestProgressDTO, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, canFinish bool) error
 	GetTimeDifference(c *gin.Context, id int, teamId int, compareTime int64) (int64, error)
 	SendUpdate(c *gin.Context, teamID int, userID int, itemName string) error
@@ -102,6 +103,15 @@ func (s *service) GetQuestProgression(c *gin.Context, id int, teamId int) (datat
 
 	if err != nil {
 		return nil, err
+	}
+	return questProgress, nil
+}
+
+func (s *service) GetLastQuestProgression(c *gin.Context) (domain.QuestProgressDTO, error) {
+	questProgress, err := s.repo.GetLastQuestProgression(c)
+
+	if err != nil {
+		return domain.QuestProgressDTO{}, err
 	}
 	return questProgress, nil
 }

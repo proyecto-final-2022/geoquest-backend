@@ -28,6 +28,7 @@ type Repository interface {
 	GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error)
 	GetQuestProgressionInfo(c *gin.Context, id int, teamId int) (domain.QuestProgress, error)
 	GetQuestProgressions(c *gin.Context, questId int) ([]domain.QuestProgress, error)
+	GetLastQuestProgression(c *gin.Context) (domain.QuestProgressDTO, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	UpdateQuestProgression(c *gin.Context, id int, teamId int, scene int, inventory []string, logs []string, objects map[string]int, points float32, finished bool, startTime int64, started bool, canFinish bool) error
 	UpdateQuest(c *gin.Context, quest domain.QuestDTO, paramId string) error
@@ -118,11 +119,21 @@ func (r *repository) CreateQuestProgression(c *gin.Context, id int, teamId int, 
 
 	jsonQuest, _ := json.Marshal(questInfo)
 
-	questProgress := domain.QuestProgress{QuestID: id, TeamID: teamId, Points: float32(points), StartTime: startTime, Info: datatypes.JSON(string(jsonQuest)), Started: started}
+	questProgress := domain.QuestProgress{QuestID: id, TeamID: teamId, Points: float32(points), StartTime: startTime, Info: datatypes.JSON(string(jsonQuest)), Started: started, Finished: finished}
 	if tx := config.MySql.Create(&questProgress); tx.Error != nil {
 		return errors.New("DB Error")
 	}
 	return nil
+}
+
+func (r *repository) GetLastQuestProgression(c *gin.Context) (domain.QuestProgressDTO, error) {
+
+	var questProgress domain.QuestProgress
+	if tx := config.MySql.Where("started = ? AND finished = ?", true, false).First(&questProgress); tx.Error != nil {
+		return domain.QuestProgressDTO{}, errors.New("DB Error")
+	}
+
+	return domain.QuestProgressDTO{QuestID: questProgress.QuestID, TeamID: questProgress.TeamID}, nil
 }
 
 func (r *repository) GetQuestProgression(c *gin.Context, id int, teamId int) (datatypes.JSON, error) {

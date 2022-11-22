@@ -129,6 +129,30 @@ func (u *Quest) CreateQuestProgression() gin.HandlerFunc {
 	}
 }
 
+// @Summary New quest progression
+// @Schemes
+// @Description Save new quest progression
+// @Tags Quests
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 422
+// @Failure 500
+// @Router /quests/progressions/last [get]
+func (u *Quest) GetLastQuestProgression() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var questProgress domain.QuestProgressDTO
+
+		if questProgress, err = u.service.GetLastQuestProgression(c); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, questProgress)
+	}
+}
+
 // @Summary Get Team progression
 // @Schemes
 // @Description Team progression
