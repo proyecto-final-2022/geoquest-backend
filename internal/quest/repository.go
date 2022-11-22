@@ -283,7 +283,7 @@ func (r *repository) GetQuestProgressions(c *gin.Context, questID int) ([]domain
 //Por que??? porque import cycle
 func (r *repository) GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error) {
 	var team []domain.UserXTeam
-	if tx := config.MySql.Where("team_id = ?", teamID).Find(&team); tx.Error != nil {
+	if tx := config.MySql.Where("team_id = ?", teamID).Where("deleted_at", nil).Find(&team); tx.Error != nil {
 		return nil, errors.New("DB Error")
 	}
 

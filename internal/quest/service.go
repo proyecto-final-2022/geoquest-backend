@@ -367,14 +367,19 @@ func (s *service) GetQuestRanking(c *gin.Context, id int) ([]domain.QuestProgres
 		if err != nil {
 			return nil, err
 		}
-		questProgresses[i].Info = quests[i].Info
-		questProgresses[i].TeamID = quests[i].TeamID
-		questProgresses[i].Points = quests[i].Points
 
 		team, err := s.repo.GetTeam(c, quests[i].TeamID)
 		if err != nil {
 			return nil, err
 		}
+
+		if len(team) == 0 {
+			continue
+		}
+
+		questProgresses[i].Info = quests[i].Info
+		questProgresses[i].TeamID = quests[i].TeamID
+		questProgresses[i].Points = quests[i].Points
 
 		for j := range team {
 			userDTO, _, err := s.userRepo.GetUser(c, team[j].UserID)
