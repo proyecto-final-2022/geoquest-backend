@@ -3,6 +3,7 @@ package quest
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sort"
 	"strconv"
@@ -169,6 +170,9 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 			responseBody := bytes.NewBuffer(postBody)
 			//Leverage Go's HTTP Post function to make request
 			resp, err := http.Post(config.GetConfig("prod").APP_NOTIFICATIONS_URL+"notifications/quest_update", "application/json", responseBody)
+			fmt.Println("****resp quest update: ", resp)
+			fmt.Println("****Quest ID: ", questID)
+
 			//Handle Error
 			if err != nil {
 				return err
