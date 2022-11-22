@@ -361,7 +361,8 @@ func (s *service) GetQuestRanking(c *gin.Context, id int) ([]domain.QuestProgres
 
 	quests, err := s.repo.GetQuestProgressions(c, id)
 
-	questProgresses := make([]domain.QuestProgressDTO, len(quests))
+	var questProgresses []domain.QuestProgressDTO
+	//0	questProgresses := make([]domain.QuestProgressDTO, len(quests))
 
 	for i := range quests {
 		if err != nil {
