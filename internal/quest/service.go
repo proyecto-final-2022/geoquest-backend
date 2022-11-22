@@ -361,10 +361,12 @@ func (s *service) GetQuestRanking(c *gin.Context, id int) ([]domain.QuestProgres
 
 	quests, err := s.repo.GetQuestProgressions(c, id)
 
-	var questProgresses []domain.QuestProgressDTO
-	//0	questProgresses := make([]domain.QuestProgressDTO, len(quests))
+	//	var questProgresses []domain.QuestProgressDTO
+	questProgresses := make([]domain.QuestProgressDTO, 0)
 
 	for i := range quests {
+		var questProgress domain.QuestProgressDTO
+
 		if err != nil {
 			return nil, err
 		}
@@ -378,17 +380,18 @@ func (s *service) GetQuestRanking(c *gin.Context, id int) ([]domain.QuestProgres
 			continue
 		}
 
-		questProgresses[i].Info = quests[i].Info
-		questProgresses[i].TeamID = quests[i].TeamID
-		questProgresses[i].Points = quests[i].Points
+		questProgress.Info = quests[i].Info
+		questProgress.TeamID = quests[i].TeamID
+		questProgress.Points = quests[i].Points
 
 		for j := range team {
 			userDTO, _, err := s.userRepo.GetUser(c, team[j].UserID)
 			if err != nil {
 				return nil, err
 			}
-			questProgresses[i].Users = append(questProgresses[i].Users, domain.UserDTO{Username: userDTO.Username, Image: userDTO.Image})
+			questProgress.Users = append(questProgress.Users, domain.UserDTO{Username: userDTO.Username, Image: userDTO.Image})
 		}
+		questProgresses = append(questProgresses, questProgress)
 	}
 
 	sort.Sort(QuestsProgresses(questProgresses))
