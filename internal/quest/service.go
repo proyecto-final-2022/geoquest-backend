@@ -161,7 +161,7 @@ func (s *service) SendUpdate(c *gin.Context, teamID int, userID int, itemName st
 			}
 			//Encode the data
 			postBody, _ := json.Marshal(map[string]interface{}{
-				"team_id":   strconv.Itoa(teamID),
+				"team_id":   teamID,
 				"quest_id":  questID,
 				"sender":    senderDTO.Name,
 				"token":     userDTO.FirebaseToken,
