@@ -16,6 +16,8 @@ type Coupon struct {
 
 type ClientCouponRequest struct {
 	Points    float64 `json:"points"`
+	QuestID   int     `json:"quest_id"`
+	TeamID    int     `json:"team_id"`
 	StartTime int64   `json:"start_time"`
 }
 
@@ -56,7 +58,7 @@ func (co *Coupon) CompletionCoupons() gin.HandlerFunc {
 		paramClientId, _ := strconv.Atoi(c.Param("client_id"))
 		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
 
-		coupon, err := co.service.GenerateCoupons(c, paramClientId, paramUserId, req.Points)
+		coupon, err := co.service.GenerateCoupons(c, paramClientId, paramUserId, req.Points, req.QuestID, req.TeamID)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)

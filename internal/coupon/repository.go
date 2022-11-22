@@ -13,6 +13,7 @@ type Repository interface {
 	GetCoupons(c *gin.Context, clientID int, performance string) ([]domain.CouponClient, error)
 	GetTeam(c *gin.Context, teamID int) ([]domain.UserXTeam, error)
 	CreateCoupon(c *gin.Context, userID int, description string, clientID int, date time.Time) (int, error)
+	UpdateQuestProgressionFinish(c *gin.Context, questId int, teamId int) error
 }
 
 type repository struct {
@@ -47,4 +48,15 @@ func (r *repository) CreateCoupon(c *gin.Context, userID int, description string
 		return 0, errors.New("DB Error")
 	}
 	return coupon.ID, nil
+}
+
+func (r *repository) UpdateQuestProgressionFinish(c *gin.Context, questId int, teamId int) error {
+
+	var questProgress domain.QuestProgress
+
+	if tx := config.MySql.Model(&questProgress).Where("quest_id = ? AND team_id = ?", questId, teamId).Update("finished", true); tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type Service interface {
-	GenerateCoupons(c *gin.Context, clientID int, userID int, points float64) (domain.CouponDTO, error)
+	GenerateCoupons(c *gin.Context, clientID int, userID int, points float64, questID int, teamID int) (domain.CouponDTO, error)
 }
 
 type service struct {
@@ -21,7 +21,7 @@ func NewService(rep Repository, userRepo user.Repository) Service {
 	return &service{repo: rep, userRepo: userRepo}
 }
 
-func (s *service) GenerateCoupons(c *gin.Context, clientID int, userID int, points float64) (domain.CouponDTO, error) {
+func (s *service) GenerateCoupons(c *gin.Context, clientID int, userID int, points float64, questID int, teamID int) (domain.CouponDTO, error) {
 
 	var performance string
 	var err error
@@ -50,6 +50,8 @@ func (s *service) GenerateCoupons(c *gin.Context, clientID int, userID int, poin
 	}
 
 	_ = s.userRepo.UnlockAchivement(c, userID, "FinishedQuest_ac")
+
+	_ = s.repo.UpdateQuestProgressionFinish(c, questID, teamID)
 
 	return domain.CouponDTO{ID: couponID, Description: couponsClients[0].Description, UserID: userID, ClientID: couponsClients[0].ClientID}, err
 }

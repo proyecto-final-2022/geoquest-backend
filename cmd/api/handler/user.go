@@ -626,6 +626,9 @@ func (u *User) GetUser() gin.HandlerFunc {
 		var achivements []string
 
 		//Achivements
+		if user.UsedCoupon_ac == true {
+			achivements = append(achivements, "UsedCoupon_ac")
+		}
 		if user.MadeFriend_ac == true {
 			achivements = append(achivements, "MadeFriend_ac")
 		}
