@@ -132,6 +132,6 @@ func (r *router) buildTeamRoutes() {
 		gGroup.GET("/rankings/:quest_id", handler.GetRanking())
 		gGroup.GET("/waitrooms/:team_id/quests/:quest_id/", handler.GetWaitRoomAccepted())
 		gGroup.DELETE("/:id/", handler.DeleteTeam())
-		gGroup.DELETE("/:id/users/:user_id", handler.DeletePlayerFromTeam())
+		gGroup.DELETE("/:id/users/:user_id/quests/:quest_id", handler.DeletePlayerFromTeam())
 	}
 }

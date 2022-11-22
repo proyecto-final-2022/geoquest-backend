@@ -224,15 +224,16 @@ func (t *Team) DeleteTeam() gin.HandlerFunc {
 // @Param user_id path string true "User ID"
 // @Success 200
 // @Failure 500
-// @Router /teams/{id}/users/{user_id} [delete]
+// @Router /teams/{id}/users/{user_id}/quests/{quest_id} [delete]
 func (t *Team) DeletePlayerFromTeam() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
 
 		paramTeamId, _ := strconv.Atoi(c.Param("id"))
 		paramUserId, _ := strconv.Atoi(c.Param("user_id"))
+		paramQuestId, _ := strconv.Atoi(c.Param("quest_id"))
 
-		if err = t.service.DeletePlayerFromTeam(c, paramTeamId, paramUserId); err != nil {
+		if err = t.service.DeletePlayerFromTeam(c, paramTeamId, paramUserId, paramQuestId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

@@ -21,7 +21,7 @@ type Service interface {
 	GetRanking(c *gin.Context, questId int) ([]domain.QuestTeamCompletionDTO, error)
 	GetWaitRoomAccepted(c *gin.Context, teamId int, questId int) ([]domain.UserDTO, error)
 	DeleteTeam(c *gin.Context, teamId int) error
-	DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) error
+	DeletePlayerFromTeam(c *gin.Context, teamId int, userId int, questId int) error
 	AcceptQuestTeam(c *gin.Context, teamId int, userId int) error
 }
 
@@ -235,7 +235,7 @@ func (s *service) GetTeam(c *gin.Context, teamId int) ([]domain.UserDTO, error) 
 	return teamPlayers, nil
 }
 
-func (s *service) DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) error {
+func (s *service) DeletePlayerFromTeam(c *gin.Context, teamId int, userId int, questId int) error {
 
 	err := s.repo.DeletePlayerFromTeam(c, teamId, userId)
 	if err != nil {
@@ -248,7 +248,7 @@ func (s *service) DeletePlayerFromTeam(c *gin.Context, teamId int, userId int) e
 	}
 
 	if len(team) == 0 {
-		err := s.questRepo.UpdateQuestProgressionFinished(c, teamId, userId)
+		err := s.questRepo.UpdateQuestProgressionFinished(c, questId, teamId)
 		if err != nil {
 			return err
 		}
